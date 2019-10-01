@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://www.savethelogin.world> */
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 /* jshint ignore:start */
 import Vue from 'vue';
 import App from './App';

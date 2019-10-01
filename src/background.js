@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://www.savethelogin.world> */
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
 let pv = {};
 let bind = tabId => {
