@@ -1,0 +1,68 @@
+{
+  "scheme": {
+    "message": "Scheme"
+  },
+  "hsts_policy": {
+    "message": "HSTS Policy"
+  },
+  "clickjacking_prevention": {
+    "message": "Clickjacking Prevention"
+  },
+  "xss_protection_policy": {
+    "message": "XSS Protection Policy"
+  },
+  "server_version_disclosure": {
+    "message": "Server Version Disclosure"
+    },
+  "servlet_spec_disclosure": {
+    "message": "Server Configuration Information Disclosure"
+  },
+  "session_cookie_xss": {
+    "message": "Session Cookie Vulnerability"
+  },
+  "confirm_request_block": {
+    "message": "We have detected and temporarily blocked the transmission of plaintext.\nUnencrypted personal information may be exposed during transmission.\nDo you want to continue?"
+  },
+  "request_blocked": {
+    "message": "Login request has been blocked."
+  },
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">recommend</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">recommend</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "xss_protection_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">recommend</span> <code>X-XSS-Protection: 1; mode=block</code> include in the server’s HTTP response header."
+  },
+  "privacy_policy_title": {
+    "message": "Personal Information Collection and Usage Agreement"
+  },
+  "privacy_policy_agree": {
+    "message": "Agreed"
+  },
+  "privacy_policy_deny": {
+    "message": "If you do not agree to the Personal Information Collection Agreement, you cannot use the service.\nGo to the Uninstall page."
+  },
+  "options_privacy_deny": {
+    "message": "You must agree to the Personal Information Collection and Usage Agreement"
+  },
+  "no_information": {
+    "message": "No Information!"
+  },
+  "agree": {
+    "message": "agree"
+  },
+  "deny": {
+    "message": "disagree"
+  },
+  "safe": {
+    "message": "safe"
+  },
+  "moderate": {
+    "message": "moderate"
+  },
+  "vulnerable": {
+    "message": "vulnerable"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Save the Login",
+  "description": "",
+  "default_locale": "en",
+  "version": "0.1",
+  "permissions": ["tabs", "cookies", "storage", "management", "webRequest", "webRequestBlocking", "*://*/*"],
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon.png",
+    "default_title": "Save the login"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
