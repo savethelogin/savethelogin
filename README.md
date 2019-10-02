@@ -23,8 +23,8 @@ Download plugin from releases.
 1. Clone, build project.
 
 ```sh
-git clone https://gitlab.com/savethelogin/plugin.git
-cd plugin
+git clone https://gitlab.com/savethelogin/savethelogin.git
+cd savethelogin
 npm install && npm run build
 ```
 
@@ -41,7 +41,7 @@ chrome://extensions
 4. Load dist extension directory.
 
 ```
-plugin/dist
+savethelogin/dist
 ```
 
 ![Load unpacked](instruction-load-unpacked.png)
