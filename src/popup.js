@@ -1,5 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-/* jshint ignore:start */
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Vue from 'vue';
 import App from './App';
 

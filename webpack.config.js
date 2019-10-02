@@ -73,7 +73,6 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: 'lib/css', to: 'lib/css' },
       { from: '_locales', to: '_locales' },
       { from: 'popup.html', to: 'popup.html', transform: transformHtml },
       {
