@@ -13,7 +13,7 @@
   },
   "server_version_disclosure": {
     "message": "Server Version Disclosure"
-    },
+  },
   "servlet_spec_disclosure": {
     "message": "Server Configuration Information Disclosure"
   },
@@ -64,5 +64,8 @@
   },
   "vulnerable": {
     "message": "vulnerable"
+  },
+  "refresh": {
+    "message": "refresh"
   }
 }

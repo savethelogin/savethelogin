@@ -1,7 +1,16 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
 let pv = {};
+let enabled = false;
+
+chrome.storage.sync.get(['stl_disabled'], items => {
+  const item = items.stl_disabled;
+  if (item === undefined) enabled = true;
+  else enabled = item;
+});
+
 let bind = tabId => {
+  if (!enabled) return;
   chrome.tabs.executeScript(
     {
       allFrames: true,
@@ -61,6 +70,10 @@ let bind = tabId => {
   );
 };
 
+let flush = () => {
+  pv = {};
+};
+
 let createBg = () => {
   chrome.tabs.executeScript(
     {
@@ -112,8 +125,8 @@ chrome.runtime.onConnect.addListener(port => {
       case 'update_data':
         pv[msg.key] = msg.data.toString();
         break;
-      case 'enabled': {
-        chrome.browserAction.setPopup({ popup: 'popup.html' });
+      case 'update_toggle': {
+        enabled = msg.data;
         break;
       }
       default:
@@ -127,6 +140,7 @@ chrome.tabs.onRemoved.addListener((tabId, removed) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!enabled) return;
   console.log(tabId, changeInfo, tab);
   bind(tabId);
 });
@@ -134,6 +148,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 /* jslint ignore:start */
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
+    if (!enabled) return;
     if (details.method === 'POST' && details.requestBody) {
       if (!pv[details.tabId]) {
         return {};
@@ -185,6 +200,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 chrome.webRequest.onResponseStarted.addListener(
   details => {
+    if (!enabled) return;
     if (details.statusCode === 200) {
       const url = new URL(details.url);
       const protocol = url.protocol.slice(0, -1);

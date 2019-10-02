@@ -1,14 +1,29 @@
 <template>
   <label class="switch">
-    <input type="checkbox" />
-    <span class="slider round"></span>
+    <input type="checkbox" v-bind:checked="checked" v-on:change="callback" />
+    <span v-bind:class="'slider' + (type === 'round' && ' round')"></span>
   </label>
 </template>
 
 <script>
 export default {
   name: 'ToggleSwitch',
-  data() {},
+  props: {
+    checked: {
+      type: Boolean,
+      default: true,
+    },
+    type: {
+      type: String,
+      default: 'round',
+    },
+    callback: {
+      type: Function,
+    },
+  },
+  data() {
+    return {};
+  },
 };
 </script>
 

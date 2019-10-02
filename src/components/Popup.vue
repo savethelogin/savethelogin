@@ -6,35 +6,42 @@
       </div>
       <div class="row d-flex justify-content-end">
         <div class="mr-2">
-          <ToggleSwitch />
+          <ToggleSwitch v-bind:checked="isEnabled" v-bind:callback="setEnabled" />
         </div>
       </div>
     </div>
-    <table class="table mb-0" v-if="Object.keys(checklist).length">
-      <tr>
-        <th>{{ checklist.scheme.name }}</th>
-        <td v-html="checklist.scheme.description" v-bind:class="gradeColor(checklist.scheme.grade)"></td>
-      </tr>
-      <tr v-if="scheme === 'https'">
-        <th>{{ checklist.hsts_policy.name }}</th>
-        <td v-html="checklist.hsts_policy.description" v-bind:class="gradeColor(checklist.hsts_policy.grade)"></td>
-      </tr>
-      <tr>
-        <th>{{ checklist.clickjacking_prevention.name }}</th>
-        <td v-html="checklist.clickjacking_prevention.description" v-bind:class="gradeColor(checklist.clickjacking_prevention.grade)"></td>
-      </tr>
-      <tr>
-        <th>{{ checklist.xss_protection_policy.name }}</th>
-        <td v-html="checklist.xss_protection_policy.description" v-bind:class="gradeColor(checklist.xss_protection_policy.grade)"></td>
-      </tr>
-      <tr>
-        <th>{{ checklist.session_cookie_xss.name }}</th>
-        <td v-html="checklist.session_cookie_xss.description" v-bind:class="gradeColor(checklist.session_cookie_xss.grade)"></td>
-      </tr>
-    </table>
+    <div class="col" v-if="isEnabled">
+      <div class="row">
+        <table class="table mb-0" v-if="Object.keys(checklist).length">
+          <tr>
+            <th>{{ checklist.scheme.name }}</th>
+            <td v-html="checklist.scheme.description" v-bind:class="gradeColor(checklist.scheme.grade)"></td>
+          </tr>
+          <tr v-if="scheme === 'https'">
+            <th>{{ checklist.hsts_policy.name }}</th>
+            <td v-html="checklist.hsts_policy.description" v-bind:class="gradeColor(checklist.hsts_policy.grade)"></td>
+          </tr>
+          <tr>
+            <th>{{ checklist.clickjacking_prevention.name }}</th>
+            <td v-html="checklist.clickjacking_prevention.description" v-bind:class="gradeColor(checklist.clickjacking_prevention.grade)"></td>
+          </tr>
+          <tr>
+            <th>{{ checklist.xss_protection_policy.name }}</th>
+            <td v-html="checklist.xss_protection_policy.description" v-bind:class="gradeColor(checklist.xss_protection_policy.grade)"></td>
+          </tr>
+          <tr>
+            <th>{{ checklist.session_cookie_xss.name }}</th>
+            <td v-html="checklist.session_cookie_xss.description" v-bind:class="gradeColor(checklist.session_cookie_xss.grade)"></td>
+          </tr>
+        </table>
 
-    <div class="alert alert-danger w-100 mb-0 text-center" v-else>
-      <span>{{ noInformationMessage }}</span>
+        <div class="alert alert-danger w-100 mb-0 text-center" v-else>
+          <h4 class="alert-heading">{{ msgNoInformation }}</h4>
+          <p class="mb-0">
+            <button v-on:click="refreshPage" class="btn btn-link text-danger"><i class="material-icons">refresh</i> {{ msgRefresh }}</button>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -48,8 +55,11 @@ export default {
     ToggleSwitch,
   },
   computed: {
-    noInformationMessage: function() {
+    msgNoInformation: function() {
       return chrome.i18n.getMessage('no_information');
+    },
+    msgRefresh: function() {
+      return chrome.i18n.getMessage('refresh');
     },
   },
   methods: {
@@ -63,14 +73,41 @@ export default {
           return 'text-danger';
       }
     },
+    refreshPage: function() {
+      new Promise((resolve, reject) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+          resolve(tabs[0]);
+        });
+      }).then(currentTab => {
+        chrome.tabs.reload(currentTab.id, {}, () => {});
+      });
+    },
+    setEnabled: function(event) {
+      var checked = event.target.checked;
+      chrome.storage.sync.set({ stl_disabled: checked }, () => {
+        var port = chrome.runtime.connect({ name: 'stl' });
+        port.postMessage({
+          type: 'update_toggle',
+          data: checked,
+        });
+        this.isEnabled = checked;
+      });
+    },
   },
   data() {
     return {
       scheme: 'http',
+      isEnabled: false,
       checklist: {},
     };
   },
   created() {
+    chrome.storage.sync.get(['stl_disabled'], items => {
+      const item = items['stl_disabled'];
+      if (item === undefined) this.isEnabled = true;
+      else this.isEnabled = item;
+    });
+
     let map = {};
     let keys = ['scheme', 'hsts_policy', 'clickjacking_prevention', 'xss_protection_policy', 'server_version_disclosure', 'servlet_spec_disclosure', 'session_cookie_xss'];
     keys.forEach(el => {
