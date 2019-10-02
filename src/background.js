@@ -6,53 +6,50 @@ let bind = tabId => {
     {
       allFrames: true,
       code: `(function() {
-      var scheme = location.protocol.slice(0, -1);
-      if (scheme !== 'https') {
-        var handler = function(e) {
-          var value;
-          switch (e.type) {
-          case 'keyup':
-            value = e.target.value;
-            break;
-          case 'submit':
-            Array.from(e.target.elements).some(function(el) {
-              if (el.type === 'password') {
-                value = el.value;
-                return true;
-              }
-            });
-            break;
-          }
-          var port = chrome.runtime.connect({name: "stl"});
-          port.postMessage({
-            type: 'update_data',
-            key: ${tabId},
-            data: value
+      var handler = function(e) {
+        var value;
+        switch (e.type) {
+        case 'keyup':
+          value = e.target.value;
+          break;
+        case 'submit':
+          Array.from(e.target.elements).some(function(el) {
+            if (el.type === 'password') {
+              value = el.value;
+              return true;
+            }
           });
-        };
-        var key = ${tabId};
-        var pwFields = document.querySelectorAll("input[type=password]");
-        var iterable = Array.from(pwFields);
-        var pwForms = [].filter.call(document.querySelectorAll('form'),
-          function(el) {
-            return el.querySelector('input[type=password]') ? el : null;
-          }
-        );
-        iterable = iterable.concat(pwForms);
-        iterable.forEach(function(el) {
-          switch (el.tagName.toLowerCase()) {
-          case 'input':
-            el.addEventListener("keyup", handler);
-            break;
-          case 'form':
-            el.addEventListener("submit", handler);
-            break;
-          default:
-            break;
-          }
-          console.log(el.tagName);
+          break;
+        }
+        var port = chrome.runtime.connect({name: "stl"});
+        port.postMessage({
+          type: 'update_data',
+          key: ${tabId},
+          data: value
         });
-      }
+      };
+      var key = ${tabId};
+      var pwFields = document.querySelectorAll("input[type=password]");
+      var iterable = Array.from(pwFields);
+      var pwForms = [].filter.call(document.querySelectorAll('form'),
+        function(el) {
+          return el.querySelector('input[type=password]') ? el : null;
+        }
+      );
+      iterable = iterable.concat(pwForms);
+      iterable.forEach(function(el) {
+        switch (el.tagName.toLowerCase()) {
+        case 'input':
+          el.addEventListener("keyup", handler);
+          break;
+        case 'form':
+          el.addEventListener("submit", handler);
+          break;
+        default:
+          break;
+        }
+        console.log(el.tagName);
+      });
     })();`,
     },
     _ => {
@@ -130,6 +127,7 @@ chrome.tabs.onRemoved.addListener((tabId, removed) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  console.log(tabId, changeInfo, tab);
   bind(tabId);
 });
 
@@ -173,8 +171,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         }
         removeBg();
 
-        let newURL = 'https://savethelogin.world';
-        chrome.tabs.create({ url: newURL });
+        chrome.tabs.create({ url: 'https://savethelogin.world' });
       }
       delete pv[details.tabId];
     }
