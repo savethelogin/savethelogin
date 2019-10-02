@@ -15,7 +15,7 @@
 
 Download plugin from releases.
 
-[Releases](https://gitlab.com/savethelogin/plugin/-/releases)
+[Releases](https://gitlab.com/savethelogin/savethelogin/-/releases)
 
 
 ## Installation
