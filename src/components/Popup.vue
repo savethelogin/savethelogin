@@ -1,6 +1,15 @@
 <template>
   <div class="row">
-    <img style="margin-left:120px" src="/icons/logo.png" width="300" />
+    <div class="col">
+      <div class="row">
+        <img id="logo" src="/icons/logo.png" width="300" />
+      </div>
+      <div class="row d-flex justify-content-end">
+        <div class="mr-2">
+          <ToggleSwitch />
+        </div>
+      </div>
+    </div>
     <table class="table mb-0" v-if="Object.keys(checklist).length">
       <tr>
         <th>{{ checklist.scheme.name }}</th>
@@ -31,8 +40,13 @@
 </template>
 
 <script>
+import ToggleSwitch from './ToggleSwitch';
+
 export default {
   name: 'Popup',
+  components: {
+    ToggleSwitch,
+  },
   computed: {
     noInformationMessage: function() {
       return chrome.i18n.getMessage('no_information');
@@ -187,3 +201,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#logo {
+  margin-left: 120px;
+}
+</style>
