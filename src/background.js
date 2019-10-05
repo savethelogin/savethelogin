@@ -142,6 +142,7 @@ chrome.tabs.onRemoved.addListener((tabId, removed) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!enabled) return;
   console.log(tabId, changeInfo, tab);
+  delete pv[tabId];
   bind(tabId);
 });
 
@@ -149,7 +150,20 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
     if (!enabled) return;
+    const url = new URL(details.url);
     if (details.method === 'POST' && details.requestBody) {
+      // If host is IPv4 range
+      const hostname = url.hostname;
+      if (hostname.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)) {
+        const priv_range = [
+          /10\.(2[0-5][0-5]|1[0-9][0-9]|[1-9][0-9]|[0-9])/,
+          /172\.(1[6-9]|2[0-9]|3[0-1])\.(1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[0-9])\.(1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[0-9])/,
+          /192\.168\.(1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[0-9])\.(1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[0-9])/,
+        ];
+        const ruleset = new RegExp('^' + priv_range.map(x => x.source).join('|') + '$');
+        if (hostname.match(ruleset)) return;
+      }
+      details.url.split('.').slice(0, 2);
       if (!pv[details.tabId]) {
         return {};
       }
