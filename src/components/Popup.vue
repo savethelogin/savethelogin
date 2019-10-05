@@ -80,6 +80,7 @@ export default {
         });
       }).then(currentTab => {
         chrome.tabs.reload(currentTab.id, {}, () => {});
+        window.close();
       });
     },
     setEnabled: function(event) {
