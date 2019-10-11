@@ -63,6 +63,7 @@ export default {
     },
   },
   methods: {
+    // Return text style class by grade
     gradeColor: function(grade) {
       switch (grade) {
         case 'SAFE':
@@ -73,6 +74,7 @@ export default {
           return 'text-danger';
       }
     },
+    // Refresh tab and close popup
     refreshPage: function() {
       new Promise((resolve, reject) => {
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -83,6 +85,7 @@ export default {
         window.close();
       });
     },
+    // If toggle button state changed to enabled
     setEnabled: function(event) {
       var checked = event.target.checked;
       chrome.storage.sync.set({ stl_disabled: checked }, () => {
@@ -111,6 +114,7 @@ export default {
 
     let map = {};
     let keys = ['scheme', 'hsts_policy', 'clickjacking_prevention', 'xss_protection_policy', 'server_version_disclosure', 'servlet_spec_disclosure', 'session_cookie_xss'];
+    // Set default values
     keys.forEach(el => {
       map[el] = {};
       map[el].name = chrome.i18n.getMessage(el);
@@ -140,6 +144,8 @@ export default {
         chrome.cookies.getAll({ url: url }, cookies => {
           let flag = false;
           for (let i = 0; i < cookies.length; ++i) {
+            // If cookie type is session and httpOnly flag is enabled
+            // Vulnerable to session cookie hijacking
             if (cookies[i].session && !cookies[i].httpOnly) {
               flag = true;
               break;
@@ -177,9 +183,11 @@ export default {
             // Check HSTS header
             case 'strict-transport-security': {
               if (scheme === 'https') {
+                // Get max-age value parsed from HSTS header
                 let maxAge = parseInt((/max\-age=([0-9]+)/gi.exec(header.value) || [, '0'])[1]);
                 map.hsts_policy.description = `${chrome.i18n.getMessage('moderate')}`;
                 map.hsts_policy.grade = 'NORM';
+                // Check HSTS header setting is safe from SSL Strip attack
                 if (header.value.toLowerCase().indexOf('includesubdomains') !== -1) {
                   map.hsts_policy.description = `${chrome.i18n.getMessage('safe')} (SSL Strip safe)`;
                   map.hsts_policy.grade = 'SAFE';
@@ -188,6 +196,7 @@ export default {
               break;
             }
             case 'server': {
+              // Check server header contains any version value
               if (header.value.match(/[0-9]+(\.([0-9]+))+/g)) {
                 map.server_version_disclosure.description = `${chrome.i18n.getMessage('vulnerable')}`;
                 map.server_version_disclosure.grade = 'VULN';
@@ -215,6 +224,7 @@ export default {
               }
               break;
             }
+            // Check if servlet value exposed
             case 'x-powered-by': {
               map.servlet_spec_disclosure.description = `${chrome.i18n.getMessage('vulnerable')}`;
               map.xss_protection_policy.grade = 'VULN';
@@ -225,6 +235,7 @@ export default {
           }
         }
 
+        // Map description by name with "recommend" suffix
         Object.keys(map).forEach(el => {
           if (!map[el].description)
             map[el].description = `${chrome.i18n.getMessage('vulnerable')}
@@ -233,6 +244,7 @@ export default {
         return cookiePromise(item.url.toString());
       })
       .then(() => {
+        // Assign mapped object to checklist
         this.checklist = map;
       })
       .catch(error => {});
