@@ -75,11 +75,6 @@ let bind = tabId => {
   );
 };
 
-// Delete all datas in pv
-let flush = () => {
-  pv = {};
-};
-
 // Create translucent black background when alert appears
 let createBg = () => {
   chrome.tabs.executeScript(
@@ -146,14 +141,14 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.tabs.onRemoved.addListener((tabId, removed) => {
   // Remove pv by tab id when tab closed
-  delete pv[tabId];
+  pv[tabId] = undefined;
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!enabled) return;
   console.log(tabId, changeInfo, tab);
   // Remove pv by tab id when tab updated
-  delete pv[tabId];
+  pv[tabId] = undefined;
   // Bind script to webpage
   bind(tabId);
 });
@@ -184,7 +179,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         if (hostname.match(ruleset)) return;
       }
       // Skip when pv not exists
-      if (!pv[details.tabId]) {
+      if (pv[details.tabId] === undefined) {
         return {};
       }
       let flag = false;
@@ -226,7 +221,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
         chrome.tabs.create({ url: 'https://savethelogin.world' });
       }
-      delete pv[details.tabId];
+      pv[details.tabId] = undefined;
     }
 
     return {};
