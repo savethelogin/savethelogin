@@ -41,8 +41,13 @@ let bind = tabId => {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
       code: `(function() {
-      let id = 0;
+      let port = chrome.runtime.connect({name: "stl"});
+      let id = ${elementId};
       let handler = function(elementId) {
+        port.postMessage({
+          id: elementId,
+          type: 'update_id'
+        });
         return function(e) {
           let value;
           switch (e.type) {
@@ -58,7 +63,6 @@ let bind = tabId => {
             });
             break;
           }
-          let port = chrome.runtime.connect({name: "stl"});
           port.postMessage({
             id: elementId,
             type: 'update_data',
@@ -76,7 +80,9 @@ let bind = tabId => {
         }
       );
       iterable = iterable.concat(pwForms);
-      iterable.forEach(function(el) {
+      for (let i = 0; i < iterable.length; ++i) {
+        id++;
+        let el = iterable[i];
         switch (el.tagName.toLowerCase()) {
         case 'input':
           el.addEventListener("keyup", handler(id));
@@ -87,8 +93,7 @@ let bind = tabId => {
         default:
           break;
         }
-        id++;
-      });
+      }
     })();`,
     },
     _ => {
@@ -180,6 +185,13 @@ chrome.runtime.onConnect.addListener(port => {
       }
       case 'update_toggle': {
         enabled = message.data;
+        break;
+      }
+      case 'update_id': {
+        if (message.id > elementId) {
+          console.log(elementId);
+          elementId = message.id;
+        }
         break;
       }
       default:
