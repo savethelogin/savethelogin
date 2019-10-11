@@ -144,7 +144,7 @@ export default {
         chrome.cookies.getAll({ url: url }, cookies => {
           let flag = false;
           for (let i = 0; i < cookies.length; ++i) {
-            // If cookie type is session and httpOnly flag is enabled
+            // If cookie type is session and httpOnly flag is disabled
             // Vulnerable to session cookie hijacking
             if (cookies[i].session && !cookies[i].httpOnly) {
               flag = true;
