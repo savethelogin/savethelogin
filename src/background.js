@@ -1,7 +1,16 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
-// Store private values
-let pv = {};
+// Configurations
+// Shorten value to improve performance
+const SHORTEN_LENGTH = 0x10;
+
+// Store private datas
+let privateData = {};
+// Re-use buffer
+// Stack pop() is faster than shift()
+let recycleStack = [];
+// Unique element id
+let elementId = 0;
 // Is extenstion enabled?
 let enabled = false;
 
@@ -13,8 +22,15 @@ chrome.storage.sync.get(['stl_disabled'], items => {
 });
 
 let del = tabId => {
-  console.log(`delete id: ${tabId}`);
-  pv[tabId] = undefined;
+  if (privateData[tabId] === undefined) return;
+  Object.keys(privateData[tabId]).forEach(key => {
+    // Zero-fill
+    privateData[tabId][key].fill(0);
+    recycleStack.push(privateData[tabId][key]);
+
+    privateData[tabId][key] = undefined;
+  });
+  privateData[tabId] = undefined;
 };
 
 // Bind event handler to webpage
@@ -25,32 +41,36 @@ let bind = tabId => {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
       code: `(function() {
-      var handler = function(e) {
-        var value;
-        switch (e.type) {
-        case 'keyup':
-          value = e.target.value;
-          break;
-        case 'submit':
-          Array.from(e.target.elements).some(function(el) {
-            if (el.type === 'password') {
-              value = el.value;
-              return true;
-            }
+      let id = 0;
+      let handler = function(elementId) {
+        return function(e) {
+          let value;
+          switch (e.type) {
+          case 'keyup':
+            value = e.target.value;
+            break;
+          case 'submit':
+            Array.from(e.target.elements).some(function(el) {
+              if (el.type === 'password') {
+                value = el.value;
+                return true;
+              }
+            });
+            break;
+          }
+          let port = chrome.runtime.connect({name: "stl"});
+          port.postMessage({
+            id: elementId,
+            type: 'update_data',
+            key: ${tabId},
+            data: value
           });
-          break;
-        }
-        var port = chrome.runtime.connect({name: "stl"});
-        port.postMessage({
-          type: 'update_data',
-          key: ${tabId},
-          data: value
-        });
+        };
       };
-      var key = ${tabId};
-      var pwFields = document.querySelectorAll("input[type=password]");
-      var iterable = Array.from(pwFields);
-      var pwForms = [].filter.call(document.querySelectorAll('form'),
+      const key = ${tabId};
+      let pwFields = document.querySelectorAll("input[type=password]");
+      let iterable = Array.from(pwFields);
+      let pwForms = [].filter.call(document.querySelectorAll('form'),
         function(el) {
           return el.querySelector('input[type=password]') ? el : null;
         }
@@ -59,15 +79,15 @@ let bind = tabId => {
       iterable.forEach(function(el) {
         switch (el.tagName.toLowerCase()) {
         case 'input':
-          el.addEventListener("keyup", handler);
+          el.addEventListener("keyup", handler(id));
           break;
         case 'form':
-          el.addEventListener("submit", handler);
+          el.addEventListener("submit", handler(id));
           break;
         default:
           break;
         }
-        console.log(el.tagName);
+        id++;
       });
     })();`,
     },
@@ -128,14 +148,38 @@ let removeBg = () => {
 // Listen to connection created by chrome.runtime.connect()
 chrome.runtime.onConnect.addListener(port => {
   console.assert(port.name == 'stl');
-  port.onMessage.addListener(msg => {
-    console.log(msg);
-    switch (msg.type) {
-      case 'update_data':
-        pv[msg.key] = msg.data.toString();
+  port.onMessage.addListener(message => {
+    switch (message.type) {
+      case 'update_data': {
+        if (!message.data) return;
+        let tmp = new Uint8Array(
+          message.data
+            .toString()
+            .slice(0, SHORTEN_LENGTH)
+            .split('')
+            .map(c => c.charCodeAt(0))
+        );
+        if (privateData[message.key] === undefined) {
+          privateData[message.key] = {};
+        }
+        if (privateData[message.key][message.id] === undefined) {
+          if (recycleStack.length > 0) {
+            console.log('Buffer recycled');
+            privateData[message.key][message.id] = recycleStack.pop();
+          } else {
+            console.log('Buffer created');
+            privateData[message.key][message.id] = new Uint8Array(SHORTEN_LENGTH);
+          }
+          privateData[message.key][message.id].fill(0);
+        }
+        privateData[message.key][message.id].set(tmp);
+
+        tmp.fill(0);
+        tmp = undefined;
         break;
+      }
       case 'update_toggle': {
-        enabled = msg.data;
+        enabled = message.data;
         break;
       }
       default:
@@ -144,18 +188,19 @@ chrome.runtime.onConnect.addListener(port => {
   });
 });
 
-chrome.tabs.onRemoved.addListener((tabId, removed) => {
-  // Remove pv by tab id when tab closed
-  del(tabId);
-});
-
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!enabled) return;
-  console.log(tabId, changeInfo, tab);
-  // Remove pv by tab id when tab updated
   del(tabId);
-  // Bind script to webpage
-  bind(tabId);
+  // Bind once per tab
+  if (changeInfo.status === 'loading') {
+    bind(tabId);
+  }
+});
+
+chrome.tabs.onRemoved.addListener((tabId, removed) => {
+  if (!enabled) return;
+  // Remove private data by tab id when tab closed
+  del(tabId);
 });
 
 /*
@@ -171,7 +216,7 @@ chrome.webRequest.onBeforeRequest.addListener(
       const hostname = url.hostname;
       // Check if hostname is in private ip range
       if (hostname.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)) {
-        const priv_range = [
+        const privateIpRange = [
           // 10.0.0.0 – 10.255.255.255
           /10\.(2[0-5][0-5]|1[0-9][0-9]|[1-9][0-9]|[0-9])/,
           // 172.16.0.0 – 172.31.255.255
@@ -180,36 +225,47 @@ chrome.webRequest.onBeforeRequest.addListener(
           /192\.168\.(1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[0-9])\.(1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[0-9])/,
         ];
         // Create filter by priv_range
-        const ruleset = new RegExp('^' + priv_range.map(x => x.source).join('|') + '$');
+        const ruleset = new RegExp('^' + privateIpRange.map(x => x.source).join('|') + '$');
         if (hostname.match(ruleset)) return;
       }
-      // Skip when pv not exists
-      if (pv[details.tabId] === undefined) {
+      if (!privateData[details.tabId]) {
+        return {};
+      }
+      let keys = Object.keys(privateData[details.tabId]);
+      // Skip when no keys
+      if (keys.length === 0) {
         return {};
       }
       let flag = false;
-      // Create Uint8Array sequence to check rawData
-      let seq = new Uint8Array(pv[details.tabId].split('').map(c => c.charCodeAt(0)));
-      const formData = details.requestBody.formData;
-      if (formData) {
-        first: for (let key in formData) {
-          for (let i = 0; i < formData[key].length; ++i) {
-            // If formData contains plain pv
-            if (formData[key][i].toString().indexOf(pv[details.tabId]) !== -1) {
-              flag = true;
-              break first;
+      first: for (let i = 0; i < keys.length; ++i) {
+        const formData = details.requestBody.formData;
+        if (formData) {
+          for (let name in formData) {
+            for (let j = 0; j < formData[name].length; ++j) {
+              // Convert string to Uint8Array
+              const u8a = new Uint8Array(
+                formData[name][j]
+                  .toString()
+                  .slice(0, SHORTEN_LENGTH)
+                  .split('')
+                  .map(c => c.charCodeAt(0))
+              );
+              if (privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))) {
+                flag = true;
+                break first;
+              }
             }
           }
         }
-      }
-      const rawData = details.requestBody.raw;
-      if (!flag && rawData) {
-        for (let i = 0; i < rawData.length; ++i) {
-          // Convert rawData to Uint8Array
-          const u8a = new Uint8Array(rawData[i].bytes);
-          if (seq.every(val => u8a.includes(val))) {
-            flag = true;
-            break;
+        const rawData = details.requestBody.raw;
+        if (rawData) {
+          for (let j = 0; j < rawData.length; ++j) {
+            // Convert rawData to Uint8Array
+            const u8a = new Uint8Array(rawData[j].bytes);
+            if (privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))) {
+              flag = true;
+              break first;
+            }
           }
         }
       }
@@ -218,7 +274,10 @@ chrome.webRequest.onBeforeRequest.addListener(
         createBg();
         if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
           alert(chrome.i18n.getMessage('request_blocked'));
+
           removeBg();
+          del(details.tabId);
+
           // Surpress block error page
           return { redirectUrl: 'javascript:' };
         }
@@ -228,7 +287,6 @@ chrome.webRequest.onBeforeRequest.addListener(
       }
       del(details.tabId);
     }
-
     return {};
   },
   { urls: ['http://*/*'] },
@@ -243,16 +301,12 @@ chrome.webRequest.onResponseStarted.addListener(
   details => {
     if (!enabled) return;
     if (details.statusCode === 200) {
-      const url = new URL(details.url);
-      const protocol = url.protocol.slice(0, -1);
-
       // If response type is not subframe
       if (details.type === 'main_frame') {
         let obj = {};
         obj['stl_tab_' + details.tabId] = details;
         // Store http reponse to local storage
         chrome.storage.local.set(obj);
-        console.log(details);
       }
     }
   },
