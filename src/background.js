@@ -26,6 +26,7 @@ let del = tabId => {
   Object.keys(privateData[tabId]).forEach(key => {
     // Zero-fill
     privateData[tabId][key].fill(0);
+    console.log('buffer erased');
     recycleStack.push(privateData[tabId][key]);
 
     privateData[tabId][key] = undefined;
@@ -44,10 +45,6 @@ let bind = tabId => {
       let port = chrome.runtime.connect({name: "stl"});
       let id = ${elementId};
       let handler = function(elementId) {
-        port.postMessage({
-          id: elementId,
-          type: 'update_id'
-        });
         return function(e) {
           let value;
           switch (e.type) {
@@ -82,6 +79,11 @@ let bind = tabId => {
       iterable = iterable.concat(pwForms);
       for (let i = 0; i < iterable.length; ++i) {
         id++;
+        port.postMessage({
+          id: id,
+          type: 'update_id'
+        });
+
         let el = iterable[i];
         switch (el.tagName.toLowerCase()) {
         case 'input':
@@ -155,6 +157,7 @@ chrome.runtime.onConnect.addListener(port => {
   console.assert(port.name == 'stl');
   port.onMessage.addListener(message => {
     switch (message.type) {
+      // Case when data updated by event listener
       case 'update_data': {
         if (!message.data) return;
         let tmp = new Uint8Array(
@@ -183,10 +186,12 @@ chrome.runtime.onConnect.addListener(port => {
         tmp = undefined;
         break;
       }
+      // Case when toggle on/off button changed
       case 'update_toggle': {
         enabled = message.data;
         break;
       }
+      // Case when element id updated
       case 'update_id': {
         if (message.id > elementId) {
           console.log(elementId);
@@ -202,6 +207,7 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!enabled) return;
+  console.log(tabId, changeInfo, tab);
   del(tabId);
   // Bind once per tab
   if (changeInfo.status === 'loading') {
@@ -222,8 +228,8 @@ chrome.tabs.onRemoved.addListener((tabId, removed) => {
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
     if (!enabled) return;
-    const url = new URL(details.url);
     if (details.method === 'POST' && details.requestBody) {
+      const url = new URL(details.url);
       // If host is IPv4 range
       const hostname = url.hostname;
       // Check if hostname is in private ip range
@@ -286,10 +292,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         createBg();
         if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
           alert(chrome.i18n.getMessage('request_blocked'));
-
           removeBg();
-          del(details.tabId);
-
           // Surpress block error page
           return { redirectUrl: 'javascript:' };
         }
