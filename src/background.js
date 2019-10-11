@@ -21,6 +21,7 @@ chrome.storage.sync.get(['stl_disabled'], items => {
   else enabled = item;
 });
 
+// Unset and zero-fill to erase sensitive datas
 let del = tabId => {
   if (privateData[tabId] === undefined) return;
   Object.keys(privateData[tabId]).forEach(key => {
@@ -167,10 +168,12 @@ chrome.runtime.onConnect.addListener(port => {
             .split('')
             .map(c => c.charCodeAt(0))
         );
+        // Assign new object if undefined
         if (privateData[message.key] === undefined) {
           privateData[message.key] = {};
         }
         if (privateData[message.key][message.id] === undefined) {
+          // Re-use typed array from stack if available
           if (recycleStack.length > 0) {
             console.log('Buffer recycled');
             privateData[message.key][message.id] = recycleStack.pop();
@@ -178,10 +181,12 @@ chrome.runtime.onConnect.addListener(port => {
             console.log('Buffer created');
             privateData[message.key][message.id] = new Uint8Array(SHORTEN_LENGTH);
           }
+          // Initialize array
           privateData[message.key][message.id].fill(0);
         }
         privateData[message.key][message.id].set(tmp);
 
+        // Unset after setting
         tmp.fill(0);
         tmp = undefined;
         break;
