@@ -12,6 +12,11 @@ chrome.storage.sync.get(['stl_disabled'], items => {
   else enabled = item;
 });
 
+let del = tabId => {
+  console.log(`delete id: ${tabId}`);
+  pv[tabId] = undefined;
+};
+
 // Bind event handler to webpage
 let bind = tabId => {
   if (!enabled) return;
@@ -141,14 +146,14 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.tabs.onRemoved.addListener((tabId, removed) => {
   // Remove pv by tab id when tab closed
-  pv[tabId] = undefined;
+  del(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!enabled) return;
   console.log(tabId, changeInfo, tab);
   // Remove pv by tab id when tab updated
-  pv[tabId] = undefined;
+  del(tabId);
   // Bind script to webpage
   bind(tabId);
 });
@@ -221,7 +226,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
         chrome.tabs.create({ url: 'https://savethelogin.world' });
       }
-      pv[details.tabId] = undefined;
+      del(details.tabId);
     }
 
     return {};
