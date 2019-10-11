@@ -158,6 +158,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   bind(tabId);
 });
 
+/*
+ * Check HTTP POST Body data contains plain private data
+ */
 /* jslint ignore:start */
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
@@ -233,6 +236,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 );
 /* jslint ignore:end */
 
+/*
+ * Store HTTP Response headers
+ */
 chrome.webRequest.onResponseStarted.addListener(
   details => {
     if (!enabled) return;
