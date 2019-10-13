@@ -1,6 +1,8 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
 // Configurations
+const PROJECT_PREFIX = 'stl';
+const ID_PREFIX = `__${PROJECT_PREFIX}__`;
 // Shorten value to improve performance
 const SHORTEN_LENGTH = 0x10;
 
@@ -15,8 +17,8 @@ let elementId = 0;
 let enabled = false;
 
 // Check extension disabled
-chrome.storage.sync.get(['stl_disabled'], items => {
-  const item = items.stl_disabled;
+chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
+  const item = items[`${PROJECT_PREFIX}`];
   if (item === undefined) enabled = true;
   else enabled = item;
 });
@@ -35,65 +37,92 @@ let del = tabId => {
   privateData[tabId] = undefined;
 };
 
+let patch = (tabId, id, code) => {
+  chrome.tabs.executeScript(
+    tabId,
+    {
+      allFrames: true,
+      code: `
+      (function(window, document) {
+        var exists = document.getElementById('${id}');
+        if (exists) return;
+        var s = document.createElement('script');
+        s.id = '${id}';
+        s.innerHTML = \`${code}\`
+        document.head.prepend(s);
+      })(window, document);
+      `,
+    },
+    _ => {
+      let e = chrome.runtime.lastError;
+      if (e !== undefined) {
+        console.log(tabId, _, e);
+      }
+    }
+  );
+};
+
 // Bind event handler to webpage
 let bind = tabId => {
   if (!enabled) return;
   chrome.tabs.executeScript(
+    tabId,
     {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
-      code: `(function() {
-      let port = chrome.runtime.connect({name: "stl"});
-      let id = ${elementId};
-      let handler = function(elementId) {
-        return function(e) {
-          let value;
-          switch (e.type) {
-          case 'submit':
-            // Iterate form input elements
-            Array.from(e.target.elements).some(function(el) {
-              if (el.type === 'password') {
-                value = el.value;
-                return true;
-              }
+      code: `
+      (function() {
+        let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        let id = ${elementId};
+        let handler = function(elementId) {
+          return function(e) {
+            let value;
+            switch (e.type) {
+            case 'submit':
+              // Iterate form input elements
+              Array.from(e.target.elements).some(function(el) {
+                if (el.type === 'password') {
+                  value = el.value;
+                  return true;
+                }
+              });
+              break;
+            }
+            // Send event to extension
+            port.postMessage({
+              id: elementId,
+              type: 'update_data',
+              key: ${tabId},
+              data: value
             });
+          };
+        };
+        const key = ${tabId};
+        // Target elements
+        let iterable = [];
+        let pwForms = [].filter.call(document.querySelectorAll('form'),
+          function(el) {
+            return el.querySelector('input[type=password]') ? el : null;
+          }
+        );
+        iterable = iterable.concat(pwForms);
+        for (let i = 0; i < iterable.length; ++i) {
+          id++;
+          port.postMessage({
+            id: id,
+            type: 'update_id'
+          });
+
+          let el = iterable[i];
+          switch (el.tagName.toLowerCase()) {
+          case 'form':
+            el.addEventListener("submit", handler(id));
+            break;
+          default:
             break;
           }
-          // Send event to extension
-          port.postMessage({
-            id: elementId,
-            type: 'update_data',
-            key: ${tabId},
-            data: value
-          });
-        };
-      };
-      const key = ${tabId};
-      // Target elements
-      let iterable = [];
-      let pwForms = [].filter.call(document.querySelectorAll('form'),
-        function(el) {
-          return el.querySelector('input[type=password]') ? el : null;
         }
-      );
-      iterable = iterable.concat(pwForms);
-      for (let i = 0; i < iterable.length; ++i) {
-        id++;
-        port.postMessage({
-          id: id,
-          type: 'update_id'
-        });
-
-        let el = iterable[i];
-        switch (el.tagName.toLowerCase()) {
-        case 'form':
-          el.addEventListener("submit", handler(id));
-          break;
-        default:
-          break;
-        }
-      }
-    })();`,
+      })();`,
     },
     _ => {
       let e = chrome.runtime.lastError;
@@ -108,19 +137,20 @@ let bind = tabId => {
 let createBg = () => {
   chrome.tabs.executeScript(
     {
-      code: `(function() {
-    var bg = document.createElement('div');
-    bg.style.background = '#000';
-    bg.style.opacity = '0.8';
-    bg.style.width = '100%';
-    bg.style.height = '100%';
-    bg.style.position = 'absolute';
-    bg.style.zIndex = '2147483647';
-    bg.style.top = '0';
-    bg.style.left = '0';
-    bg.id = '__stl__bg';
-    document.body.appendChild(bg);
-  })()`,
+      code: `
+      (function() {
+        var bg = document.createElement('div');
+        bg.style.background = '#000';
+        bg.style.opacity = '0.8';
+        bg.style.width = '100%';
+        bg.style.height = '100%';
+        bg.style.position = 'absolute';
+        bg.style.zIndex = '2147483647';
+        bg.style.top = '0';
+        bg.style.left = '0';
+        bg.id = '${ID_PREFIX}bg';
+        document.body.appendChild(bg);
+      })()`,
     },
     _ => {
       let e = chrome.runtime.lastError;
@@ -135,10 +165,11 @@ let createBg = () => {
 let removeBg = () => {
   chrome.tabs.executeScript(
     {
-      code: `(function() {
-    var bg = document.getElementById('__stl__bg');
-    bg.parentElement.removeChild(bg);
-  })()`,
+      code: `
+      (function() {
+        var bg = document.getElementById('${ID_PREFIX}bg');
+        bg.parentElement.removeChild(bg);
+      })()`,
     },
     _ => {
       let e = chrome.runtime.lastError;
@@ -151,7 +182,7 @@ let removeBg = () => {
 
 // Listen to connection created by chrome.runtime.connect()
 chrome.runtime.onConnect.addListener(port => {
-  console.assert(port.name == 'stl');
+  console.assert(port.name == `${PROJECT_PREFIX}`);
   port.onMessage.addListener(message => {
     switch (message.type) {
       // Case when data updated by event listener
@@ -211,9 +242,31 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   console.log(tabId, changeInfo, tab);
   del(tabId);
   // Bind once per tab
-  if (changeInfo.status === 'loading') {
-    bind(tabId);
+  switch (changeInfo.status) {
+    case 'loading':
+      bind(tabId);
+      break;
+    default:
+      break;
   }
+  // Patch
+  patch(
+    tabId,
+    `${ID_PREFIX}xhrpatch`,
+    `
+    (function(window) {
+      var send = XMLHttpRequest.prototype.send;
+
+      XMLHttpRequest.prototype.send = function() {
+        try {
+          send.call(this, arguments);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+    })(window);
+  `
+  );
 });
 
 chrome.tabs.onRemoved.addListener((tabId, removed) => {
@@ -320,7 +373,7 @@ chrome.webRequest.onResponseStarted.addListener(
       // If response type is not subframe
       if (details.type === 'main_frame') {
         let obj = {};
-        obj['stl_tab_' + details.tabId] = details;
+        obj[`${PROJECT_PREFIX}_tab_` + details.tabId] = details;
         // Store http reponse to local storage
         chrome.storage.local.set(obj);
       }
