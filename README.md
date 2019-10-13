@@ -34,7 +34,7 @@ Download plugin from releases.
 ```sh
 git clone https://gitlab.com/savethelogin/savethelogin.git
 cd savethelogin
-yarn && yarn run build
+yarn install && yarn run build
 ```
 
 2. Open chrome, move to extensions page.
