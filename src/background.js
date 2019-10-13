@@ -49,10 +49,8 @@ let bind = tabId => {
         return function(e) {
           let value;
           switch (e.type) {
-          case 'keyup':
-            value = e.target.value;
-            break;
           case 'submit':
+            // Iterate form input elements
             Array.from(e.target.elements).some(function(el) {
               if (el.type === 'password') {
                 value = el.value;
@@ -61,6 +59,7 @@ let bind = tabId => {
             });
             break;
           }
+          // Send event to extension
           port.postMessage({
             id: elementId,
             type: 'update_data',
@@ -70,8 +69,8 @@ let bind = tabId => {
         };
       };
       const key = ${tabId};
-      let pwFields = document.querySelectorAll("input[type=password]");
-      let iterable = Array.from(pwFields);
+      // Target elements
+      let iterable = [];
       let pwForms = [].filter.call(document.querySelectorAll('form'),
         function(el) {
           return el.querySelector('input[type=password]') ? el : null;
@@ -87,9 +86,6 @@ let bind = tabId => {
 
         let el = iterable[i];
         switch (el.tagName.toLowerCase()) {
-        case 'input':
-          el.addEventListener("keyup", handler(id));
-          break;
         case 'form':
           el.addEventListener("submit", handler(id));
           break;
