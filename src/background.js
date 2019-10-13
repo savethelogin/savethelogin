@@ -159,7 +159,7 @@ let createBg = () => {
     {
       code: `
       (function() {
-        var bg = document.createElement('div');
+        let bg = document.createElement('div');
         bg.style.background = '#000';
         bg.style.opacity = '0.8';
         bg.style.width = '100%';
@@ -187,7 +187,7 @@ let removeBg = () => {
     {
       code: `
       (function() {
-        var bg = document.getElementById('${ID_PREFIX}bg');
+        let bg = document.getElementById('${ID_PREFIX}bg');
         bg.parentElement.removeChild(bg);
       })()`,
     },
