@@ -1,10 +1,8 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
-// Configurations
-const PROJECT_PREFIX = 'stl';
-const ID_PREFIX = `__${PROJECT_PREFIX}__`;
-// Shorten value to improve performance
-const SHORTEN_LENGTH = 0x10;
+import config from './Config';
+
+const { PROJECT_PREFIX, ID_PREFIX, SHORTEN_LENGTH } = config;
 
 // Store private datas
 let privateData = {};

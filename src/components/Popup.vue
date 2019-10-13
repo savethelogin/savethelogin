@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import config from '../Config';
 import ToggleSwitch from './ToggleSwitch';
 
 export default {
@@ -88,8 +89,8 @@ export default {
     // If toggle button state changed to enabled
     setEnabled: function(event) {
       var checked = event.target.checked;
-      chrome.storage.sync.set({ stl_disabled: checked }, () => {
-        var port = chrome.runtime.connect({ name: 'stl' });
+      chrome.storage.sync.set({ [`${config.PROJECT_PREFIX}_disabled`]: checked }, () => {
+        var port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
         port.postMessage({
           type: 'update_toggle',
           data: checked,
@@ -106,8 +107,8 @@ export default {
     };
   },
   created() {
-    chrome.storage.sync.get(['stl_disabled'], items => {
-      const item = items['stl_disabled'];
+    chrome.storage.sync.get([`${config.PROJECT_PREFIX}_disabled`], items => {
+      const item = items[`${config.PROJECT_PREFIX}_disabled`];
       if (item === undefined) this.isEnabled = true;
       else this.isEnabled = item;
     });
@@ -131,8 +132,8 @@ export default {
 
     const storagePromise = currentTab => {
       return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['stl_tab_' + currentTab.id], items => {
-          const item = items['stl_tab_' + currentTab.id];
+        chrome.storage.local.get([`${config.PROJECT_PREFIX}_tab_${currentTab.id}`], items => {
+          const item = items[`${config.PROJECT_PREFIX}_tab_${currentTab.id}`];
           if (!item) return reject();
           return resolve(item);
         });
