@@ -6,7 +6,7 @@
 ## Requirement
 
 - Google Chrome
-- npm (build only)
+- yarn (build only)
   - Linux:
     ```
     sudo apt-get update && sudo apt-get install nodejs npm
