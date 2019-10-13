@@ -222,6 +222,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.tabs.onRemoved.addListener((tabId, removed) => {
   if (!enabled) return;
+  // Remove HTTP response headers record
+  chrome.storage.local.remove(['stl_tab_' + tabId], () => {});
   // Remove private data by tab id when tab closed
   del(tabId);
 });
