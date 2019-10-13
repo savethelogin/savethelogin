@@ -12,10 +12,14 @@
     sudo apt-get update && sudo apt-get install nodejs npm
     sudo npm install -g yarn
     ```
-  - Mac: `brew install node`
+  - Mac:
+    ```
+    brew install node
+    sudo npm install -g yarn
+    ```
   - Windows:
     - Download installer from http://www.nodejs.org/
-    - <kbd>window</kbd> + <kbd>R</kbd> > cmd > npm
+    - <kbd>window</kbd> + <kbd>R</kbd> > cmd > npm, `npm install -g yarn`
 
 ## Install without build
 
@@ -30,7 +34,7 @@ Download plugin from releases.
 ```sh
 git clone https://gitlab.com/savethelogin/savethelogin.git
 cd savethelogin
-npm install && npm run build
+yarn && yarn run build
 ```
 
 2. Open chrome, move to extensions page.
