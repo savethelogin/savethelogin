@@ -251,6 +251,7 @@ chrome.runtime.onConnect.addListener(port => {
         }
         break;
       }
+      // Case when xhr send triggered
       case 'trigger_request': {
         chrome.tabs.executeScript(message.key, {
           allFrames: true,
@@ -280,6 +281,7 @@ chrome.runtime.onConnect.addListener(port => {
         break;
       }
       default:
+        console.error(message);
         break;
     }
   });
