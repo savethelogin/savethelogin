@@ -17,6 +17,10 @@ const config = {
     path: __dirname + '/dist',
     filename: '[name].js',
   },
+  performance: {
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
   resolve: {
     extensions: ['.js', '.vue'],
   },
