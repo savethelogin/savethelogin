@@ -7,7 +7,12 @@
 
 - Google Chrome
 - npm (build only)
-  - Linux: `sudo apt-get update && sudo apt-get install nodejs npm`
+  - Linux: ```sh
+    sudo apt-get update && sudo apt-get install nodejs npm
+    sudo npm install -g yarn
+    ```
+
+    ```
   - Mac: `brew install node`
   * Windows:
     - Download installer from http://www.nodejs.org/
