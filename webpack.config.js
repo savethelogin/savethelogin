@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
@@ -8,10 +9,10 @@ const { version } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
-  context: __dirname + '/src',
+  //context: __dirname + '/src',
   entry: {
-    popup: './popup.js',
-    background: './background.js',
+    popup: './src/popup.js',
+    background: './src/background.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -71,31 +72,18 @@ const config = {
     new webpack.DefinePlugin({
       global: 'window',
     }),
+    new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-    new CopyWebpackPlugin([
-      { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: '_locales', to: '_locales' },
-      { from: 'popup.html', to: 'popup.html', transform: transformHtml },
-      {
-        from: 'manifest.json',
-        to: 'manifest.json',
-        transform: content => {
-          const jsonContent = JSON.parse(content);
-          jsonContent.version = version;
-
-          if (config.mode === 'development') {
-            jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
-          }
-
-          return JSON.stringify(jsonContent, null, 2);
-        },
-      },
-    ]),
+    new CopyWebpackPlugin(getCopyFiles()),
   ],
 };
+
+if (config.mode === 'development') {
+  config.entry.test = './test/test.js';
+}
 
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
@@ -115,10 +103,39 @@ if (process.env.HMR === 'true') {
   ]);
 }
 
+function getCopyFiles() {
+  return Array.prototype.slice.apply(
+    [
+      { from: './src/icons', to: 'icons', ignore: ['icon.xcf'] },
+      { from: './src/_locales', to: '_locales' },
+      { from: './src/popup.html', to: 'popup.html', transform: transformHtml },
+      {
+        from: './src/manifest.json',
+        to: 'manifest.json',
+        transform: transformJson,
+      },
+      { from: './test/test.html', to: 'test.html' },
+    ],
+    process.env.NODE_ENV === 'development' ? [0] : [0, -1]
+  );
+}
+
 function transformHtml(content) {
   return ejs.render(content.toString(), {
     ...process.env,
   });
+}
+
+function transformJson(content) {
+  const jsonContent = JSON.parse(content);
+  jsonContent.version = version;
+
+  if (process.env.NODE_ENV === 'development') {
+    jsonContent.content_security_policy =
+      "script-src https://unpkg.com 'self' 'sha256-orSUajAOzVNSdc/3y0jjhLweFCR86EcSIAOaRvW3J3w=' 'sha256-KWgJIBwNKzxj/kdI4ZnAnSH+HhjGlgGtJGfUC/xJkYY=' 'unsafe-eval'; object-src 'self'";
+  }
+
+  return JSON.stringify(jsonContent, null, 2);
 }
 
 module.exports = config;
