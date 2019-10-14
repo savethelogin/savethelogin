@@ -4,7 +4,7 @@
  * HTTP Request blocker module
  **/
 import config from './Config';
-const { PROJECT_PREFIX, ID_PREFIX, SHORTEN_LENGTH } = config;
+const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
 import Context from './Context';
 
@@ -402,7 +402,7 @@ export function onBeforeRequest(details) {
       }
       removebg();
 
-      chrome.tabs.create({ url: 'https://savethelogin.world' });
+      chrome.tabs.create({ url: `https://${PROJECT_DOMAIN}/` });
     }
     del(details.tabId);
   }

@@ -5,6 +5,7 @@ class Config {
   constructor() {
     this.PROJECT_PREFIX = 'stl';
     this.ID_PREFIX = `__${this.PROJECT_PREFIX}__`;
+    this.PROJECT_DOMAIN = 'savethelogin.world';
     // Shorten value to improve performance
     this.SHORTEN_LENGTH = 0x10;
   }
