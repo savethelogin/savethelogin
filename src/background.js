@@ -13,16 +13,13 @@ chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
   else Context.enabled = item;
 });
 
+/*
+ * Add listeners
+ */
 chrome.runtime.onConnect.addListener(Block.onConnect);
+
 chrome.tabs.onUpdated.addListener(Block.onUpdated);
 chrome.tabs.onRemoved.addListener(Block.onRemoved);
 
-/*
- * Check HTTP POST Body data contains plain private data
- */
 chrome.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, ['blocking', 'requestBody']);
-
-/*
- * Store HTTP Response headers
- */
 chrome.webRequest.onResponseStarted.addListener(Block.onResponseStarted, { urls: ['https://*/*', 'http://*/*'] }, ['responseHeaders']);

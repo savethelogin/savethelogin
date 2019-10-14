@@ -326,6 +326,9 @@ export function onRemoved(tabId, removed) {
   del(tabId);
 }
 
+/*
+ * Check HTTP POST Body data contains plain private data
+ */
 /* jslint ignore:start */
 export function onBeforeRequest(details) {
   if (!Context.enabled) return;
@@ -406,6 +409,9 @@ export function onBeforeRequest(details) {
   return {};
 }
 
+/*
+ * Store HTTP Response headers
+ */
 export function onResponseStarted(details) {
   if (!Context.enabled) return;
   if (details.statusCode === 200) {
