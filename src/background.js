@@ -21,7 +21,7 @@ chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
   else enabled = item;
 });
 
-let patch = (tabId, id, code) => {
+let patch = ({ tabId, id, code }) => {
   chrome.tabs.executeScript(
     tabId,
     {
@@ -301,10 +301,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       break;
   }
   // Patch xhr
-  patch(
-    tabId,
-    `${ID_PREFIX}xhrpatch`,
-    `
+  patch({
+    tabId: tabId,
+    id: `${ID_PREFIX}xhrpatch`,
+    code: `
     (function(window) {
       var send = XMLHttpRequest.prototype.send;
 
@@ -320,8 +320,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         }
       };
     })(window);
-  `
-  );
+  `,
+  });
 });
 
 chrome.tabs.onRemoved.addListener((tabId, removed) => {
