@@ -400,7 +400,7 @@ export function onBeforeRequest(details) {
         // Surpress block error page
         return { redirectUrl: 'javascript:' };
       }
-      removebg();
+      removeBg();
 
       chrome.tabs.create({ url: `https://${PROJECT_DOMAIN}/` });
     }
