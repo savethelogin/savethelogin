@@ -150,7 +150,7 @@ export default {
             if (cookies[i].session && !cookies[i].httpOnly) {
               // Test cookie name
               const name = cookies[i].name;
-              const tests = [/^ID_/i, /_ID$/i, /SESS(ION)?/gi, /LOG(IN|GED)/gi, /ACCOUNT/gi, /MEMBER/gi, /AUTH(ORIZED?|ENTICATED?)?/gi, /ADM(IN)?/gi];
+              const tests = [/^ID_/i, /_ID$/i, /SESS(ION)?/gi, /LOG(IN|GED)/gi, /ACCOUNT/gi, /MEMBER/gi, /AUTH(ORIZED?|ENTICATED?)?/gi, /ADM(IN)?/gi, /^TOKEN_/i, /_TOKEN$/i];
               if (tests.some(t => t.exec(name))) {
                 flag = true;
                 break;
