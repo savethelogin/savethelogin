@@ -129,11 +129,10 @@ function bind(tabId) {
         // Add xhr listener
         window.addEventListener("message", function(event) {
           if (event.source != window) return;
-          if (event.data.type && event.data.type == "${PROJECT_PREFIX}_xhr") {
+          if (event.data && event.data === "${PROJECT_PREFIX}_xhr") {
             port.postMessage({
               type: 'trigger_request',
               key: ${tabId},
-              data: event.data.text
             });
           }
         }, false);
@@ -299,21 +298,18 @@ export function onUpdated(tabId, changeInfo, tab) {
     tabId: tabId,
     id: `${ID_PREFIX}xhrpatch`,
     code: `
-    (function(window) {
+    (function() {
       var send = XMLHttpRequest.prototype.send;
 
       XMLHttpRequest.prototype.send = function(body) {
-        window.postMessage({
-          type: "${PROJECT_PREFIX}_xhr",
-          text: body
-        }, "*");
+        window.postMessage("${PROJECT_PREFIX}_xhr", "*");
         try {
           send.call(this, body);
         } catch (e) {
           console.error(e);
         }
       };
-    })(window);
+    })();
   `,
   });
 }
