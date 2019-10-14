@@ -32,7 +32,7 @@ let patch = (tabId, id, code) => {
         if (exists) return;
         var s = document.createElement('script');
         s.id = '${id}';
-        s.innerHTML = \`${code}\`
+        s.innerHTML = \`${code}\`;
         document.head.prepend(s);
       })(window, document);
       `,
