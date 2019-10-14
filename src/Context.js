@@ -13,4 +13,5 @@ class Context {
   }
 }
 
+// Use as singleton
 export default new Context();

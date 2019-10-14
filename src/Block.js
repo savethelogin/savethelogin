@@ -1,5 +1,8 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
+/**
+ * HTTP Request blocker module
+ **/
 import config from './Config';
 const { PROJECT_PREFIX, ID_PREFIX, SHORTEN_LENGTH } = config;
 
