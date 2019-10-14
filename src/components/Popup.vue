@@ -88,9 +88,9 @@ export default {
     },
     // If toggle button state changed to enabled
     setEnabled: function(event) {
-      var checked = event.target.checked;
+      let checked = event.target.checked;
       chrome.storage.sync.set({ [`${config.PROJECT_PREFIX}_disabled`]: checked }, () => {
-        var port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
+        let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
         port.postMessage({
           type: 'update_toggle',
           data: checked,
@@ -148,8 +148,13 @@ export default {
             // If cookie type is session and httpOnly flag is disabled
             // Vulnerable to session cookie hijacking
             if (cookies[i].session && !cookies[i].httpOnly) {
-              flag = true;
-              break;
+              // Test cookie name
+              const name = cookies[i].name;
+              const tests = [/^ID_/i, /_ID$/i, /SESS(ION)?/gi, /LOG(IN|GED)/gi, /ACCOUNT/gi, /MEMBER/gi, /AUTH(ORIZED?|ENTICATED?)?/gi, /ADM(IN)?/gi];
+              if (tests.some(t => t.exec(name))) {
+                flag = true;
+                break;
+              }
             }
           }
           if (!flag) {
