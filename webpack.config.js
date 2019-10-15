@@ -9,10 +9,10 @@ const { version } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
-  //context: __dirname + '/src',
+  context: __dirname + '/src',
   entry: {
-    popup: './src/popup.js',
-    background: './src/background.js',
+    popup: './popup.js',
+    background: './background.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -80,13 +80,18 @@ const config = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-    new CopyWebpackPlugin(getCopyFiles()),
+    new CopyWebpackPlugin([
+      { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
+      { from: '_locales', to: '_locales' },
+      { from: 'popup.html', to: 'popup.html', transform: transformHtml },
+      {
+        from: 'manifest.json',
+        to: 'manifest.json',
+        transform: transformJson,
+      },
+    ]),
   ],
 };
-
-if (config.mode === 'development') {
-  config.entry.test = './test/test.js';
-}
 
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
@@ -104,23 +109,6 @@ if (process.env.HMR === 'true') {
       manifest: __dirname + '/src/manifest.json',
     }),
   ]);
-}
-
-function getCopyFiles() {
-  return Array.prototype.slice.apply(
-    [
-      { from: './src/icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: './src/_locales', to: '_locales' },
-      { from: './src/popup.html', to: 'popup.html', transform: transformHtml },
-      {
-        from: './src/manifest.json',
-        to: 'manifest.json',
-        transform: transformJson,
-      },
-      { from: './test/test.html', to: 'test.html' },
-    ],
-    process.env.NODE_ENV === 'development' ? [0] : [0, -1]
-  );
 }
 
 /* jslint ignore:start */

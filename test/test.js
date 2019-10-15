@@ -1,7 +1,7 @@
-import assert from 'assert';
+var assert = require('assert');
 
-describe('true', () => {
-  it('should equal to true', () => {
-    assert.equal(true, true);
+describe('true', function() {
+  it('should equal to true', function() {
+    assert.equal(true == true, true);
   });
 });
