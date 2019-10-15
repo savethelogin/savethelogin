@@ -3,6 +3,14 @@ image: 'node:8'
 before_script:
   - yarn install
 
+stages:
+  - test
+  - build
+
+test:
+  script:
+    - yarn run test
+
 build:
   script:
     - yarn run build
