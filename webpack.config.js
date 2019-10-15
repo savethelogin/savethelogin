@@ -18,6 +18,9 @@ const config = {
     path: __dirname + '/dist',
     filename: '[name].js',
   },
+  optimization: {
+    minimize: true,
+  },
   performance: {
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
@@ -120,11 +123,13 @@ function getCopyFiles() {
   );
 }
 
+/* jslint ignore:start */
 function transformHtml(content) {
   return ejs.render(content.toString(), {
     ...process.env,
   });
 }
+/* jslint ignore:end */
 
 function transformJson(content) {
   const jsonContent = JSON.parse(content);
