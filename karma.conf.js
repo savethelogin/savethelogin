@@ -14,6 +14,9 @@ module.exports = function(config) {
     },
     singleRun: true,
     webpack: require('./webpack.config.js'),
+    webpackMiddleware: {
+      stats: 'errors-only',
+    },
     preprocessors: {
       'test/**/*.js': ['webpack'],
     },
