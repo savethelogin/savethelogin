@@ -1,5 +1,5 @@
 const path = require('path');
-const istanbul = require('browserify-istanbul');
+//const istanbul = require('browserify-istanbul');
 
 module.exports = function(config) {
   config.set({
@@ -20,7 +20,7 @@ module.exports = function(config) {
     preprocessors: {
       'test/**/*.js': ['webpack'],
     },
-    reporters: ['progress', 'coverage', 'coverage-istanbul'],
+    reporters: ['progress', 'coverage-istanbul'],
     coverageIstanbulReporter: {
       reports: ['text-summary'],
       dir: path.join(__dirname, 'coverage'),
@@ -41,16 +41,19 @@ module.exports = function(config) {
       },
       verbose: false, // output config used by istanbul for debugging
       // `instrumentation` is used to configure Istanbul API package.
+      /*
       instrumentation: {
         // To include `node_modules` code in the report.
         'default-excludes': false,
       },
+      */
     },
+    /*
     browserify: {
       transform: [
         [
           istanbul({
-            ignore: ['node_modules/**', 'test/**/*.js'],
+            ignore: ['node_modules/**'],
             includeUntested: false,
             defaultIgnore: true,
           }),
@@ -58,6 +61,7 @@ module.exports = function(config) {
         ],
       ],
     },
-    plugins: ['karma-mocha', 'karma-coverage', 'karma-coverage-istanbul-reporter', 'karma-chrome-launcher', 'karma-webpack'],
+    */
+    plugins: ['karma-mocha', 'karma-coverage-istanbul-reporter', 'karma-chrome-launcher', 'karma-webpack'],
   });
 };
