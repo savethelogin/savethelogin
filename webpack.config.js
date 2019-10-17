@@ -32,12 +32,25 @@ const config = {
     rules: [
       {
         test: /\.vue$/,
-        loaders: 'vue-loader',
+        loaders: ['vue-loader'],
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
         exclude: /node_modules/,
+        use: Array.prototype.slice.apply(
+          [
+            {
+              loader: 'babel-loader',
+            },
+            {
+              loader: 'istanbul-instrumenter-loader',
+              options: {
+                esModules: true,
+              },
+            },
+          ],
+          process.env.NODE_ENV !== 'development' ? [0, -1] : [0]
+        ),
       },
       {
         test: /\.css$/,
