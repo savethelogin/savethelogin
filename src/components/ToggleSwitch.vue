@@ -21,9 +21,6 @@ export default {
       type: Function,
     },
   },
-  data() {
-    return {};
-  },
 };
 </script>
 
