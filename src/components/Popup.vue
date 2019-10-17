@@ -15,30 +15,47 @@
         <table class="table mb-0" v-if="Object.keys(checklist).length">
           <tr>
             <th>{{ checklist.scheme.name }}</th>
-            <td v-html="checklist.scheme.description" v-bind:class="gradeColor(checklist.scheme.grade)"></td>
+            <td
+              v-html="checklist.scheme.description"
+              v-bind:class="gradeColor(checklist.scheme.grade)"
+            ></td>
           </tr>
           <tr v-if="scheme === 'https'">
             <th>{{ checklist.hsts_policy.name }}</th>
-            <td v-html="checklist.hsts_policy.description" v-bind:class="gradeColor(checklist.hsts_policy.grade)"></td>
+            <td
+              v-html="checklist.hsts_policy.description"
+              v-bind:class="gradeColor(checklist.hsts_policy.grade)"
+            ></td>
           </tr>
           <tr>
             <th>{{ checklist.clickjacking_prevention.name }}</th>
-            <td v-html="checklist.clickjacking_prevention.description" v-bind:class="gradeColor(checklist.clickjacking_prevention.grade)"></td>
+            <td
+              v-html="checklist.clickjacking_prevention.description"
+              v-bind:class="gradeColor(checklist.clickjacking_prevention.grade)"
+            ></td>
           </tr>
           <tr>
             <th>{{ checklist.xss_protection_policy.name }}</th>
-            <td v-html="checklist.xss_protection_policy.description" v-bind:class="gradeColor(checklist.xss_protection_policy.grade)"></td>
+            <td
+              v-html="checklist.xss_protection_policy.description"
+              v-bind:class="gradeColor(checklist.xss_protection_policy.grade)"
+            ></td>
           </tr>
           <tr>
             <th>{{ checklist.session_cookie_xss.name }}</th>
-            <td v-html="checklist.session_cookie_xss.description" v-bind:class="gradeColor(checklist.session_cookie_xss.grade)"></td>
+            <td
+              v-html="checklist.session_cookie_xss.description"
+              v-bind:class="gradeColor(checklist.session_cookie_xss.grade)"
+            ></td>
           </tr>
         </table>
 
         <div class="alert alert-danger w-100 mb-0 text-center" v-else>
           <h4 class="alert-heading">{{ msgNoInformation }}</h4>
           <p class="mb-0">
-            <button v-on:click="refreshPage" class="btn btn-link text-danger"><i class="material-icons">refresh</i> {{ msgRefresh }}</button>
+            <button v-on:click="refreshPage" class="btn btn-link text-danger">
+              <i class="material-icons">refresh</i> {{ msgRefresh }}
+            </button>
           </p>
         </div>
       </div>
@@ -54,6 +71,13 @@ export default {
   name: 'Popup',
   components: {
     ToggleSwitch,
+  },
+  data() {
+    return {
+      scheme: 'http',
+      isEnabled: false,
+      checklist: {},
+    };
   },
   computed: {
     msgNoInformation: function() {
@@ -77,7 +101,7 @@ export default {
     },
     // Refresh tab and close popup
     refreshPage: function() {
-      new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
           resolve(tabs[0]);
         });
@@ -98,39 +122,14 @@ export default {
         this.isEnabled = checked;
       });
     },
-  },
-  data() {
-    return {
-      scheme: 'http',
-      isEnabled: false,
-      checklist: {},
-    };
-  },
-  created() {
-    chrome.storage.sync.get([`${config.PROJECT_PREFIX}_disabled`], items => {
-      const item = items[`${config.PROJECT_PREFIX}_disabled`];
-      if (item === undefined) this.isEnabled = true;
-      else this.isEnabled = item;
-    });
-
-    let map = {};
-    let keys = ['scheme', 'hsts_policy', 'clickjacking_prevention', 'xss_protection_policy', 'server_version_disclosure', 'servlet_spec_disclosure', 'session_cookie_xss'];
-    // Set default values
-    keys.forEach(el => {
-      map[el] = {};
-      map[el].name = chrome.i18n.getMessage(el);
-      map[el].grade = 'VULN'; // Default grade to 'vulnerable'
-    });
-
-    const tabPromise = () => {
+    tabPromise: function() {
       return new Promise((resolve, reject) => {
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
           return resolve(tabs[0]);
         });
       });
-    };
-
-    const storagePromise = currentTab => {
+    },
+    storagePromise: function(currentTab) {
       return new Promise((resolve, reject) => {
         chrome.storage.local.get([`${config.PROJECT_PREFIX}_tab_${currentTab.id}`], items => {
           const item = items[`${config.PROJECT_PREFIX}_tab_${currentTab.id}`];
@@ -138,9 +137,8 @@ export default {
           return resolve(item);
         });
       });
-    };
-
-    const cookiePromise = url => {
+    },
+    cookiePromise: function(map, url) {
       return new Promise((resolve, reject) => {
         chrome.cookies.getAll({ url: url }, cookies => {
           let flag = false;
@@ -150,7 +148,18 @@ export default {
             if (cookies[i].session && !cookies[i].httpOnly) {
               // Test cookie name
               const name = cookies[i].name;
-              const tests = [/^ID_/i, /_ID$/i, /SESS(ION)?/gi, /LOG(IN|GED)/gi, /ACCOUNT/gi, /MEMBER/gi, /AUTH(ORIZED?|ENTICATED?)?/gi, /ADM(IN)?/gi, /^TOKEN_/i, /_TOKEN$/i];
+              const tests = [
+                /^ID_/i,
+                /_ID$/i,
+                /SESS(ION)?/gi,
+                /LOG(IN|GED)/gi,
+                /ACCOUNT/gi,
+                /MEMBER/gi,
+                /AUTH(ORIZED?|ENTICATED?)?/gi,
+                /ADM(IN)?/gi,
+                /^TOKEN_/i,
+                /_TOKEN$/i,
+              ];
               if (tests.some(t => t.exec(name))) {
                 flag = true;
                 break;
@@ -164,11 +173,35 @@ export default {
           return resolve();
         });
       });
-    };
+    },
+  },
+  created() {
+    chrome.storage.sync.get([`${config.PROJECT_PREFIX}_disabled`], items => {
+      const item = items[`${config.PROJECT_PREFIX}_disabled`];
+      if (item === undefined) this.isEnabled = true;
+      else this.isEnabled = item;
+    });
 
-    tabPromise()
+    let map = {};
+    const keys = [
+      'scheme',
+      'hsts_policy',
+      'clickjacking_prevention',
+      'xss_protection_policy',
+      'server_version_disclosure',
+      'servlet_spec_disclosure',
+      'session_cookie_xss',
+    ];
+    // Set default values
+    keys.forEach(el => {
+      map[el] = {};
+      map[el].name = chrome.i18n.getMessage(el);
+      map[el].grade = 'VULN'; // Default grade to 'vulnerable'
+    });
+
+    this.tabPromise()
       .then(currentTab => {
-        return storagePromise(currentTab);
+        return this.storagePromise(currentTab);
       })
       .then(item => {
         const url = new URL(item.url);
@@ -195,7 +228,9 @@ export default {
                 map.hsts_policy.grade = 'NORM';
                 // Check HSTS header setting is safe from SSL Strip attack
                 if (header.value.toLowerCase().indexOf('includesubdomains') !== -1) {
-                  map.hsts_policy.description = `${chrome.i18n.getMessage('safe')} (SSL Strip safe)`;
+                  map.hsts_policy.description = `${chrome.i18n.getMessage(
+                    'safe'
+                  )} (SSL Strip safe)`;
                   map.hsts_policy.grade = 'SAFE';
                 }
               }
@@ -204,7 +239,9 @@ export default {
             case 'server': {
               // Check server header contains any version value
               if (header.value.match(/[0-9]+(\.([0-9]+))+/g)) {
-                map.server_version_disclosure.description = `${chrome.i18n.getMessage('vulnerable')}`;
+                map.server_version_disclosure.description = `${chrome.i18n.getMessage(
+                  'vulnerable'
+                )}`;
                 map.server_version_disclosure.grade = 'VULN';
               }
               break;
@@ -213,7 +250,10 @@ export default {
               map.clickjacking_prevention.description = `${chrome.i18n.getMessage('moderate')}`;
               map.clickjacking_prevention.grade = 'NORM';
 
-              if (header.value.toLowerCase() === 'deny' || header.value.toLowerCase() === 'sameorigin') {
+              if (
+                header.value.toLowerCase() === 'deny' ||
+                header.value.toLowerCase() === 'sameorigin'
+              ) {
                 map.clickjacking_prevention.description = `${chrome.i18n.getMessage('safe')}`;
                 map.clickjacking_prevention.grade = 'SAFE';
               }
@@ -224,7 +264,9 @@ export default {
                 map.xss_protection_policy.description = `${chrome.i18n.getMessage('moderate')}`;
                 map.xss_protection_policy.grade = 'NORM';
                 if (header.value.indexOf('mode=block') !== -1) {
-                  map.xss_protection_policy.description = `${chrome.i18n.getMessage('safe')} (Rendering block)`;
+                  map.xss_protection_policy.description = `${chrome.i18n.getMessage(
+                    'safe'
+                  )} (Rendering block)`;
                   map.xss_protection_policy.grade = 'SAFE';
                 }
               }
@@ -247,7 +289,7 @@ export default {
             map[el].description = `${chrome.i18n.getMessage('vulnerable')}
               ${chrome.i18n.getMessage(el + '_recommend')}`;
         });
-        return cookiePromise(item.url.toString());
+        return this.cookiePromise(map, item.url.toString());
       })
       .then(() => {
         // Assign mapped object to checklist

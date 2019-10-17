@@ -37,17 +37,20 @@ const config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-          },
-          {
-            loader: 'istanbul-instrumenter-loader',
-            options: {
-              esModules: true,
+        use: Array.prototype.slice.apply(
+          [
+            {
+              loader: 'babel-loader',
             },
-          },
-        ],
+            {
+              loader: 'istanbul-instrumenter-loader',
+              options: {
+                esModules: true,
+              },
+            },
+          ],
+          process.env.NODE_ENV !== 'development' ? [0, -1] : [0]
+        ),
       },
       {
         test: /\.css$/,
