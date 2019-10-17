@@ -25,6 +25,9 @@ module.exports = function(config) {
       verbose: false,
     },
     webpack: require('./webpack.config.js'),
+    webpackMiddleware: {
+      stats: 'errors-only',
+    },
     plugins: [
       'karma-mocha',
       'karma-webpack',
