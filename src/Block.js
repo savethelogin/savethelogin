@@ -399,8 +399,6 @@ export function onBeforeRequest(details) {
         return { redirectUrl: 'javascript:' };
       }
       removeBg();
-
-      chrome.tabs.create({ url: `https://${PROJECT_DOMAIN}/` });
     }
     del(details.tabId);
   }

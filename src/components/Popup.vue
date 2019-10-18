@@ -2,7 +2,9 @@
   <div class="row">
     <div class="col">
       <div class="row">
-        <img id="logo" src="/icons/logo.png" width="300" />
+        <a href="#" v-on:click.prevent="openWebsite">
+          <img id="logo" src="/icons/logo.png" width="300" />
+        </a>
       </div>
       <div class="row d-flex justify-content-end">
         <div class="mr-2">
@@ -121,6 +123,9 @@ export default {
         });
         this.isEnabled = checked;
       });
+    },
+    openWebsite: function() {
+      chrome.tabs.create({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
     tabPromise: function() {
       return new Promise((resolve, reject) => {
