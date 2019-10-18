@@ -2,8 +2,16 @@
   "name": "Save the Login",
   "description": "",
   "default_locale": "en",
-  "version": "1.0.2",
-  "permissions": ["tabs", "cookies", "storage", "management", "webRequest", "webRequestBlocking", "*://*/*"],
+  "version": "1.0.3",
+  "permissions": [
+    "tabs",
+    "cookies",
+    "storage",
+    "management",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/*"
+  ],
   "manifest_version": 2,
   "background": {
     "scripts": ["background.js"]
