@@ -288,13 +288,7 @@ export function onUpdated(tabId, changeInfo, tab) {
   // Delete previous page informations
   del(tabId);
   // Bind once per tab
-  switch (changeInfo.status) {
-    case 'loading':
-      bind(tabId);
-      break;
-    default:
-      break;
-  }
+  bind(tabId);
   // Patch xhr
   patch({
     tabId: tabId,
