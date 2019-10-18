@@ -234,6 +234,8 @@ export function onConnect(port) {
       // Case when toggle on/off button changed
       case 'update_toggle': {
         Context.enabled = message.data;
+        if (Context.enabled === true) chrome.browserAction.setIcon({ path: '/icons/icon16.png' });
+        else chrome.browserAction.setIcon({ path: '/icons/icon-off16.png' });
         break;
       }
       // Case when element id updated
@@ -368,7 +370,11 @@ export function onBeforeRequest(details) {
                 .split('')
                 .map(c => c.charCodeAt(0))
             );
-            if (privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))) {
+            if (
+              privateData[details.tabId][keys[i]]
+                .filter(x => x !== 0)
+                .every(val => u8a.includes(val))
+            ) {
               flag = true;
               break first;
             }
@@ -380,7 +386,9 @@ export function onBeforeRequest(details) {
         for (let j = 0; j < rawData.length; ++j) {
           // Convert rawData to Uint8Array
           const u8a = new Uint8Array(rawData[j].bytes);
-          if (privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))) {
+          if (
+            privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))
+          ) {
             flag = true;
             break first;
           }
