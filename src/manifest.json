@@ -2,7 +2,7 @@
   "name": "Save the Login",
   "description": "",
   "default_locale": "en",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "permissions": [
     "tabs",
     "cookies",
