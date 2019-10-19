@@ -143,7 +143,7 @@ export default {
         });
       });
     },
-    cookiePromise: function(map, url) {
+    cookiePromise: function(wrapper, url) {
       return new Promise((resolve, reject) => {
         chrome.cookies.getAll({ url: url }, cookies => {
           let flag = false;
@@ -172,8 +172,8 @@ export default {
             }
           }
           if (!flag) {
-            map.session_cookie_xss.description = chrome.i18n.getMessage('safe');
-            map.session_cookie_xss.grade = 'SAFE';
+            wrapper.session_cookie_xss.description = chrome.i18n.getMessage('safe');
+            wrapper.session_cookie_xss.grade = 'SAFE';
           }
           return resolve();
         });
@@ -187,8 +187,8 @@ export default {
       else this.isEnabled = item;
     });
 
-    let map = {};
-    const keys = [
+    let wrapper = {};
+    const items = [
       'scheme',
       'hsts_policy',
       'clickjacking_prevention',
@@ -198,10 +198,10 @@ export default {
       'session_cookie_xss',
     ];
     // Set default values
-    keys.forEach(el => {
-      map[el] = {};
-      map[el].name = chrome.i18n.getMessage(el);
-      map[el].grade = 'VULN'; // Default grade to 'vulnerable'
+    items.forEach(el => {
+      wrapper[el] = {};
+      wrapper[el].name = chrome.i18n.getMessage(el);
+      wrapper[el].grade = 'VULN'; // Default grade to 'vulnerable'
     });
 
     this.tabPromise()
@@ -213,11 +213,11 @@ export default {
         const scheme = url.protocol.slice(0, -1);
 
         if (scheme === 'https') {
-          map.scheme.grade = 'SAFE';
+          wrapper.scheme.grade = 'SAFE';
         }
         this.scheme = scheme;
 
-        map.scheme.description = scheme;
+        wrapper.scheme.description = scheme;
 
         const headers = item.responseHeaders;
 
@@ -229,14 +229,14 @@ export default {
               if (scheme === 'https') {
                 // Get max-age value parsed from HSTS header
                 let maxAge = parseInt((/max\-age=([0-9]+)/gi.exec(header.value) || [, '0'])[1]);
-                map.hsts_policy.description = `${chrome.i18n.getMessage('moderate')}`;
-                map.hsts_policy.grade = 'NORM';
+                wrapper.hsts_policy.description = `${chrome.i18n.getMessage('moderate')}`;
+                wrapper.hsts_policy.grade = 'NORM';
                 // Check HSTS header setting is safe from SSL Strip attack
                 if (header.value.toLowerCase().indexOf('includesubdomains') !== -1) {
-                  map.hsts_policy.description = `${chrome.i18n.getMessage(
+                  wrapper.hsts_policy.description = `${chrome.i18n.getMessage(
                     'safe'
                   )} (SSL Strip safe)`;
-                  map.hsts_policy.grade = 'SAFE';
+                  wrapper.hsts_policy.grade = 'SAFE';
                 }
               }
               break;
@@ -244,43 +244,45 @@ export default {
             case 'server': {
               // Check server header contains any version value
               if (header.value.match(/[0-9]+(\.([0-9]+))+/g)) {
-                map.server_version_disclosure.description = `${chrome.i18n.getMessage(
+                wrapper.server_version_disclosure.description = `${chrome.i18n.getMessage(
                   'vulnerable'
                 )}`;
-                map.server_version_disclosure.grade = 'VULN';
+                wrapper.server_version_disclosure.grade = 'VULN';
               }
               break;
             }
             case 'x-frame-options': {
-              map.clickjacking_prevention.description = `${chrome.i18n.getMessage('moderate')}`;
-              map.clickjacking_prevention.grade = 'NORM';
+              wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('moderate')}`;
+              wrapper.clickjacking_prevention.grade = 'NORM';
 
               if (
                 header.value.toLowerCase() === 'deny' ||
                 header.value.toLowerCase() === 'sameorigin'
               ) {
-                map.clickjacking_prevention.description = `${chrome.i18n.getMessage('safe')}`;
-                map.clickjacking_prevention.grade = 'SAFE';
+                wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('safe')}`;
+                wrapper.clickjacking_prevention.grade = 'SAFE';
               }
               break;
             }
             case 'x-xss-protection': {
               if (header.value.toString() !== '0') {
-                map.xss_protection_policy.description = `${chrome.i18n.getMessage('moderate')}`;
-                map.xss_protection_policy.grade = 'NORM';
+                wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage('moderate')}`;
+                wrapper.xss_protection_policy.grade = 'NORM';
                 if (header.value.indexOf('mode=block') !== -1) {
-                  map.xss_protection_policy.description = `${chrome.i18n.getMessage(
+                  wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage(
                     'safe'
                   )} (Rendering block)`;
-                  map.xss_protection_policy.grade = 'SAFE';
+                  wrapper.xss_protection_policy.grade = 'SAFE';
                 }
               }
               break;
             }
             // Check if servlet value exposed
             case 'x-powered-by': {
-              map.servlet_spec_disclosure.description = `${chrome.i18n.getMessage('vulnerable')}`;
-              map.xss_protection_policy.grade = 'VULN';
+              wrapper.servlet_spec_disclosure.description = `${chrome.i18n.getMessage(
+                'vulnerable'
+              )}`;
+              wrapper.xss_protection_policy.grade = 'VULN';
               break;
             }
             default:
@@ -288,17 +290,17 @@ export default {
           }
         }
 
-        // Map description by name with "recommend" suffix
-        Object.keys(map).forEach(el => {
-          if (!map[el].description)
-            map[el].description = `${chrome.i18n.getMessage('vulnerable')}
+        // Assign description by name with "recommend" suffix
+        Object.keys(wrapper).forEach(el => {
+          if (!wrapper[el].description)
+            wrapper[el].description = `${chrome.i18n.getMessage('vulnerable')}
               ${chrome.i18n.getMessage(el + '_recommend')}`;
         });
-        return this.cookiePromise(map, item.url.toString());
+        return this.cookiePromise(wrapper, item.url.toString());
       })
       .then(() => {
-        // Assign mapped object to checklist
-        this.checklist = map;
+        // Assign wrapped object to checklist
+        this.checklist = wrapper;
       })
       .catch(error => {});
   },
