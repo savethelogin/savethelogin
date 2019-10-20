@@ -35,7 +35,10 @@ const mockTab = {
 };
 
 const mockHttpHeaders = [
-  { name: 'Strict-Trasnport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+  {
+    name: 'Strict-Trasnport-Security',
+    value: 'max-age=31536000; includeSubDomains; preload',
+  },
   { name: 'Server', value: 'Apache/2.4.10' },
   { name: 'X-Frame-Options', value: 'deny' },
   { name: 'X-Powered-By', value: 'PHP/7.1.30' },
@@ -86,6 +89,8 @@ describe('Popup', () => {
   });
 
   it('shows error checklist not exists', () => {
+    chrome.runtime.connect.withArgs(sinon.match.object).returns({ postMessage: sinon.spy() });
+
     const wrapper = mount(Popup, {
       attachToDocument: true,
     });
@@ -96,7 +101,6 @@ describe('Popup', () => {
     checkBoxInput.setChecked();
 
     chrome.storage.sync.set.yield();
-    chrome.runtime.connect.yields([{ postMessage: sinon.spy() }]);
 
     return Vue.nextTick().then(() => {
       assert.ok(wrapper.find('.alert').exists());
