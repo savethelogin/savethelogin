@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 
 import config from './Config';
 const { PROJECT_PREFIX } = config;
@@ -21,5 +21,12 @@ chrome.runtime.onConnect.addListener(Block.onConnect);
 chrome.tabs.onUpdated.addListener(Block.onUpdated);
 chrome.tabs.onRemoved.addListener(Block.onRemoved);
 
-chrome.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, ['blocking', 'requestBody']);
-chrome.webRequest.onResponseStarted.addListener(Block.onResponseStarted, { urls: ['https://*/*', 'http://*/*'] }, ['responseHeaders']);
+chrome.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, [
+  'blocking',
+  'requestBody',
+]);
+chrome.webRequest.onResponseStarted.addListener(
+  Block.onResponseStarted,
+  { urls: ['https://*/*', 'http://*/*'] },
+  ['responseHeaders']
+);

@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div class="row">
     <div class="col">
@@ -127,6 +128,9 @@ export default {
     openWebsite: function() {
       chrome.tabs.create({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
+    /**
+     * Promises
+     **/
     tabPromise: function() {
       return new Promise((resolve, reject) => {
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -204,6 +208,7 @@ export default {
       wrapper[el].grade = 'VULN'; // Default grade to 'vulnerable'
     });
 
+    // Start promise chain
     this.tabPromise()
       .then(currentTab => {
         return this.storagePromise(currentTab);

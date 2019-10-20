@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <label class="switch">
     <input type="checkbox" v-bind:checked="checked" v-on:change="callback" />
