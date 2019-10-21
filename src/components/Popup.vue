@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import config from '../Config';
+import config from '../classes/Config';
 
 import CheckItem from './CheckItem';
 import ToggleSwitch from './ToggleSwitch';

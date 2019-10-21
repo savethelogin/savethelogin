@@ -9,7 +9,7 @@ import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
-import config from '../../src/Config';
+import config from '../../src/classes/Config';
 import Popup from '../../src/components/Popup';
 
 describe('Popup', () => {

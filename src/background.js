@@ -1,10 +1,10 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 
-import config from './Config';
+import config from './classes/Config';
 const { PROJECT_PREFIX } = config;
 
-import Context from './Context';
-import Block from './Block';
+import Context from './classes/Context';
+import Block from './classes/Block';
 
 // Check extension disabled
 chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
