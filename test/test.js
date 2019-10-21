@@ -132,9 +132,9 @@ describe('Popup', () => {
     it('returns css class by grade', () => {
       const methods = Popup.methods;
 
-      expect(methods.gradeColor('SAFE')).to.equals('text-success');
-      expect(methods.gradeColor('NORM')).to.equals('text-warning');
-      expect(methods.gradeColor('VULN')).to.equals('text-danger');
+      expect(methods.gradeColor({ grade: 'SAFE' })).to.equals('text-success');
+      expect(methods.gradeColor({ grade: 'NORM' })).to.equals('text-warning');
+      expect(methods.gradeColor({ grade: 'VULN' })).to.equals('text-danger');
     });
   });
 
