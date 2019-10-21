@@ -1,3 +1,5 @@
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+
 import { expect } from 'chai';
 import flushPromises from 'flush-promises';
 
@@ -7,16 +9,17 @@ import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
-import config from '../src/Config';
-import Popup from '../src/components/Popup';
-import ToggleSwitch from '../src/components/ToggleSwitch';
-
-chrome.registerPlugin(new CookiePlugin());
-chrome.registerPlugin(new I18nPlugin());
-
-global.chrome = chrome;
+import config from '../../src/Config';
+import Popup from '../../src/components/Popup';
 
 describe('Popup', () => {
+  before(function() {
+    chrome.registerPlugin(new CookiePlugin());
+    chrome.registerPlugin(new I18nPlugin());
+
+    global.chrome = chrome;
+  });
+
   beforeEach(() => {
     chrome.flush();
     chrome.runtime.connect.withArgs(sinon.match.object).returns({ postMessage: sinon.spy() });
@@ -160,23 +163,9 @@ describe('Popup', () => {
       expect(chrome.tabs.create.calledOnce).to.be.true;
     });
   });
-});
 
-describe('ToggleSwitch', () => {
-  it('calls callback function when state changed', done => {
-    const callback = e => {
-      done();
-    };
-
-    const wrapper = shallowMount(ToggleSwitch, {
-      propsData: {
-        checked: false,
-        type: 'round',
-        callback: callback,
-      },
-    });
-
-    const checkBoxInput = wrapper.find('input[type="checkbox"]');
-    checkBoxInput.setChecked();
+  after(function() {
+    chrome.flush();
+    delete global.chrome;
   });
 });

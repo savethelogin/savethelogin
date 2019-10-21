@@ -5,7 +5,7 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha'],
-    files: ['test/test.js'],
+    files: ['test/**/*_test.js'],
     browsers: ['chromeExtension'],
     customLaunchers: {
       chromeExtension: {
@@ -15,7 +15,7 @@ module.exports = function(config) {
     },
     singleRun: true,
     preprocessors: {
-      'test/test.js': ['webpack', 'coverage'],
+      'test/**/*_test.js': ['webpack', 'coverage'],
     },
     reporters: ['progress', 'coverage', 'coverage-istanbul'],
     coverageIstanbulReporter: {
