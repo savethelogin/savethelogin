@@ -16,41 +16,15 @@
     <div class="col" v-if="isEnabled">
       <div class="row">
         <table class="table mb-0" v-if="Object.keys(checklist).length">
-          <tr>
-            <th>{{ checklist.scheme.name }}</th>
-            <td
-              v-html="checklist.scheme.description"
-              v-bind:class="gradeColor(checklist.scheme.grade)"
-            ></td>
-          </tr>
-          <tr v-if="scheme === 'https'">
-            <th>{{ checklist.hsts_policy.name }}</th>
-            <td
-              v-html="checklist.hsts_policy.description"
-              v-bind:class="gradeColor(checklist.hsts_policy.grade)"
-            ></td>
-          </tr>
-          <tr>
-            <th>{{ checklist.clickjacking_prevention.name }}</th>
-            <td
-              v-html="checklist.clickjacking_prevention.description"
-              v-bind:class="gradeColor(checklist.clickjacking_prevention.grade)"
-            ></td>
-          </tr>
-          <tr>
-            <th>{{ checklist.xss_protection_policy.name }}</th>
-            <td
-              v-html="checklist.xss_protection_policy.description"
-              v-bind:class="gradeColor(checklist.xss_protection_policy.grade)"
-            ></td>
-          </tr>
-          <tr>
-            <th>{{ checklist.session_cookie_xss.name }}</th>
-            <td
-              v-html="checklist.session_cookie_xss.description"
-              v-bind:class="gradeColor(checklist.session_cookie_xss.grade)"
-            ></td>
-          </tr>
+          <CheckItem v-bind:item="checklist.scheme" v-bind:classify="gradeColor" />
+          <CheckItem
+            v-if="scheme === 'https'"
+            v-bind:item="checklist.hsts_policy"
+            v-bind:classify="gradeColor"
+          />
+          <CheckItem v-bind:item="checklist.clickjacking_prevention" v-bind:classify="gradeColor" />
+          <CheckItem v-bind:item="checklist.xss_protection_policy" v-bind:classify="gradeColor" />
+          <CheckItem v-bind:item="checklist.session_cookie_xss" v-bind:classify="gradeColor" />
         </table>
 
         <div class="alert alert-danger w-100 mb-0 text-center" v-else>
@@ -68,11 +42,14 @@
 
 <script>
 import config from '../Config';
+
+import CheckItem from './CheckItem';
 import ToggleSwitch from './ToggleSwitch';
 
 export default {
   name: 'Popup',
   components: {
+    CheckItem,
     ToggleSwitch,
   },
   data() {
@@ -92,14 +69,16 @@ export default {
   },
   methods: {
     // Return text style class by grade
-    gradeColor: function(grade) {
-      switch (grade) {
+    gradeColor: function(item) {
+      switch (item.grade) {
         case 'SAFE':
           return 'text-success';
         case 'NORM':
           return 'text-warning';
         case 'VULN':
           return 'text-danger';
+        default:
+          break;
       }
     },
     // Refresh tab and close popup
@@ -316,30 +295,38 @@ export default {
 #logo {
   margin-left: 120px;
 }
+
 .btn,
 .alert,
 .badge {
   border-radius: 0;
 }
+
 .table th {
   white-space: nowrap;
 }
+
 code {
   display: block;
   white-space: pre-wrap;
 }
+
 .material-icons {
   vertical-align: inherit;
 }
+
 .material-icons.md-18 {
   font-size: 18px;
 }
+
 .material-icons.md-24 {
   font-size: 24px;
 }
+
 .material-icons.md-36 {
   font-size: 36px;
 }
+
 .material-icons.md-48 {
   font-size: 48px;
 }
