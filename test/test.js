@@ -28,6 +28,7 @@ describe('Popup', () => {
     };
 
     const mockHttpHeaders = [
+      { name: 'Content-Encoding', value: 'gzip' },
       {
         name: 'Strict-Transport-Security',
         value: 'max-age=31536000; includeSubDomains; preload',
@@ -35,6 +36,7 @@ describe('Popup', () => {
       { name: 'Server', value: 'Apache/2.4.10' },
       { name: 'X-Frame-Options', value: 'deny' },
       { name: 'X-Powered-By', value: 'PHP/7.1.30' },
+      { name: 'X-XSS-Protection', value: '0; mode=block' },
     ];
 
     const mockDetails = {
