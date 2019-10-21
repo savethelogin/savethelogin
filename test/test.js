@@ -29,7 +29,7 @@ describe('Popup', () => {
 
     const mockHttpHeaders = [
       {
-        name: 'Strict-Trasnport-Security',
+        name: 'Strict-Transport-Security',
         value: 'max-age=31536000; includeSubDomains; preload',
       },
       { name: 'Server', value: 'Apache/2.4.10' },
