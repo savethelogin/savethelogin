@@ -88,7 +88,6 @@ const config = {
     new webpack.DefinePlugin({
       global: 'window',
     }),
-    new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
@@ -105,6 +104,10 @@ const config = {
     ]),
   ],
 };
+
+if (!process.argv.includes('--watch')) {
+  config.plugins = (config.plugins || []).concat([new CleanWebpackPlugin()]);
+}
 
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([

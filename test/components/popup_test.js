@@ -1,3 +1,5 @@
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+
 import { expect } from 'chai';
 import flushPromises from 'flush-promises';
 
@@ -7,16 +9,17 @@ import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
-import config from '../src/Config';
-import Popup from '../src/components/Popup';
-import ToggleSwitch from '../src/components/ToggleSwitch';
-
-chrome.registerPlugin(new CookiePlugin());
-chrome.registerPlugin(new I18nPlugin());
-
-global.chrome = chrome;
+import config from '../../src/classes/Config';
+import Popup from '../../src/components/Popup';
 
 describe('Popup', () => {
+  before(function() {
+    chrome.registerPlugin(new CookiePlugin());
+    chrome.registerPlugin(new I18nPlugin());
+
+    global.chrome = chrome;
+  });
+
   beforeEach(() => {
     chrome.flush();
     chrome.runtime.connect.withArgs(sinon.match.object).returns({ postMessage: sinon.spy() });
@@ -28,13 +31,15 @@ describe('Popup', () => {
     };
 
     const mockHttpHeaders = [
+      { name: 'Content-Encoding', value: 'gzip' },
       {
-        name: 'Strict-Trasnport-Security',
+        name: 'Strict-Transport-Security',
         value: 'max-age=31536000; includeSubDomains; preload',
       },
       { name: 'Server', value: 'Apache/2.4.10' },
       { name: 'X-Frame-Options', value: 'deny' },
       { name: 'X-Powered-By', value: 'PHP/7.1.30' },
+      { name: 'X-XSS-Protection', value: '0; mode=block' },
     ];
 
     const mockDetails = {
@@ -130,9 +135,9 @@ describe('Popup', () => {
     it('returns css class by grade', () => {
       const methods = Popup.methods;
 
-      expect(methods.gradeColor('SAFE')).to.equals('text-success');
-      expect(methods.gradeColor('NORM')).to.equals('text-warning');
-      expect(methods.gradeColor('VULN')).to.equals('text-danger');
+      expect(methods.gradeColor({ grade: 'SAFE' })).to.equals('text-success');
+      expect(methods.gradeColor({ grade: 'NORM' })).to.equals('text-warning');
+      expect(methods.gradeColor({ grade: 'VULN' })).to.equals('text-danger');
     });
   });
 
@@ -158,23 +163,9 @@ describe('Popup', () => {
       expect(chrome.tabs.create.calledOnce).to.be.true;
     });
   });
-});
 
-describe('ToggleSwitch', () => {
-  it('calls callback function when state changed', done => {
-    const callback = e => {
-      done();
-    };
-
-    const wrapper = shallowMount(ToggleSwitch, {
-      propsData: {
-        checked: false,
-        type: 'round',
-        callback: callback,
-      },
-    });
-
-    const checkBoxInput = wrapper.find('input[type="checkbox"]');
-    checkBoxInput.setChecked();
+  after(function() {
+    chrome.flush();
+    delete global.chrome;
   });
 });

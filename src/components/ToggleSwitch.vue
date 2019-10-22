@@ -2,7 +2,7 @@
 <template>
   <label class="switch">
     <input type="checkbox" v-bind:checked="checked" v-on:change="callback" />
-    <span v-bind:class="'slider' + (type === 'round' && ' round')"></span>
+    <span v-bind:class="'slider' + (type === 'round' && ' round')" />
   </label>
 </template>
 
