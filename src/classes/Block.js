@@ -332,7 +332,7 @@ export function onBeforeRequest(details) {
     // If host is IPv4 range
     const hostname = url.hostname;
     // Check if hostname is in private ip range
-    if (hostname.match(/localhost/i)) return {};
+    if (hostname.match(/^localhost$/i)) return {};
     if (hostname.match(/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/)) {
       const privateIpRange = [
         // 127.0.0.1
