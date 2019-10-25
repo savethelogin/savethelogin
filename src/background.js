@@ -16,7 +16,7 @@ chrome.storage.sync.get(
     `${PROJECT_PREFIX}_opt_session_hijack`,
   ],
   items => {
-    Context.enabled = items[`${PROJECT_PREFIX}_disabled`] ? true : false;
+    Context.enabled = !items[`${PROJECT_PREFIX}_disabled`] ? true : false;
     Context.plainText = items[`${PROJECT_PREFIX}_opt_plain_text`] ? true : false;
     Context.sessHijack = items[`${PROJECT_PREFIX}_opt_session_hijack`] ? true : false;
   }

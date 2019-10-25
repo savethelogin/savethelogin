@@ -240,6 +240,7 @@ export function onConnect(port) {
           default:
             break;
         }
+        onUpdated();
         break;
       }
       // Case when element id updated
