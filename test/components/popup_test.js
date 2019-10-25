@@ -6,6 +6,7 @@ import flushPromises from 'flush-promises';
 import sinon from 'sinon';
 import chrome from 'sinon-chrome/extensions';
 import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
+
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
@@ -13,7 +14,7 @@ import '../../src/components/Globals';
 import config from '../../src/classes/Config';
 import Popup from '../../src/components/Popup';
 
-describe('Popup', () => {
+describe('Popup', function() {
   before(function() {
     chrome.registerPlugin(new CookiePlugin());
     chrome.registerPlugin(new I18nPlugin());
@@ -21,12 +22,12 @@ describe('Popup', () => {
     global.chrome = chrome;
   });
 
-  beforeEach(() => {
+  beforeEach(function() {
     chrome.flush();
     chrome.runtime.connect.withArgs(sinon.match.object).returns({ postMessage: sinon.spy() });
   });
 
-  it('has a created hook', async () => {
+  it('has a created hook', async function() {
     const mockTab = {
       id: 1,
     };
@@ -92,31 +93,58 @@ describe('Popup', () => {
     wrapper.destroy();
   });
 
-  it('has default data', () => {
+  it('has default data', function() {
     expect(Popup.data).to.be.a('function');
-    expect(Popup.data()).to.exist;
   });
 
-  describe('#setEnabled', () => {
-    it('is a callback of toggle button', () => {
+  describe('#data', function() {
+    before(function() {
+      global.wrapper = shallowMount(Popup);
+    });
+
+    it('has isEnabled', function() {
+      expect(wrapper.vm.isEnabled).to.be.false;
+    });
+
+    it('has currentView', function() {
+      expect(wrapper.vm.currentView).to.be.equal('inspect');
+    });
+
+    after(function() {
+      delete global.wrapper;
+    });
+  });
+
+  describe('#setEnabled', function() {
+    it('is a callback of toggle button', function() {
       const wrapper = mount(Popup);
 
-      expect(wrapper.vm.isEnabled).to.be.false;
       wrapper.find('input[type="checkbox"]').setChecked();
       chrome.storage.sync.set.yield();
 
-      return Vue.nextTick().then(() => {
+      return Vue.nextTick().then(function() {
         expect(wrapper.vm.isEnabled).to.be.true;
       });
     });
   });
 
-  describe('#openWebsite', () => {
-    it('opens official website on new tab', () => {
+  describe('#openWebsite', function() {
+    it('opens official website on new tab', function() {
       const methods = Popup.methods;
       methods.openWebsite();
 
       expect(chrome.tabs.create.calledOnce).to.be.true;
+    });
+  });
+
+  describe('#changeView', function() {
+    it('changes component', function() {
+      const wrapper = mount(Popup);
+      const before = wrapper.vm.currentView;
+      wrapper.setData({ isEnabled: true });
+
+      wrapper.find('button:not(.active)').trigger('click');
+      expect(wrapper.vm.currentView).to.be.not.equal(before);
     });
   });
 
