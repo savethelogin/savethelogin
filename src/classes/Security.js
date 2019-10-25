@@ -18,6 +18,8 @@ function unique(array) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
+  if (!Context.enabled || !Context.sessHijack) return {};
+
   chrome.cookies.getAll({ session: true }, cookies => {
     Context.cookies = cookies;
     uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
@@ -27,7 +29,7 @@ export function onUpdated(tabId, changeInfo, tab) {
 onUpdated();
 
 export function onBeforeSendHeaders(details) {
-  if (!Context.sessHijack) return {};
+  if (!Context.enabled || !Context.sessHijack) return {};
 
   if (details.requestHeaders) {
     // Get referer header
