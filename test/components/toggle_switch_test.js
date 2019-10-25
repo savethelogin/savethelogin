@@ -5,8 +5,8 @@ import { shallowMount } from '@vue/test-utils';
 
 import ToggleSwitch from '../../src/components/ToggleSwitch';
 
-describe('ToggleSwitch', () => {
-  it('calls callback function when state changed', done => {
+describe('ToggleSwitch', function() {
+  it('calls callback function when state changed', function(done) {
     const callback = e => {
       done();
     };

@@ -15,7 +15,7 @@ module.exports = function(config) {
     },
     singleRun: true,
     preprocessors: {
-      'test/**/*_test.js': ['webpack', 'coverage'],
+      'test/**/*_test.js': ['webpack'],
     },
     reporters: ['progress', 'coverage', 'coverage-istanbul'],
     coverageIstanbulReporter: {

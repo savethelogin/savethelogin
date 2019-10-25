@@ -36,7 +36,7 @@ const config = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|_test\.js$/,
         use: Array.prototype.slice.apply(
           [
             {
