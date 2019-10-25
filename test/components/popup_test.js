@@ -9,6 +9,7 @@ import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
+import '../../src/components/Globals';
 import config from '../../src/classes/Config';
 import Popup from '../../src/components/Popup';
 
@@ -94,51 +95,6 @@ describe('Popup', () => {
   it('has default data', () => {
     expect(Popup.data).to.be.a('function');
     expect(Popup.data()).to.exist;
-  });
-
-  it('shows error checklist not exists', () => {
-    const wrapper = mount(Popup, {
-      attachToDocument: true,
-    });
-    expect(wrapper.find('.alert').exists()).to.be.false;
-
-    const checkBoxInput = wrapper.find('input[type="checkbox"]');
-    expect(checkBoxInput.exists()).to.be.true;
-    checkBoxInput.setChecked();
-
-    chrome.storage.sync.set.yield();
-
-    return Vue.nextTick().then(() => {
-      expect(wrapper.find('.alert').exists()).to.be.true;
-    });
-  });
-
-  it('refresh tab and close popup when refresh', async () => {
-    const wrapper = shallowMount(Popup, {
-      data() {
-        return {
-          isEnabled: true,
-        };
-      },
-    });
-    chrome.tabs.query.yields([1]);
-
-    expect(wrapper.find('button').exists()).to.be.true;
-
-    chrome.tabs.reload.yields([1]);
-    wrapper.find('button').trigger('click');
-
-    await flushPromises();
-  });
-
-  describe('#gradeColor', () => {
-    it('returns css class by grade', () => {
-      const methods = Popup.methods;
-
-      expect(methods.gradeColor({ grade: 'SAFE' })).to.equals('text-success');
-      expect(methods.gradeColor({ grade: 'NORM' })).to.equals('text-warning');
-      expect(methods.gradeColor({ grade: 'VULN' })).to.equals('text-danger');
-    });
   });
 
   describe('#setEnabled', () => {

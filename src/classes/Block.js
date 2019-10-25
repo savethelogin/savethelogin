@@ -6,7 +6,7 @@
 import config from './Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { logError } from './Util';
+import { logError } from '../utils/Util';
 import Context from './Context';
 
 // Store private datas
