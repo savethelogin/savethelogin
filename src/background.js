@@ -8,7 +8,7 @@ import Block from './classes/Block';
 
 // Check extension disabled
 chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
-  const item = items[`${PROJECT_PREFIX}`];
+  const item = items[`${PROJECT_PREFIX}_disabled`];
   if (item === undefined) Context.enabled = true;
   else Context.enabled = item;
 });

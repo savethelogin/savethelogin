@@ -1,14 +1,17 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
-  <div class="container">
+  <div class="container w-100">
     <div class="row">
       <a href="#" v-on:click.prevent="openWebsite">
         <img id="logo" src="/icons/logo.png" width="300" />
       </a>
     </div>
-    <div class="row d-flex justify-content-end">
-      <div class="mr-2">
-        <ToggleSwitch v-bind:checked="isEnabled" v-bind:callback="setEnabled" />
+    <div class="row">
+      <div class="col-12">
+        <div class="float-right">
+          <ToggleSwitch v-bind:checked="isEnabled" v-bind:callback="setEnabled" />
+        </div>
+        <div class="clearfix"></div>
       </div>
     </div>
     <div class="row" v-if="isEnabled">
@@ -100,7 +103,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 /**
  * Layout
  **/

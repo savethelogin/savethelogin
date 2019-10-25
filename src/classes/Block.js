@@ -234,8 +234,14 @@ export function onConnect(port) {
       // Case when toggle on/off button changed
       case 'update_toggle': {
         Context.enabled = message.data;
-        if (Context.enabled === true) chrome.browserAction.setIcon({ path: '/icons/icon16.png' });
-        else chrome.browserAction.setIcon({ path: '/icons/icon-off16.png' });
+        if (Context.enabled === true)
+          chrome.browserAction.setIcon({
+            path: '/icons/icon16.png',
+          });
+        else
+          chrome.browserAction.setIcon({
+            path: '/icons/icon-off16.png',
+          });
         break;
       }
       // Case when element id updated
@@ -413,10 +419,10 @@ export function onResponseStarted(details) {
   if (details.statusCode === 200) {
     // If response type is not subframe
     if (details.type === 'main_frame') {
-      let obj = {};
-      obj[`${PROJECT_PREFIX}_tab_` + details.tabId] = details;
       // Store http reponse to local storage
-      chrome.storage.local.set(obj);
+      chrome.storage.local.set({
+        [`${PROJECT_PREFIX}_tab_${details.tabId}`]: details,
+      });
     }
   }
 }
