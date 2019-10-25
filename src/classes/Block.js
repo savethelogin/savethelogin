@@ -326,14 +326,19 @@ export function onRemoved(tabId, removed) {
  * Check HTTP POST Body data contains plain private data
  */
 export function onBeforeRequest(details) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.enabled || !Context.plainText) return {};
   if (details.method === 'POST' && details.requestBody) {
     const url = new URL(details.url);
     // If host is IPv4 range
     const hostname = url.hostname;
     // Check if hostname is in private ip range
-    if (hostname.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)) {
+    if (hostname.match(/localhost/i)) return {};
+    if (hostname.match(/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/)) {
       const privateIpRange = [
+        // 127.0.0.1
+        /127\.0\.0\.1/,
+        // 0.0.0.0
+        /0\.0\.0\.0/,
         // 10.0.0.0 – 10.255.255.255
         /10\.(2[0-5][0-5]|1[0-9][0-9]|[1-9][0-9]|[0-9])/,
         // 172.16.0.0 – 172.31.255.255
@@ -343,7 +348,7 @@ export function onBeforeRequest(details) {
       ];
       // Create filter by priv_range
       const ruleset = new RegExp('^' + privateIpRange.map(x => x.source).join('|') + '$');
-      if (hostname.match(ruleset)) return;
+      if (hostname.match(ruleset)) return {};
     }
     if (!privateData[details.tabId]) {
       return {};
