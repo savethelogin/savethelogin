@@ -35,18 +35,6 @@
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">recommend</span> <code>X-XSS-Protection: 1; mode=block</code> include in the server’s HTTP response header."
   },
-  "privacy_policy_title": {
-    "message": "Personal Information Collection and Usage Agreement"
-  },
-  "privacy_policy_agree": {
-    "message": "Agreed"
-  },
-  "privacy_policy_deny": {
-    "message": "If you do not agree to the Personal Information Collection Agreement, you cannot use the service.\nGo to the Uninstall page."
-  },
-  "options_privacy_deny": {
-    "message": "You must agree to the Personal Information Collection and Usage Agreement"
-  },
   "no_information": {
     "message": "No Information!"
   },
@@ -67,5 +55,23 @@
   },
   "refresh": {
     "message": "refresh"
+  },
+  "inspect": {
+    "message": "Inspect"
+  },
+  "options": {
+    "message": "Options"
+  },
+  "basics": {
+    "message": "Basics"
+  },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "options_plain_text": {
+    "message": "Notify about plain text login"
+  },
+  "options_session_hijack": {
+    "message": "Basic session hijacking protection"
   }
 }
