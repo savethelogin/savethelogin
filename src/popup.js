@@ -1,11 +1,13 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './components/Globals';
 
 import Vue from 'vue';
-import App from './classes/App';
+import Popup from './components/Popup';
 
 new Vue({
   el: '#app',
-  components: { App },
-  render: h => h(App),
+  components: { Popup },
+  render: h => h(Popup),
 });

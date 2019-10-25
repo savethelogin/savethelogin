@@ -1,7 +1,7 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div class="container">
-    <Popup />
+    <component v-bind:is="currentView" />
   </div>
 </template>
 
@@ -10,8 +10,8 @@ import Popup from '../components/Popup';
 
 export default {
   name: 'App',
-  components: {
-    Popup,
+  data: {
+    popup: Popup,
   },
 };
 </script>
