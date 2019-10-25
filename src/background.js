@@ -17,7 +17,11 @@ chrome.storage.sync.get(
   ],
   items => {
     Context.enabled = !items[`${PROJECT_PREFIX}_disabled`] ? true : false;
-    Context.plainText = items[`${PROJECT_PREFIX}_opt_plain_text`] ? true : false;
+    Context.plainText =
+      items[`${PROJECT_PREFIX}_opt_plain_text`] ||
+      items[`${PROJECT_PREFIX}_opt_plain_text`] === undefined
+        ? true
+        : false;
     Context.sessHijack = items[`${PROJECT_PREFIX}_opt_session_hijack`] ? true : false;
   }
 );

@@ -62,7 +62,6 @@ function bind(tabId) {
       allFrames: true,
       code: `
       (function(window, document) {
-        let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         let id = ${elementId};
         let handler = function(elementId) {
           return function(e) {
@@ -82,6 +81,7 @@ function bind(tabId) {
               break;
             }
             // Send event to extension
+            let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -90,6 +90,7 @@ function bind(tabId) {
             });
           };
         };
+        let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         const key = ${tabId};
         // Target elements
         const target = 'input[type=password]';
@@ -127,6 +128,7 @@ function bind(tabId) {
         window.addEventListener("message", function(event) {
           if (event.source != window) return;
           if (event.data && event.data === "${PROJECT_PREFIX}_xhr") {
+            let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               type: 'trigger_request',
               key: ${tabId},
@@ -288,6 +290,7 @@ export function onConnect(port) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
+  console.log('yes', Context.plainText);
   if (!Context.enabled || !Context.plainText) return;
   console.log(tabId, changeInfo, tab);
   // Delete previous page informations
