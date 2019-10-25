@@ -16,7 +16,7 @@
     </div>
     <h4 class="mt-3">
       {{ msgExperimental }}
-      <small>
+      <small class="text-danger">
         <i class="material-icons">warning</i>
       </small>
     </h4>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import Context from '../classes/Context';
+import config from '../classes/Config';
 import ToggleSwitch from './ToggleSwitch';
 
 export default {
@@ -47,23 +47,45 @@ export default {
   components: {
     ToggleSwitch,
   },
+  data() {
+    return {
+      plainText: true,
+      sessHijack: false,
+    };
+  },
+  watch: {
+    plainText: function(newValue) {
+      chrome.storage.sync.set(
+        {
+          [`${config.PROJECT_PREFIX}_opt_plain_text`]: newValue,
+        },
+        () => {
+          let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
+          port.postMessage({
+            type: 'update_options',
+            name: 'plain_text',
+            data: newValue,
+          });
+        }
+      );
+    },
+    sessHijack: function(newValue) {
+      chrome.storage.sync.set(
+        {
+          [`${config.PROJECT_PREFIX}_opt_session_hijack`]: newValue,
+        },
+        () => {
+          let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
+          port.postMessage({
+            type: 'update_options',
+            name: 'session_hijack',
+            data: newValue,
+          });
+        }
+      );
+    },
+  },
   computed: {
-    plainText: {
-      get: function() {
-        return Context.plainText;
-      },
-      set: function(newValue) {
-        Context.plainText = newValue;
-      },
-    },
-    sessHijack: {
-      get: function() {
-        return Context.sessHijack;
-      },
-      set: function(newValue) {
-        Context.sessHijack = newValue;
-      },
-    },
     msgBasics: function() {
       return chrome.i18n.getMessage('basics');
     },
@@ -74,8 +96,17 @@ export default {
       return chrome.i18n.getMessage('options_plain_text');
     },
     msgSessionHijack: function() {
-      return chrome.i18n.getMessage('options_exp_session_hijack');
+      return chrome.i18n.getMessage('options_session_hijack');
     },
+  },
+  created() {
+    chrome.storage.sync.get(
+      [`${config.PROJECT_PREFIX}_opt_plain_text`, `${config.PROJECT_PREFIX}_opt_session_hijack`],
+      items => {
+        this.plainText = items[`${config.PROJECT_PREFIX}_opt_plain_text`] ? true : false;
+        this.sessHijack = items[`${config.PROJECT_PREFIX}_opt_session_hijack`] ? true : false;
+      }
+    );
   },
   methods: {
     changeOption: function(option) {
@@ -96,6 +127,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /**/
 </style>

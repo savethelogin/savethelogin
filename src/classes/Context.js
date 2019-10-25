@@ -1,5 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
+import config from './Config';
+
 class Context {
   constructor() {
     // Is extenstion enabled?
@@ -7,7 +9,10 @@ class Context {
 
     // Options
     this._opt_plain_text = true;
-    this._opt_exp_session_hijack = false;
+    this._opt_session_hijack = false;
+
+    // Cookies
+    this._cookies = [];
   }
 
   get enabled() {
@@ -22,16 +27,24 @@ class Context {
     return this._opt_plain_text;
   }
 
-  set plainText(value) {
-    this._opt_plain_text = value;
+  set plainText(newValue) {
+    this._opt_plain_text = newValue;
   }
 
   get sessHijack() {
-    return this._opt_exp_session_hijack;
+    return this._opt_session_hijack;
   }
 
-  set sessHijack(value) {
-    this._opt_exp_session_hijack = value;
+  set sessHijack(newValue) {
+    this._opt_session_hijack = newValue;
+  }
+
+  get cookies() {
+    return this._cookies;
+  }
+
+  set cookies(newValue) {
+    this._cookies = newValue;
   }
 }
 

@@ -8,6 +8,7 @@ class Config {
     this.PROJECT_DOMAIN = 'savethelogin.world';
     // Shorten value to improve performance
     this.SHORTEN_LENGTH = 0x10;
+    this.HASH_THRESHOLD = 0x10;
   }
 }
 

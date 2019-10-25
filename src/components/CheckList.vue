@@ -26,6 +26,19 @@
 <script>
 import CheckItem from './CheckItem';
 
+function gradeColor(item) {
+  switch (item.grade) {
+    case 'SAFE':
+      return 'text-success';
+    case 'NORM':
+      return 'text-warning';
+    case 'VULN':
+      return 'text-danger';
+    default:
+      break;
+  }
+}
+
 export default {
   name: 'CheckList',
   components: {
@@ -50,18 +63,7 @@ export default {
   },
   methods: {
     // Return text style class by grade
-    gradeColor: function(item) {
-      switch (item.grade) {
-        case 'SAFE':
-          return 'text-success';
-        case 'NORM':
-          return 'text-warning';
-        case 'VULN':
-          return 'text-danger';
-        default:
-          break;
-      }
-    },
+    gradeColor: gradeColor,
     // Refresh tab and close popup
     refreshPage: function() {
       return new Promise((resolve, reject) => {

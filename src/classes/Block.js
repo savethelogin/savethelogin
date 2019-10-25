@@ -6,6 +6,7 @@
 import config from './Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
+import { logError } from './Util';
 import Context from './Context';
 
 // Store private datas
@@ -17,6 +18,7 @@ let recycleStack = [];
 let elementId = 0;
 
 function patch({ tabId, id, code }) {
+  if (!Context.enabled || !Context.plainText) return;
   chrome.tabs.executeScript(
     tabId,
     {
@@ -32,12 +34,7 @@ function patch({ tabId, id, code }) {
       })(window, document);
       `,
     },
-    _ => {
-      let e = chrome.runtime.lastError;
-      if (e !== undefined) {
-        console.log(tabId, _, e);
-      }
-    }
+    logError
   );
 }
 
@@ -57,7 +54,7 @@ function del(tabId) {
 
 // Bind event handler to webpage
 function bind(tabId) {
-  if (!Context.enabled) return;
+  if (!Context.enabled || !Context.plainText) return;
   chrome.tabs.executeScript(
     tabId,
     {
@@ -138,12 +135,7 @@ function bind(tabId) {
         }, false);
       })(window, document);`,
     },
-    _ => {
-      let e = chrome.runtime.lastError;
-      if (e !== undefined) {
-        console.log(tabId, _, e);
-      }
-    }
+    logError
   );
 }
 
@@ -166,12 +158,7 @@ function createBg() {
         document.body.appendChild(bg);
       })()`,
     },
-    _ => {
-      let e = chrome.runtime.lastError;
-      if (e !== undefined) {
-        console.log(_, e);
-      }
-    }
+    logError
   );
 }
 
@@ -185,12 +172,7 @@ function removeBg() {
         bg.parentElement.removeChild(bg);
       })()`,
     },
-    _ => {
-      let e = chrome.runtime.lastError;
-      if (e !== undefined) {
-        console.log(_, e);
-      }
-    }
+    logError
   );
 }
 
@@ -242,6 +224,22 @@ export function onConnect(port) {
           chrome.browserAction.setIcon({
             path: '/icons/icon-off16.png',
           });
+        // Force trigger updated
+        onUpdated();
+        break;
+      }
+      // Case when option changed
+      case 'update_options': {
+        switch (message.name) {
+          case 'plain_text':
+            Context.plainText = message.data;
+            break;
+          case 'session_hijack':
+            Context.sessHijack = message.data;
+            break;
+          default:
+            break;
+        }
         break;
       }
       // Case when element id updated
@@ -289,7 +287,7 @@ export function onConnect(port) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  if (!Context.enabled) return;
+  if (!Context.enabled || !Context.plainText) return;
   console.log(tabId, changeInfo, tab);
   // Delete previous page informations
   del(tabId);
@@ -317,7 +315,7 @@ export function onUpdated(tabId, changeInfo, tab) {
 }
 
 export function onRemoved(tabId, removed) {
-  if (!Context.enabled) return;
+  if (!Context.enabled || !Context.plainText) return;
   // Remove HTTP response headers record
   chrome.storage.local.remove([`${PROJECT_PREFIX}_tab_` + tabId], () => {});
   // Remove private data by tab id when tab closed
@@ -327,9 +325,8 @@ export function onRemoved(tabId, removed) {
 /*
  * Check HTTP POST Body data contains plain private data
  */
-/* jslint ignore:start */
 export function onBeforeRequest(details) {
-  if (!Context.enabled) return;
+  if (!Context.enabled || !Context.plainText) return;
   if (details.method === 'POST' && details.requestBody) {
     const url = new URL(details.url);
     // If host is IPv4 range
@@ -426,7 +423,6 @@ export function onResponseStarted(details) {
     }
   }
 }
-/* jslint ignore:end */
 
 export default {
   onConnect: onConnect,

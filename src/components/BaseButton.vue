@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  name: 'BaseButton',
   props: {
     type: {
       type: String,

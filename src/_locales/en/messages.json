@@ -71,7 +71,7 @@
   "options_plain_text": {
     "message": "Notify about plain text login"
   },
-  "options_exp_session_hijack": {
+  "options_session_hijack": {
     "message": "Basic session hijacking protection"
   }
 }
