@@ -17,7 +17,7 @@
     <h4 class="mt-3">
       {{ msgExperimental }}
       <small class="text-danger">
-        <i class="material-icons">warning</i>
+        <i class="material-icons md-18">warning</i>
       </small>
     </h4>
     <hr class="mt-0" />
