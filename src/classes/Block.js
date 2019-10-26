@@ -24,14 +24,14 @@ function patch({ tabId, id, code }) {
     {
       allFrames: true,
       code: `
-      (function(window, document) {
+      (function() {
         let exists = document.getElementById('${id}');
         if (exists) return;
         let s = document.createElement('script');
         s.id = '${id}';
         s.innerHTML = \`${code}\`;
         document.head.prepend(s);
-      })(window, document);
+      })();
       `,
     },
     logError
@@ -61,7 +61,7 @@ function bind(tabId) {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
       code: `
-      (function(window, document) {
+      (function() {
         let id = ${elementId};
         let handler = function(elementId) {
           return function(e) {
@@ -135,7 +135,7 @@ function bind(tabId) {
             });
           }
         }, false);
-      })(window, document);`,
+      })();`,
     },
     logError
   );
@@ -176,6 +176,17 @@ function removeBg() {
     },
     logError
   );
+}
+
+function enforceUpdate() {
+  onUpdated();
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      resolve(tabs[0]);
+    });
+  }).then(currentTab => {
+    chrome.tabs.reload(currentTab.id, {}, () => {});
+  });
 }
 
 export function onConnect(port) {
@@ -227,22 +238,25 @@ export function onConnect(port) {
             path: '/icons/icon-off16.png',
           });
         // Force trigger updated
-        onUpdated();
+        enforceUpdate();
         break;
       }
       // Case when option changed
       case 'update_options': {
+        let target;
         switch (message.name) {
           case 'plain_text':
+            target = Context.plainText;
             Context.plainText = message.data;
             break;
           case 'session_hijack':
+            target = Context.sessHijack;
             Context.sessHijack = message.data;
             break;
           default:
             break;
         }
-        onUpdated();
+        if (target != message.data) enforceUpdate();
         break;
       }
       // Case when element id updated
@@ -251,6 +265,13 @@ export function onConnect(port) {
           console.log(elementId);
           elementId = message.id;
         }
+        break;
+      }
+      // Pass context object from background to front-end
+      case 'retrieve_context': {
+        port.postMessage({
+          data: Context,
+        });
         break;
       }
       // Case when xhr send triggered
