@@ -16,6 +16,8 @@ let privateData = {};
 let recycleStack = [];
 // Unique element id
 let elementId = 0;
+// Request may be cancelled
+let sensitives = [];
 
 function patch({ tabId, id, code }) {
   if (!Context.enabled || !Context.plainText) return;
@@ -24,14 +26,14 @@ function patch({ tabId, id, code }) {
     {
       allFrames: true,
       code: `
-      (function(window, document) {
-        let exists = document.getElementById('${id}');
+      (function() {
+        var exists = document.getElementById('${id}');
         if (exists) return;
-        let s = document.createElement('script');
+        var s = document.createElement('script');
         s.id = '${id}';
         s.innerHTML = \`${code}\`;
         document.head.prepend(s);
-      })(window, document);
+      })();
       `,
     },
     logError
@@ -61,11 +63,11 @@ function bind(tabId) {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
       code: `
-      (function(window, document) {
-        let id = ${elementId};
-        let handler = function(elementId) {
+      (function() {
+        var id = ${elementId};
+        var handler = function(elementId) {
           return function(e) {
-            let value;
+            var value;
             switch (e.type) {
             case 'change':
               value = e.target.value;
@@ -81,7 +83,7 @@ function bind(tabId) {
               break;
             }
             // Send event to extension
-            let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -90,29 +92,29 @@ function bind(tabId) {
             });
           };
         };
-        let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-        const key = ${tabId};
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var key = ${tabId};
         // Target elements
-        const target = 'input[type=password]';
-        let iterable = [];
-        let pwFields = Array.from(
+        var target = 'input[type=password]';
+        var iterable = [];
+        var pwFields = Array.from(
           document.querySelectorAll(target)
         );
         iterable = iterable.concat(pwFields);
-        let pwForms = [].filter.call(document.querySelectorAll('form'),
+        var pwForms = [].filter.call(document.querySelectorAll('form'),
           function(el) {
             return el.querySelector(target) ? el : null;
           }
         );
         iterable = iterable.concat(pwForms);
-        for (let i = 0; i < iterable.length; ++i) {
+        for (var i = 0; i < iterable.length; ++i) {
           id++;
           port.postMessage({
             id: id,
             type: 'update_id'
           });
 
-          let el = iterable[i];
+          var el = iterable[i];
           switch (el.tagName.toLowerCase()) {
           case 'input':
             el.addEventListener("change", handler(id));
@@ -124,18 +126,7 @@ function bind(tabId) {
             break;
           }
         }
-        // Add xhr listener
-        window.addEventListener("message", function(event) {
-          if (event.source != window) return;
-          if (event.data && event.data === "${PROJECT_PREFIX}_xhr") {
-            let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-            port.postMessage({
-              type: 'trigger_request',
-              key: ${tabId},
-            });
-          }
-        }, false);
-      })(window, document);`,
+      })();`,
     },
     logError
   );
@@ -147,7 +138,7 @@ function createBg() {
     {
       code: `
       (function() {
-        let bg = document.createElement('div');
+        var bg = document.createElement('div');
         bg.style.background = '#000';
         bg.style.opacity = '0.8';
         bg.style.width = '100%';
@@ -170,12 +161,17 @@ function removeBg() {
     {
       code: `
       (function() {
-        let bg = document.getElementById('${ID_PREFIX}bg');
+        var bg = document.getElementById('${ID_PREFIX}bg');
         bg.parentElement.removeChild(bg);
       })()`,
     },
     logError
   );
+}
+
+function enforceUpdate() {
+  onUpdated();
+  chrome.tabs.reload(undefined, { bypassCache: true });
 }
 
 export function onConnect(port) {
@@ -227,22 +223,42 @@ export function onConnect(port) {
             path: '/icons/icon-off16.png',
           });
         // Force trigger updated
-        onUpdated();
+        enforceUpdate();
         break;
       }
       // Case when option changed
       case 'update_options': {
+        let target;
         switch (message.name) {
           case 'plain_text':
+            target = Context.plainText;
             Context.plainText = message.data;
             break;
           case 'session_hijack':
+            target = Context.sessHijack;
             Context.sessHijack = message.data;
             break;
           default:
             break;
         }
-        onUpdated();
+        port.postMessage({
+          type: 'update_context',
+          data: JSON.stringify({
+            plainText: Context.plainText,
+            sessHijack: Context.sessHijack,
+          }),
+        });
+        if (target != message.data) enforceUpdate();
+        break;
+      }
+      case 'retrieve_context': {
+        port.postMessage({
+          type: 'update_context',
+          data: JSON.stringify({
+            plainText: Context.plainText,
+            sessHijack: Context.sessHijack,
+          }),
+        });
         break;
       }
       // Case when element id updated
@@ -253,35 +269,6 @@ export function onConnect(port) {
         }
         break;
       }
-      // Case when xhr send triggered
-      case 'trigger_request': {
-        chrome.tabs.executeScript(message.key, {
-          allFrames: true,
-          code: `
-            (function(window, document) {
-              let id = ${elementId};
-              let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-
-              const target = 'input[type=password]';
-              let iterable = [];
-              let pwFields = Array.from(
-                document.querySelectorAll(target)
-              );
-              iterable = iterable.concat(pwFields);
-              for (let i = 0; i < iterable.length; ++i) {
-                id++;
-                port.postMessage({
-                  id: id,
-                  type: 'update_data',
-                  key: ${message.key},
-                  data: iterable[i].value
-                });
-              }
-            })(window, document);
-            `,
-        });
-        break;
-      }
       default:
         console.error(message);
         break;
@@ -290,7 +277,6 @@ export function onConnect(port) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  console.log('yes', Context.plainText);
   if (!Context.enabled || !Context.plainText) return;
   console.log(tabId, changeInfo, tab);
   // Delete previous page informations
@@ -298,20 +284,85 @@ export function onUpdated(tabId, changeInfo, tab) {
   // Bind once per tab
   bind(tabId);
   // Patch xhr
+  chrome.tabs.executeScript(
+    tabId,
+    {
+      code: `
+      (function() {
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        port.onMessage.addListener(function(message) {
+          if (message.type === 'update_context') {
+            window.postMessage(message.data, "*");
+          }
+        });
+        port.postMessage({
+          type: 'retrieve_context'
+        });
+      })();
+      `,
+    },
+    logError
+  );
   patch({
     tabId: tabId,
     id: `${ID_PREFIX}xhrpatch`,
     code: `
     (function() {
-      var send = XMLHttpRequest.prototype.send;
-
-      XMLHttpRequest.prototype.send = function(body) {
-        window.postMessage("${PROJECT_PREFIX}_xhr", "*");
-        try {
-          send.call(this, body);
-        } catch (e) {
-          console.error(e);
+      var context = {};
+      window.addEventListener("message", function(event) {
+        if (event.data) {
+          try {
+            context = JSON.parse(event.data);
+          } catch (e) {}
         }
+      }, false);
+
+      var open = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function() {
+        var method = arguments[0];
+        var action = arguments[1];
+
+        if (!action.match(/^https?:/i)) {
+          var dummy = document.createElement('a');
+          dummy.href = action;
+          // Assign absolute url
+          action = dummy.href;
+        }
+
+        if (method.match(/^POST$/i) && action.match(/^http:/i)) {
+          var send = this.send;
+          this.send = function(body) {
+            var flag = false;
+            try {
+              var targets = document.querySelectorAll('input[type=password]');
+              for (var i = 0; i < targets.length; ++i) {
+                if (context.plainText && body.indexOf(targets[i].value) !== -1) {
+                  if (confirm("${chrome.i18n
+                    .getMessage('confirm_request_block')
+                    .replace(/\n/g, '\\\\n')}")) {;
+                    flag = true;
+                    break;
+                  } else {
+                    alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
+                    // Cancel request
+                    return;
+                  }
+                }
+              }
+            } catch (e) {}
+            // Inject header
+            if (flag) {
+              this.setRequestHeader("X-Plaintext-Login", "GRANTED");
+            }
+            // Call original send method
+            try {
+              send.call(this, body);
+            } catch (e) {
+              console.error(e);
+            }
+          };
+        }
+        open.apply(this, [method, action]);
       };
     })();
   `,
@@ -330,13 +381,13 @@ export function onRemoved(tabId, removed) {
  * Check HTTP POST Body data contains plain private data
  */
 export function onBeforeRequest(details) {
-  if (!Context.enabled || !Context.plainText) return {};
+  if (!Context.enabled || !Context.plainText) return;
   if (details.method === 'POST' && details.requestBody) {
     const url = new URL(details.url);
     // If host is IPv4 range
     const hostname = url.hostname;
     // Check if hostname is in private ip range
-    if (hostname.match(/^localhost$/i)) return {};
+    if (hostname.match(/^localhost$/i)) return;
     if (hostname.match(/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/)) {
       const privateIpRange = [
         // 127.0.0.1
@@ -352,15 +403,15 @@ export function onBeforeRequest(details) {
       ];
       // Create filter by priv_range
       const ruleset = new RegExp('^' + privateIpRange.map(x => x.source).join('|') + '$');
-      if (hostname.match(ruleset)) return {};
+      if (hostname.match(ruleset)) return;
     }
     if (!privateData[details.tabId]) {
-      return {};
+      return;
     }
     let keys = Object.keys(privateData[details.tabId]);
     // Skip when no keys
     if (keys.length === 0) {
-      return {};
+      return;
     }
     let flag = false;
     first: for (let i = 0; i < keys.length; ++i) {
@@ -403,21 +454,38 @@ export function onBeforeRequest(details) {
     }
     // If formData or rawData contains plain private data
     if (flag) {
-      createBg();
-      if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
-        alert(chrome.i18n.getMessage('request_blocked'));
-        removeBg();
-        // Surpress block error page
-        return { redirectUrl: 'javascript:' };
-      }
-      removeBg();
+      sensitives.push(details.requestId);
     }
     del(details.tabId);
   }
-  return {};
 }
 
-/*
+/**
+ * Block request before send headers
+ */
+export function onBeforeSendHeaders(details) {
+  if (sensitives.includes(details.requestId)) {
+    if (details.requestHeaders) {
+      const headers = details.requestHeaders;
+      for (let i = 0; i < headers.length; ++i) {
+        if (headers[i].name === 'X-Plaintext-Login') {
+          if (headers[i].value === 'GRANTED') return;
+        }
+      }
+    }
+
+    createBg();
+    if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
+      alert(chrome.i18n.getMessage('request_blocked'));
+      removeBg();
+
+      return { cancel: true };
+    }
+    removeBg();
+  }
+}
+
+/**
  * Store HTTP Response headers
  */
 export function onResponseStarted(details) {
@@ -433,10 +501,29 @@ export function onResponseStarted(details) {
   }
 }
 
+export function onCompleted(details) {
+  if (sensitives.includes(details.requestId)) {
+    let index = sensitives.indexOf(details.requestId);
+    sensitives.splice(index, 1);
+  }
+}
+
+export function onErrorOccurred(details) {
+  console.log(details);
+  if (details.error === 'net::ERR_BLOCKED_BY_CLIENT' && details.type.slice(-5) === 'frame') {
+    if (sensitives.includes(details.requestId)) {
+      chrome.tabs.reload(details.tabId, { bypassCache: true });
+    }
+  }
+}
+
 export default {
   onConnect: onConnect,
   onUpdated: onUpdated,
   onRemoved: onRemoved,
   onBeforeRequest: onBeforeRequest,
+  onBeforeSendHeaders: onBeforeSendHeaders,
   onResponseStarted: onResponseStarted,
+  onCompleted: onCompleted,
+  onErrorOccurred: onErrorOccurred,
 };

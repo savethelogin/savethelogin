@@ -35,14 +35,24 @@ chrome.runtime.onConnect.addListener(Block.onConnect);
 chrome.tabs.onUpdated.addListener(Block.onUpdated);
 chrome.tabs.onRemoved.addListener(Block.onRemoved);
 chrome.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, [
-  'blocking',
   'requestBody',
 ]);
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  Block.onBeforeSendHeaders,
+  { urls: ['http://*/*'] },
+  ['requestHeaders', 'extraHeaders', 'blocking']
+);
 chrome.webRequest.onResponseStarted.addListener(
   Block.onResponseStarted,
   { urls: ['https://*/*', 'http://*/*'] },
   ['responseHeaders']
 );
+chrome.webRequest.onCompleted.addListener(Block.onCompleted, {
+  urls: ['https://*/*', 'http://*/*'],
+});
+chrome.webRequest.onErrorOccurred.addListener(Block.onErrorOccurred, {
+  urls: ['https://*/*', 'http://*/*'],
+});
 
 // Security module
 chrome.tabs.onUpdated.addListener(Security.onUpdated);

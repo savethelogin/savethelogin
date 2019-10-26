@@ -15,6 +15,23 @@ class Context {
     this._cookies = [];
   }
 
+  /**
+   * Context setter
+   */
+  set(name, value) {
+    this.name = value;
+  }
+
+  /**
+   * Context getter
+   */
+  get(name) {
+    return this.name;
+  }
+
+  /**
+   * Properties
+   */
   get enabled() {
     return this._enabled;
   }
