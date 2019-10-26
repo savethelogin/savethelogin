@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
@@ -110,6 +111,16 @@ if (!process.argv.includes('--watch')) {
 }
 
 if (config.mode === 'production') {
+  if (!config.optimization) config.optimization = {};
+  config.optimization.minimizer = (config.optimization.minimizer || []).concat([
+    new TerserPlugin({
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+    }),
+  ]);
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
