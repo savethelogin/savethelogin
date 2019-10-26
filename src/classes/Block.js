@@ -465,9 +465,6 @@ export function onBeforeRequest(details) {
  */
 export function onBeforeSendHeaders(details) {
   if (sensitives.includes(details.requestId)) {
-    let index = sensitives.indexOf(details.requestId);
-    sensitives.splice(index, 1);
-
     if (details.requestHeaders) {
       const headers = details.requestHeaders;
       for (let i = 0; i < headers.length; ++i) {
@@ -504,6 +501,22 @@ export function onResponseStarted(details) {
   }
 }
 
+export function onCompleted(details) {
+  if (sensitives.includes(details.requestId)) {
+    let index = sensitives.indexOf(details.requestId);
+    sensitives.splice(index, 1);
+  }
+}
+
+export function onErrorOccurred(details) {
+  console.log(details);
+  if (details.error === 'net::ERR_BLOCKED_BY_CLIENT' && details.type.slice(-5) === 'frame') {
+    if (sensitives.includes(details.requestId)) {
+      chrome.tabs.reload(details.tabId, { bypassCache: true });
+    }
+  }
+}
+
 export default {
   onConnect: onConnect,
   onUpdated: onUpdated,
@@ -511,4 +524,6 @@ export default {
   onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
   onResponseStarted: onResponseStarted,
+  onCompleted: onCompleted,
+  onErrorOccurred: onErrorOccurred,
 };

@@ -47,6 +47,12 @@ chrome.webRequest.onResponseStarted.addListener(
   { urls: ['https://*/*', 'http://*/*'] },
   ['responseHeaders']
 );
+chrome.webRequest.onCompleted.addListener(Block.onCompleted, {
+  urls: ['https://*/*', 'http://*/*'],
+});
+chrome.webRequest.onErrorOccurred.addListener(Block.onErrorOccurred, {
+  urls: ['https://*/*', 'http://*/*'],
+});
 
 // Security module
 chrome.tabs.onUpdated.addListener(Security.onUpdated);
