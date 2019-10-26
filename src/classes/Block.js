@@ -16,6 +16,8 @@ let privateData = {};
 let recycleStack = [];
 // Unique element id
 let elementId = 0;
+// Request may be cancelled
+let sensitives = [];
 
 function patch({ tabId, id, code }) {
   if (!Context.enabled || !Context.plainText) return;
@@ -169,13 +171,7 @@ function removeBg() {
 
 function enforceUpdate() {
   onUpdated();
-  return new Promise((resolve, reject) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      resolve(tabs[0]);
-    });
-  }).then(currentTab => {
-    chrome.tabs.reload(currentTab.id, {}, () => {});
-  });
+  chrome.tabs.reload(undefined, { bypassCache: true });
 }
 
 export function onConnect(port) {
@@ -317,40 +313,56 @@ export function onUpdated(tabId, changeInfo, tab) {
         if (event.data) {
           try {
             context = JSON.parse(event.data);
-          } catch (e) {
-            console.log(e);
-          }
+          } catch (e) {}
         }
       }, false);
-      var send = XMLHttpRequest.prototype.send;
 
-      XMLHttpRequest.prototype.send = function(body) {
-        try {
-          var targets = document.querySelectorAll('input[type=password]');
-          for (var i = 0; i < targets.length; ++i) {
-            if (context.plainText && body.indexOf(targets[i].value) !== -1) {
-              if (confirm("${chrome.i18n
-                .getMessage('confirm_request_block')
-                .replace(/\n/g, '\\\\n')}")) {;
-                break;
-              } else {
-                alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
-                // Cancel request
-                return;
+      var open = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function() {
+        var method = arguments[0];
+        var action = arguments[1];
+
+        if (!action.match(/^https?:/i)) {
+          var dummy = document.createElement('a');
+          dummy.href = action;
+          // Assign absolute url
+          action = dummy.href;
+        }
+
+        if (method.match(/^POST$/i) && action.match(/^http:/i)) {
+          var send = this.send;
+          this.send = function(body) {
+            var flag = false;
+            try {
+              var targets = document.querySelectorAll('input[type=password]');
+              for (var i = 0; i < targets.length; ++i) {
+                if (context.plainText && body.indexOf(targets[i].value) !== -1) {
+                  if (confirm("${chrome.i18n
+                    .getMessage('confirm_request_block')
+                    .replace(/\n/g, '\\\\n')}")) {;
+                    flag = true;
+                    break;
+                  } else {
+                    alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
+                    // Cancel request
+                    return;
+                  }
+                }
               }
+            } catch (e) {}
+            // Inject header
+            if (flag) {
+              this.setRequestHeader("X-Plaintext-Login", "GRANTED");
             }
-          }
-        } catch (e) {
-          console.log(e);
+            // Call original send method
+            try {
+              send.call(this, body);
+            } catch (e) {
+              console.error(e);
+            }
+          };
         }
-        // Inject header
-        this.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        // Call original send method
-        try {
-          send.call(this, body);
-        } catch (e) {
-          console.error(e);
-        }
+        open.apply(this, [method, action]);
       };
     })();
   `,
@@ -367,16 +379,15 @@ export function onRemoved(tabId, removed) {
 
 /*
  * Check HTTP POST Body data contains plain private data
- * TODO: onBeforeRequest => onBeforeSendHeaders connection by requestId
  */
 export function onBeforeRequest(details) {
-  if (!Context.enabled || !Context.plainText) return {};
+  if (!Context.enabled || !Context.plainText) return;
   if (details.method === 'POST' && details.requestBody) {
     const url = new URL(details.url);
     // If host is IPv4 range
     const hostname = url.hostname;
     // Check if hostname is in private ip range
-    if (hostname.match(/^localhost$/i)) return {};
+    if (hostname.match(/^localhost$/i)) return;
     if (hostname.match(/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/)) {
       const privateIpRange = [
         // 127.0.0.1
@@ -392,15 +403,15 @@ export function onBeforeRequest(details) {
       ];
       // Create filter by priv_range
       const ruleset = new RegExp('^' + privateIpRange.map(x => x.source).join('|') + '$');
-      if (hostname.match(ruleset)) return {};
+      if (hostname.match(ruleset)) return;
     }
     if (!privateData[details.tabId]) {
-      return {};
+      return;
     }
     let keys = Object.keys(privateData[details.tabId]);
     // Skip when no keys
     if (keys.length === 0) {
-      return {};
+      return;
     }
     let flag = false;
     first: for (let i = 0; i < keys.length; ++i) {
@@ -443,21 +454,38 @@ export function onBeforeRequest(details) {
     }
     // If formData or rawData contains plain private data
     if (flag) {
-      createBg();
-      if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
-        alert(chrome.i18n.getMessage('request_blocked'));
-        removeBg();
-        // Surpress block error page
-        return { redirectUrl: 'javascript:' };
-      }
-      removeBg();
+      sensitives.push(details.requestId);
     }
     del(details.tabId);
   }
-  return {};
 }
 
-/*
+/**
+ * Block request before send headers
+ */
+export function onBeforeSendHeaders(details) {
+  if (sensitives.includes(details.requestId)) {
+    if (details.requestHeaders) {
+      const headers = details.requestHeaders;
+      for (let i = 0; i < headers.length; ++i) {
+        if (headers[i].name === 'X-Plaintext-Login') {
+          if (headers[i].value === 'GRANTED') return;
+        }
+      }
+    }
+
+    createBg();
+    if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
+      alert(chrome.i18n.getMessage('request_blocked'));
+      removeBg();
+
+      return { cancel: true };
+    }
+    removeBg();
+  }
+}
+
+/**
  * Store HTTP Response headers
  */
 export function onResponseStarted(details) {
@@ -473,10 +501,29 @@ export function onResponseStarted(details) {
   }
 }
 
+export function onCompleted(details) {
+  if (sensitives.includes(details.requestId)) {
+    let index = sensitives.indexOf(details.requestId);
+    sensitives.splice(index, 1);
+  }
+}
+
+export function onErrorOccurred(details) {
+  console.log(details);
+  if (details.error === 'net::ERR_BLOCKED_BY_CLIENT' && details.type.slice(-5) === 'frame') {
+    if (sensitives.includes(details.requestId)) {
+      chrome.tabs.reload(details.tabId, { bypassCache: true });
+    }
+  }
+}
+
 export default {
   onConnect: onConnect,
   onUpdated: onUpdated,
   onRemoved: onRemoved,
   onBeforeRequest: onBeforeRequest,
+  onBeforeSendHeaders: onBeforeSendHeaders,
   onResponseStarted: onResponseStarted,
+  onCompleted: onCompleted,
+  onErrorOccurred: onErrorOccurred,
 };
