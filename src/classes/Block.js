@@ -25,9 +25,9 @@ function patch({ tabId, id, code }) {
       allFrames: true,
       code: `
       (function() {
-        let exists = document.getElementById('${id}');
+        var exists = document.getElementById('${id}');
         if (exists) return;
-        let s = document.createElement('script');
+        var s = document.createElement('script');
         s.id = '${id}';
         s.innerHTML = \`${code}\`;
         document.head.prepend(s);
@@ -62,10 +62,10 @@ function bind(tabId) {
       allFrames: true,
       code: `
       (function() {
-        let id = ${elementId};
-        let handler = function(elementId) {
+        var id = ${elementId};
+        var handler = function(elementId) {
           return function(e) {
-            let value;
+            var value;
             switch (e.type) {
             case 'change':
               value = e.target.value;
@@ -81,7 +81,7 @@ function bind(tabId) {
               break;
             }
             // Send event to extension
-            let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -90,29 +90,29 @@ function bind(tabId) {
             });
           };
         };
-        let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-        const key = ${tabId};
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var key = ${tabId};
         // Target elements
-        const target = 'input[type=password]';
-        let iterable = [];
-        let pwFields = Array.from(
+        var target = 'input[type=password]';
+        var iterable = [];
+        var pwFields = Array.from(
           document.querySelectorAll(target)
         );
         iterable = iterable.concat(pwFields);
-        let pwForms = [].filter.call(document.querySelectorAll('form'),
+        var pwForms = [].filter.call(document.querySelectorAll('form'),
           function(el) {
             return el.querySelector(target) ? el : null;
           }
         );
         iterable = iterable.concat(pwForms);
-        for (let i = 0; i < iterable.length; ++i) {
+        for (var i = 0; i < iterable.length; ++i) {
           id++;
           port.postMessage({
             id: id,
             type: 'update_id'
           });
 
-          let el = iterable[i];
+          var el = iterable[i];
           switch (el.tagName.toLowerCase()) {
           case 'input':
             el.addEventListener("change", handler(id));
@@ -124,17 +124,6 @@ function bind(tabId) {
             break;
           }
         }
-        // Add xhr listener
-        window.addEventListener("message", function(event) {
-          if (event.source != window) return;
-          if (event.data && event.data === "${PROJECT_PREFIX}_xhr") {
-            let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-            port.postMessage({
-              type: 'trigger_request',
-              key: ${tabId},
-            });
-          }
-        }, false);
       })();`,
     },
     logError
@@ -147,7 +136,7 @@ function createBg() {
     {
       code: `
       (function() {
-        let bg = document.createElement('div');
+        var bg = document.createElement('div');
         bg.style.background = '#000';
         bg.style.opacity = '0.8';
         bg.style.width = '100%';
@@ -170,7 +159,7 @@ function removeBg() {
     {
       code: `
       (function() {
-        let bg = document.getElementById('${ID_PREFIX}bg');
+        var bg = document.getElementById('${ID_PREFIX}bg');
         bg.parentElement.removeChild(bg);
       })()`,
     },
@@ -256,7 +245,24 @@ export function onConnect(port) {
           default:
             break;
         }
+        port.postMessage({
+          type: 'update_context',
+          data: JSON.stringify({
+            plainText: Context.plainText,
+            sessHijack: Context.sessHijack,
+          }),
+        });
         if (target != message.data) enforceUpdate();
+        break;
+      }
+      case 'retrieve_context': {
+        port.postMessage({
+          type: 'update_context',
+          data: JSON.stringify({
+            plainText: Context.plainText,
+            sessHijack: Context.sessHijack,
+          }),
+        });
         break;
       }
       // Case when element id updated
@@ -267,42 +273,6 @@ export function onConnect(port) {
         }
         break;
       }
-      // Pass context object from background to front-end
-      case 'retrieve_context': {
-        port.postMessage({
-          data: Context,
-        });
-        break;
-      }
-      // Case when xhr send triggered
-      case 'trigger_request': {
-        chrome.tabs.executeScript(message.key, {
-          allFrames: true,
-          code: `
-            (function(window, document) {
-              let id = ${elementId};
-              let port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-
-              const target = 'input[type=password]';
-              let iterable = [];
-              let pwFields = Array.from(
-                document.querySelectorAll(target)
-              );
-              iterable = iterable.concat(pwFields);
-              for (let i = 0; i < iterable.length; ++i) {
-                id++;
-                port.postMessage({
-                  id: id,
-                  type: 'update_data',
-                  key: ${message.key},
-                  data: iterable[i].value
-                });
-              }
-            })(window, document);
-            `,
-        });
-        break;
-      }
       default:
         console.error(message);
         break;
@@ -311,7 +281,6 @@ export function onConnect(port) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  console.log('yes', Context.plainText);
   if (!Context.enabled || !Context.plainText) return;
   console.log(tabId, changeInfo, tab);
   // Delete previous page informations
@@ -319,15 +288,64 @@ export function onUpdated(tabId, changeInfo, tab) {
   // Bind once per tab
   bind(tabId);
   // Patch xhr
+  chrome.tabs.executeScript(
+    tabId,
+    {
+      code: `
+      (function() {
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        port.onMessage.addListener(function(message) {
+          if (message.type === 'update_context') {
+            window.postMessage(message.data, "*");
+          }
+        });
+        port.postMessage({
+          type: 'retrieve_context'
+        });
+      })();
+      `,
+    },
+    logError
+  );
   patch({
     tabId: tabId,
     id: `${ID_PREFIX}xhrpatch`,
     code: `
     (function() {
+      var context = {};
+      window.addEventListener("message", function(event) {
+        if (event.data) {
+          try {
+            context = JSON.parse(event.data);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }, false);
       var send = XMLHttpRequest.prototype.send;
 
       XMLHttpRequest.prototype.send = function(body) {
-        window.postMessage("${PROJECT_PREFIX}_xhr", "*");
+        try {
+          var targets = document.querySelectorAll('input[type=password]');
+          for (var i = 0; i < targets.length; ++i) {
+            if (context.plainText && body.indexOf(targets[i].value) !== -1) {
+              if (confirm("${chrome.i18n
+                .getMessage('confirm_request_block')
+                .replace(/\n/g, '\\\\n')}")) {;
+                break;
+              } else {
+                alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
+                // Cancel request
+                return;
+              }
+            }
+          }
+        } catch (e) {
+          console.log(e);
+        }
+        // Inject header
+        this.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        // Call original send method
         try {
           send.call(this, body);
         } catch (e) {
@@ -349,6 +367,7 @@ export function onRemoved(tabId, removed) {
 
 /*
  * Check HTTP POST Body data contains plain private data
+ * TODO: onBeforeRequest => onBeforeSendHeaders connection by requestId
  */
 export function onBeforeRequest(details) {
   if (!Context.enabled || !Context.plainText) return {};
