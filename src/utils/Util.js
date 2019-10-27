@@ -21,7 +21,13 @@ export function logError(e) {
   }
 }
 
+export function funcToStr(func) {
+  if (typeof func !== 'function') throw new Error('func is not a function');
+  return func.toString().replace(/^function\s\w*\(.*?\)\s\{(.*)\}$/s, '$1');
+}
+
 export default {
   executeScript: executeScript,
   logError: logError,
+  funcToStr: funcToStr,
 };
