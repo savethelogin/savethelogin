@@ -6,7 +6,7 @@
 import config from './Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { logError } from '../utils/Util';
+import { executeScript } from '../utils/Util';
 import Context from './Context';
 
 // Store private datas
@@ -21,9 +21,8 @@ let sensitives = [];
 
 function patch({ tabId, id, code }) {
   if (!Context.enabled || !Context.plainText) return;
-  chrome.tabs.executeScript(
-    tabId,
-    {
+  executeScript({
+    details: {
       allFrames: true,
       code: `
       (function() {
@@ -36,8 +35,7 @@ function patch({ tabId, id, code }) {
       })();
       `,
     },
-    logError
-  );
+  });
 }
 
 // Unset and zero-fill to erase sensitive datas
@@ -57,9 +55,9 @@ function del(tabId) {
 // Bind event handler to webpage
 function bind(tabId) {
   if (!Context.enabled || !Context.plainText) return;
-  chrome.tabs.executeScript(
-    tabId,
-    {
+  executeScript({
+    tabId: tabId,
+    details: {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
       code: `
@@ -82,6 +80,7 @@ function bind(tabId) {
               });
               break;
             }
+
             // Send event to extension
             var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
@@ -92,6 +91,7 @@ function bind(tabId) {
             });
           };
         };
+
         var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
@@ -100,12 +100,14 @@ function bind(tabId) {
         var pwFields = Array.from(
           document.querySelectorAll(target)
         );
+
         iterable = iterable.concat(pwFields);
         var pwForms = [].filter.call(document.querySelectorAll('form'),
           function(el) {
             return el.querySelector(target) ? el : null;
           }
         );
+
         iterable = iterable.concat(pwForms);
         for (var i = 0; i < iterable.length; ++i) {
           id++;
@@ -128,14 +130,13 @@ function bind(tabId) {
         }
       })();`,
     },
-    logError
-  );
+  });
 }
 
 // Create translucent black background when alert appears
 function createBg() {
-  chrome.tabs.executeScript(
-    {
+  executeScript({
+    details: {
       code: `
       (function() {
         var bg = document.createElement('div');
@@ -151,22 +152,20 @@ function createBg() {
         document.body.appendChild(bg);
       })()`,
     },
-    logError
-  );
+  });
 }
 
 // Remove background which created by createBg()
 function removeBg() {
-  chrome.tabs.executeScript(
-    {
+  executeScript({
+    details: {
       code: `
       (function() {
         var bg = document.getElementById('${ID_PREFIX}bg');
         bg.parentElement.removeChild(bg);
       })()`,
     },
-    logError
-  );
+  });
 }
 
 function enforceUpdate() {
@@ -279,14 +278,16 @@ export function onConnect(port) {
 export function onUpdated(tabId, changeInfo, tab) {
   if (!Context.enabled || !Context.plainText) return;
   console.log(tabId, changeInfo, tab);
+
   // Delete previous page informations
   del(tabId);
+
   // Bind once per tab
   bind(tabId);
+
   // Patch xhr
-  chrome.tabs.executeScript(
-    tabId,
-    {
+  executeScript({
+    details: {
       code: `
       (function() {
         var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
@@ -301,8 +302,8 @@ export function onUpdated(tabId, changeInfo, tab) {
       })();
       `,
     },
-    logError
-  );
+  });
+
   patch({
     tabId: tabId,
     id: `${ID_PREFIX}xhrpatch`,

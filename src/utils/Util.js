@@ -1,16 +1,16 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 
-export function executeScript({ tabId, details }) {
+export function executeScript({ tabId = undefined, details }) {
+  console.log(tabId, details);
   return new Promise((resolve, reject) => {
-    chrome.tabs.executeScript(
-      tabId,
-      details,
-      results => {
+    chrome.tabs.executeScript(tabId, details, results => {
+      if (chrome.runtime.lastError) {
+        reject(results);
+      } else {
         resolve(results);
-      },
-      logError
-    );
-  });
+      }
+    });
+  }).catch(logError);
 }
 
 export function logError(e) {
@@ -20,3 +20,8 @@ export function logError(e) {
     console.log(e);
   }
 }
+
+export default {
+  executeScript: executeScript,
+  logError: logError,
+};
