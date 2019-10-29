@@ -250,6 +250,15 @@ export function onConnect(port) {
         if (target != message.data) enforceUpdate();
         break;
       }
+      // Case when element id updated
+      case 'update_id': {
+        if (message.id > elementId) {
+          console.log(elementId);
+          elementId = message.id;
+        }
+        break;
+      }
+      // Pass background context object to port
       case 'retrieve_context': {
         port.postMessage({
           type: 'update_context',
@@ -260,12 +269,13 @@ export function onConnect(port) {
         });
         break;
       }
-      // Case when element id updated
-      case 'update_id': {
-        if (message.id > elementId) {
-          console.log(elementId);
-          elementId = message.id;
-        }
+      // Ask background to create translucent background
+      case 'create_background': {
+        createBg();
+        break;
+      }
+      case 'remove_background': {
+        removeBg();
         break;
       }
       default:
@@ -318,6 +328,19 @@ export function onUpdated(tabId, changeInfo, tab) {
         }
       }, false);
 
+      var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+      var createBg = function() {
+        port.postMessage({
+          type: 'create_background'
+        });
+      };
+      var removeBg = function() {
+        port.postMessage({
+          type: 'remove_background'
+        });
+      };
+
+
       var open = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function() {
         var method = arguments[0];
@@ -338,13 +361,16 @@ export function onUpdated(tabId, changeInfo, tab) {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
                 if (context.plainText && body.indexOf(targets[i].value) !== -1) {
+                  createBg();
                   if (confirm("${chrome.i18n
                     .getMessage('confirm_request_block')
                     .replace(/\n/g, '\\\\n')}")) {;
                     flag = true;
+                    removeBg();
                     break;
                   } else {
                     alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
+                    removeBg();
                     // Cancel request
                     return;
                   }
