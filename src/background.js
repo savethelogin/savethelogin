@@ -5,22 +5,9 @@ import Context from './classes/Context';
 const { PROJECT_PREFIX } = config;
 
 // Check extension disabled
-chrome.storage.sync.get(
-  [
-    `${PROJECT_PREFIX}_disabled`,
-    `${PROJECT_PREFIX}_opt_plain_text`,
-    `${PROJECT_PREFIX}_opt_session_hijack`,
-  ],
-  items => {
-    Context.enabled = !items[`${PROJECT_PREFIX}_disabled`] ? true : false;
-    Context.plainText =
-      items[`${PROJECT_PREFIX}_opt_plain_text`] ||
-      items[`${PROJECT_PREFIX}_opt_plain_text`] === undefined
-        ? true
-        : false;
-    Context.sessHijack = items[`${PROJECT_PREFIX}_opt_session_hijack`] ? true : false;
-  }
-);
+chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
+  Context.enabled = !!!items[`${PROJECT_PREFIX}_disabled`] ? true : false;
+});
 
 /**
  * Import modules
