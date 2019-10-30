@@ -1,13 +1,13 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-
-import config from './Config';
-import Context from './Context';
+import config from '../../classes/Config';
+import Context from '../../classes/Context';
 
 let uniqueDomains = [];
+let allCookies = [];
 
 function extractRootDomain(hostname) {
   // Extract original(top) domain of url
-  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [])[0].replace(
+  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
     /^www[0-9]*\./i,
     ''
   );
@@ -18,10 +18,10 @@ function unique(array) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  if (!Context.enabled || !Context.sessHijack) return {};
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
   chrome.cookies.getAll({ session: true }, cookies => {
-    Context.cookies = cookies;
+    allCookies = cookies;
     uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
   });
 }
@@ -29,7 +29,7 @@ export function onUpdated(tabId, changeInfo, tab) {
 onUpdated();
 
 export function onBeforeSendHeaders(details) {
-  if (!Context.enabled || !Context.sessHijack) return {};
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
   if (details.requestHeaders) {
     // Get referer header
@@ -50,8 +50,8 @@ export function onBeforeSendHeaders(details) {
     const refererRoot = extractRootDomain(refererUrl.hostname);
     // If referer session cookie exists
     if (uniqueDomains.includes(refererRoot)) {
-      let cookies = Context.cookies;
-      let refererCookies = cookies.filter(cookie => cookie.domain.includes(refererRoot));
+      const cookies = allCookies;
+      const refererCookies = cookies.filter(cookie => cookie.domain.includes(refererRoot));
       for (let i = 0; i < refererCookies.length; ++i) {
         const cookie = refererCookies[i];
         if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;

@@ -2,12 +2,12 @@
 
 /**
  * HTTP Request blocker module
- **/
-import config from './Config';
+ */
+import config from '../../classes/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { logError } from '../utils/Util';
-import Context from './Context';
+import { executeScript } from '../../utils/Util';
+import Context from '../../classes/Context';
 
 // Store private datas
 let privateData = {};
@@ -19,11 +19,13 @@ let elementId = 0;
 // Request may be cancelled
 let sensitives = [];
 
+/**
+ * Prepend inline script to header
+ */
 function patch({ tabId, id, code }) {
-  if (!Context.enabled || !Context.plainText) return;
-  chrome.tabs.executeScript(
-    tabId,
-    {
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
+  executeScript({
+    details: {
       allFrames: true,
       code: `
       (function() {
@@ -36,8 +38,7 @@ function patch({ tabId, id, code }) {
       })();
       `,
     },
-    logError
-  );
+  });
 }
 
 // Unset and zero-fill to erase sensitive datas
@@ -56,10 +57,10 @@ function del(tabId) {
 
 // Bind event handler to webpage
 function bind(tabId) {
-  if (!Context.enabled || !Context.plainText) return;
-  chrome.tabs.executeScript(
-    tabId,
-    {
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
+  executeScript({
+    tabId: tabId,
+    details: {
       // Check all frames (e.g. iframe, frame)
       allFrames: true,
       code: `
@@ -82,6 +83,7 @@ function bind(tabId) {
               });
               break;
             }
+
             // Send event to extension
             var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
@@ -92,6 +94,7 @@ function bind(tabId) {
             });
           };
         };
+
         var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
@@ -100,12 +103,14 @@ function bind(tabId) {
         var pwFields = Array.from(
           document.querySelectorAll(target)
         );
+
         iterable = iterable.concat(pwFields);
         var pwForms = [].filter.call(document.querySelectorAll('form'),
           function(el) {
             return el.querySelector(target) ? el : null;
           }
         );
+
         iterable = iterable.concat(pwForms);
         for (var i = 0; i < iterable.length; ++i) {
           id++;
@@ -128,14 +133,13 @@ function bind(tabId) {
         }
       })();`,
     },
-    logError
-  );
+  });
 }
 
 // Create translucent black background when alert appears
 function createBg() {
-  chrome.tabs.executeScript(
-    {
+  executeScript({
+    details: {
       code: `
       (function() {
         var bg = document.createElement('div');
@@ -151,22 +155,20 @@ function createBg() {
         document.body.appendChild(bg);
       })()`,
     },
-    logError
-  );
+  });
 }
 
 // Remove background which created by createBg()
 function removeBg() {
-  chrome.tabs.executeScript(
-    {
+  executeScript({
+    details: {
       code: `
       (function() {
         var bg = document.getElementById('${ID_PREFIX}bg');
         bg.parentElement.removeChild(bg);
       })()`,
     },
-    logError
-  );
+  });
 }
 
 function enforceUpdate() {
@@ -178,6 +180,11 @@ export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
   port.onMessage.addListener(message => {
     switch (message.type) {
+      case 'update_toggle':
+      case 'update_options':
+        // Force trigger updated
+        enforceUpdate();
+        break;
       // Case when data updated by event listener
       case 'update_data': {
         if (!message.data) return;
@@ -211,56 +218,6 @@ export function onConnect(port) {
         tmp = undefined;
         break;
       }
-      // Case when toggle on/off button changed
-      case 'update_toggle': {
-        Context.enabled = message.data;
-        if (Context.enabled === true)
-          chrome.browserAction.setIcon({
-            path: '/icons/icon16.png',
-          });
-        else
-          chrome.browserAction.setIcon({
-            path: '/icons/icon-off16.png',
-          });
-        // Force trigger updated
-        enforceUpdate();
-        break;
-      }
-      // Case when option changed
-      case 'update_options': {
-        let target;
-        switch (message.name) {
-          case 'plain_text':
-            target = Context.plainText;
-            Context.plainText = message.data;
-            break;
-          case 'session_hijack':
-            target = Context.sessHijack;
-            Context.sessHijack = message.data;
-            break;
-          default:
-            break;
-        }
-        port.postMessage({
-          type: 'update_context',
-          data: JSON.stringify({
-            plainText: Context.plainText,
-            sessHijack: Context.sessHijack,
-          }),
-        });
-        if (target != message.data) enforceUpdate();
-        break;
-      }
-      case 'retrieve_context': {
-        port.postMessage({
-          type: 'update_context',
-          data: JSON.stringify({
-            plainText: Context.plainText,
-            sessHijack: Context.sessHijack,
-          }),
-        });
-        break;
-      }
       // Case when element id updated
       case 'update_id': {
         if (message.id > elementId) {
@@ -269,24 +226,35 @@ export function onConnect(port) {
         }
         break;
       }
+      // Ask background to create translucent background
+      case 'create_background': {
+        createBg();
+        break;
+      }
+      case 'remove_background': {
+        removeBg();
+        break;
+      }
       default:
-        console.error(message);
+        console.log(message);
         break;
     }
   });
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   console.log(tabId, changeInfo, tab);
+
   // Delete previous page informations
   del(tabId);
+
   // Bind once per tab
   bind(tabId);
+
   // Patch xhr
-  chrome.tabs.executeScript(
-    tabId,
-    {
+  executeScript({
+    details: {
       code: `
       (function() {
         var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
@@ -301,8 +269,8 @@ export function onUpdated(tabId, changeInfo, tab) {
       })();
       `,
     },
-    logError
-  );
+  });
+
   patch({
     tabId: tabId,
     id: `${ID_PREFIX}xhrpatch`,
@@ -316,6 +284,20 @@ export function onUpdated(tabId, changeInfo, tab) {
           } catch (e) {}
         }
       }, false);
+
+      var createBg = function() {
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        port.postMessage({
+          type: 'create_background'
+        });
+      };
+      var removeBg = function() {
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        port.postMessage({
+          type: 'remove_background'
+        });
+      };
+
 
       var open = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function() {
@@ -332,18 +314,21 @@ export function onUpdated(tabId, changeInfo, tab) {
         if (method.match(/^POST$/i) && action.match(/^http:/i)) {
           var send = this.send;
           this.send = function(body) {
-            var flag = false;
+            var isSensitive = false;
             try {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
                 if (context.plainText && body.indexOf(targets[i].value) !== -1) {
+                  createBg();
                   if (confirm("${chrome.i18n
                     .getMessage('confirm_request_block')
                     .replace(/\n/g, '\\\\n')}")) {;
-                    flag = true;
+                    isSensitive = true;
+                    removeBg();
                     break;
                   } else {
                     alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
+                    removeBg();
                     // Cancel request
                     return;
                   }
@@ -351,7 +336,7 @@ export function onUpdated(tabId, changeInfo, tab) {
               }
             } catch (e) {}
             // Inject header
-            if (flag) {
+            if (isSensitive) {
               this.setRequestHeader("X-Plaintext-Login", "GRANTED");
             }
             // Call original send method
@@ -370,7 +355,7 @@ export function onUpdated(tabId, changeInfo, tab) {
 }
 
 export function onRemoved(tabId, removed) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   // Remove HTTP response headers record
   chrome.storage.local.remove([`${PROJECT_PREFIX}_tab_` + tabId], () => {});
   // Remove private data by tab id when tab closed
@@ -381,13 +366,18 @@ export function onRemoved(tabId, removed) {
  * Check HTTP POST Body data contains plain private data
  */
 export function onBeforeRequest(details) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   if (details.method === 'POST' && details.requestBody) {
     const url = new URL(details.url);
     // If host is IPv4 range
     const hostname = url.hostname;
-    // Check if hostname is in private ip range
-    if (hostname.match(/^localhost$/i)) return;
+    /**
+     * Check if hostname is in private ip range
+     */
+    // If hostname only contains non-dot characters
+    // e.g.) localhost, broadcasthost
+    if (hostname.match(/^[a-z0-9-_]$/i)) return;
+    // Case when ip only contains numeric chracters
     if (hostname.match(/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/)) {
       const privateIpRange = [
         // 127.0.0.1
@@ -413,7 +403,7 @@ export function onBeforeRequest(details) {
     if (keys.length === 0) {
       return;
     }
-    let flag = false;
+    let isSensitive = false;
     first: for (let i = 0; i < keys.length; ++i) {
       const formData = details.requestBody.formData;
       if (formData) {
@@ -432,7 +422,7 @@ export function onBeforeRequest(details) {
                 .filter(x => x !== 0)
                 .every(val => u8a.includes(val))
             ) {
-              flag = true;
+              isSensitive = true;
               break first;
             }
           }
@@ -446,14 +436,14 @@ export function onBeforeRequest(details) {
           if (
             privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))
           ) {
-            flag = true;
+            isSensitive = true;
             break first;
           }
         }
       }
     }
     // If formData or rawData contains plain private data
-    if (flag) {
+    if (isSensitive) {
       sensitives.push(details.requestId);
     }
     del(details.tabId);
@@ -485,22 +475,6 @@ export function onBeforeSendHeaders(details) {
   }
 }
 
-/**
- * Store HTTP Response headers
- */
-export function onResponseStarted(details) {
-  if (!Context.enabled) return;
-  if (details.statusCode === 200) {
-    // If response type is not subframe
-    if (details.type === 'main_frame') {
-      // Store http reponse to local storage
-      chrome.storage.local.set({
-        [`${PROJECT_PREFIX}_tab_${details.tabId}`]: details,
-      });
-    }
-  }
-}
-
 export function onCompleted(details) {
   if (sensitives.includes(details.requestId)) {
     let index = sensitives.indexOf(details.requestId);
@@ -523,7 +497,6 @@ export default {
   onRemoved: onRemoved,
   onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
-  onResponseStarted: onResponseStarted,
   onCompleted: onCompleted,
   onErrorOccurred: onErrorOccurred,
 };
