@@ -1,12 +1,8 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-
 import config from './classes/Config';
-const { PROJECT_PREFIX } = config;
-
 import Context from './classes/Context';
 
-import Block from './classes/Block';
-import Security from './classes/Security';
+const { PROJECT_PREFIX } = config;
 
 // Check extension disabled
 chrome.storage.sync.get(
@@ -26,37 +22,15 @@ chrome.storage.sync.get(
   }
 );
 
-/*
- * Add listeners
+/**
+ * Import modules
  */
-// Blocker module
-chrome.runtime.onConnect.addListener(Block.onConnect);
-chrome.tabs.onUpdated.addListener(Block.onUpdated);
-chrome.tabs.onRemoved.addListener(Block.onRemoved);
-chrome.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, [
-  'requestBody',
-]);
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  Block.onBeforeSendHeaders,
-  { urls: ['http://*/*'] },
-  ['requestHeaders', 'extraHeaders', 'blocking']
-);
-chrome.webRequest.onResponseStarted.addListener(
-  Block.onResponseStarted,
-  { urls: ['https://*/*', 'http://*/*'] },
-  ['responseHeaders']
-);
-chrome.webRequest.onCompleted.addListener(Block.onCompleted, {
-  urls: ['https://*/*', 'http://*/*'],
-});
-chrome.webRequest.onErrorOccurred.addListener(Block.onErrorOccurred, {
-  urls: ['https://*/*', 'http://*/*'],
-});
+/* https://webpack.js.org/guides/dependency-management/#require-context */
+const cache = {};
 
-// Security module
-chrome.tabs.onUpdated.addListener(Security.onUpdated);
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  Security.onBeforeSendHeaders,
-  { urls: ['*://*/*'] },
-  ['requestHeaders', 'extraHeaders', 'blocking']
-);
+function importAll(r) {
+  r.keys().forEach(key => (cache[key] = r(key)));
+}
+
+// Import every module not start with underscore
+importAll(require.context('./modules/', true, /[^_]*Entry\.js$/));

@@ -3,11 +3,11 @@
 /**
  * HTTP Request blocker module
  */
-import config from './Config';
+import config from '../../classes/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { executeScript } from '../utils/Util';
-import Context from './Context';
+import { executeScript } from '../../utils/Util';
+import Context from '../../classes/Context';
 
 // Store private datas
 let privateData = {};
@@ -520,22 +520,6 @@ export function onBeforeSendHeaders(details) {
   }
 }
 
-/**
- * Store HTTP Response headers
- */
-export function onResponseStarted(details) {
-  if (!Context.enabled) return;
-  if (details.statusCode === 200) {
-    // If response type is not subframe
-    if (details.type === 'main_frame') {
-      // Store http reponse to local storage
-      chrome.storage.local.set({
-        [`${PROJECT_PREFIX}_tab_${details.tabId}`]: details,
-      });
-    }
-  }
-}
-
 export function onCompleted(details) {
   if (sensitives.includes(details.requestId)) {
     let index = sensitives.indexOf(details.requestId);
@@ -558,7 +542,6 @@ export default {
   onRemoved: onRemoved,
   onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
-  onResponseStarted: onResponseStarted,
   onCompleted: onCompleted,
   onErrorOccurred: onErrorOccurred,
 };
