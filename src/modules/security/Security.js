@@ -1,5 +1,4 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-
 import config from '../../classes/Config';
 import Context from '../../classes/Context';
 

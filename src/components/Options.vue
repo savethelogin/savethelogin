@@ -14,32 +14,12 @@
         <div class="clearfix"></div>
       </div>
     </div>
-    <!--
-    <h4 class="mt-3">
-      Experimental
-      <small class="text-danger">
-        <i class="material-icons md-18">warning</i>
-      </small>
-    </h4>
-    <hr class="mt-0" />
-    <div class="row">
-      <div class="col-12">
-        <div class="float-left">
-          <p>Basic session hijacking protection</p>
-        </div>
-        <div class="float-right">
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-    -->
   </div>
 </template>
 
 <script>
 import config from '../classes/Config';
 import ToggleSwitch from './ToggleSwitch';
-
 import { openDefaultPort } from '../utils/Util';
 
 const { PROJECT_PREFIX } = config;
