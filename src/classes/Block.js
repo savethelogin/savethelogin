@@ -2,7 +2,7 @@
 
 /**
  * HTTP Request blocker module
- **/
+ */
 import config from './Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
@@ -19,6 +19,9 @@ let elementId = 0;
 // Request may be cancelled
 let sensitives = [];
 
+/**
+ * Prepend inline script to header
+ */
 function patch({ tabId, id, code }) {
   if (!Context.enabled || !Context.plainText) return;
   executeScript({
@@ -356,7 +359,7 @@ export function onUpdated(tabId, changeInfo, tab) {
         if (method.match(/^POST$/i) && action.match(/^http:/i)) {
           var send = this.send;
           this.send = function(body) {
-            var flag = false;
+            var isSensitive = false;
             try {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
@@ -365,7 +368,7 @@ export function onUpdated(tabId, changeInfo, tab) {
                   if (confirm("${chrome.i18n
                     .getMessage('confirm_request_block')
                     .replace(/\n/g, '\\\\n')}")) {;
-                    flag = true;
+                    isSensitive = true;
                     removeBg();
                     break;
                   } else {
@@ -378,7 +381,7 @@ export function onUpdated(tabId, changeInfo, tab) {
               }
             } catch (e) {}
             // Inject header
-            if (flag) {
+            if (isSensitive) {
               this.setRequestHeader("X-Plaintext-Login", "GRANTED");
             }
             // Call original send method
@@ -445,7 +448,7 @@ export function onBeforeRequest(details) {
     if (keys.length === 0) {
       return;
     }
-    let flag = false;
+    let isSensitive = false;
     first: for (let i = 0; i < keys.length; ++i) {
       const formData = details.requestBody.formData;
       if (formData) {
@@ -464,7 +467,7 @@ export function onBeforeRequest(details) {
                 .filter(x => x !== 0)
                 .every(val => u8a.includes(val))
             ) {
-              flag = true;
+              isSensitive = true;
               break first;
             }
           }
@@ -478,14 +481,14 @@ export function onBeforeRequest(details) {
           if (
             privateData[details.tabId][keys[i]].filter(x => x !== 0).every(val => u8a.includes(val))
           ) {
-            flag = true;
+            isSensitive = true;
             break first;
           }
         }
       }
     }
     // If formData or rawData contains plain private data
-    if (flag) {
+    if (isSensitive) {
       sensitives.push(details.requestId);
     }
     del(details.tabId);

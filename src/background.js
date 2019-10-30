@@ -29,7 +29,6 @@ chrome.storage.sync.get(
 /*
  * Add listeners
  */
-
 // Blocker module
 chrome.runtime.onConnect.addListener(Block.onConnect);
 chrome.tabs.onUpdated.addListener(Block.onUpdated);
