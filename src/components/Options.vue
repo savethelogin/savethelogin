@@ -1,36 +1,15 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div class="col-12 mb-3">
-    <h4 class="mt-3">{{ msgBasics }}</h4>
+    <h4 class="mt-3">Basics</h4>
     <hr class="mt-0" />
     <div class="row">
-      <div class="col-12">
+      <div class="col-12" v-for="(val, key) in options">
         <div class="float-left">
-          <p>{{ msgPlainText }}</p>
+          <p>{{ getDescription(key) }}</p>
         </div>
         <div class="float-right">
-          <ToggleSwitch v-bind:checked="plainText" v-bind:callback="changeOption('plain_text')" />
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-    <h4 class="mt-3">
-      {{ msgExperimental }}
-      <small class="text-danger">
-        <i class="material-icons">warning</i>
-      </small>
-    </h4>
-    <hr class="mt-0" />
-    <div class="row">
-      <div class="col-12">
-        <div class="float-left">
-          <p>{{ msgSessionHijack }}</p>
-        </div>
-        <div class="float-right">
-          <ToggleSwitch
-            v-bind:checked="sessHijack"
-            v-bind:callback="changeOption('session_hijack')"
-          />
+          <ToggleSwitch v-bind:checked="val" v-bind:callback="updateOption(key)" />
         </div>
         <div class="clearfix"></div>
       </div>
@@ -41,6 +20,9 @@
 <script>
 import config from '../classes/Config';
 import ToggleSwitch from './ToggleSwitch';
+import { openDefaultPort } from '../utils/Util';
+
+const { PROJECT_PREFIX } = config;
 
 export default {
   name: 'Options',
@@ -49,79 +31,45 @@ export default {
   },
   data() {
     return {
-      plainText: true,
-      sessHijack: false,
+      options: [],
     };
   },
-  watch: {
-    plainText: function(newValue) {
-      chrome.storage.sync.set(
-        {
-          [`${config.PROJECT_PREFIX}_opt_plain_text`]: newValue,
-        },
-        () => {
-          let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
-          port.postMessage({
-            type: 'update_options',
-            name: 'plain_text',
-            data: newValue,
-          });
-        }
-      );
-    },
-    sessHijack: function(newValue) {
-      chrome.storage.sync.set(
-        {
-          [`${config.PROJECT_PREFIX}_opt_session_hijack`]: newValue,
-        },
-        () => {
-          let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
-          port.postMessage({
-            type: 'update_options',
-            name: 'session_hijack',
-            data: newValue,
-          });
-        }
-      );
-    },
-  },
-  computed: {
-    msgBasics: function() {
-      return chrome.i18n.getMessage('basics');
-    },
-    msgExperimental: function() {
-      return chrome.i18n.getMessage('experimental');
-    },
-    msgPlainText: function() {
-      return chrome.i18n.getMessage('options_plain_text');
-    },
-    msgSessionHijack: function() {
-      return chrome.i18n.getMessage('options_session_hijack');
-    },
-  },
   created() {
-    chrome.storage.sync.get(
-      [`${config.PROJECT_PREFIX}_opt_plain_text`, `${config.PROJECT_PREFIX}_opt_session_hijack`],
-      items => {
-        this.plainText = items[`${config.PROJECT_PREFIX}_opt_plain_text`] ? true : false;
-        this.sessHijack = items[`${config.PROJECT_PREFIX}_opt_session_hijack`] ? true : false;
+    let port = openDefaultPort();
+    port.onMessage.addListener(message => {
+      if (message.type === 'update_context') {
+        try {
+          let context = JSON.parse(message.data);
+          let optionKeys = Object.keys(context).filter(key => key.slice(-8) === '_enabled');
+          let obj = {};
+          for (let i = 0; i < optionKeys.length; ++i) {
+            obj[optionKeys[i]] = context[optionKeys[i]];
+          }
+          this.options = obj;
+        } catch (e) {
+          console.log(e);
+        }
       }
-    );
+    });
+    port.postMessage({ type: 'retrieve_context' });
   },
   methods: {
-    changeOption: function(option) {
-      switch (option) {
-        case 'plain_text':
-          return event => {
-            this.plainText = event.target.checked;
-          };
-        case 'session_hijack':
-          return event => {
-            this.sessHijack = event.target.checked;
-          };
-        default:
-          break;
-      }
+    _keyToName: function(key) {
+      return key.replace(/_enabled$/, '');
+    },
+    getDescription: function(key) {
+      let name = this._keyToName(key);
+      return chrome.i18n.getMessage(`options_${name}_desc`);
+    },
+    updateOption: function(key) {
+      return function(event) {
+        let port = openDefaultPort();
+        port.postMessage({
+          type: 'update_options',
+          name: key,
+          data: event.target.checked,
+        });
+      };
     },
   },
 };

@@ -68,10 +68,10 @@
   "experimental": {
     "message": "Experimental"
   },
-  "options_plain_text": {
+  "options_block_desc": {
     "message": "Notify about plain text login"
   },
-  "options_session_hijack": {
+  "options_security_desc": {
     "message": "Basic session hijacking protection"
   }
 }

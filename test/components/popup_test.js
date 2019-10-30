@@ -139,6 +139,12 @@ describe('Popup', function() {
 
   describe('#changeView', function() {
     it('changes component', function() {
+      chrome.runtime.connect.withArgs(sinon.match.object).returns({
+        onMessage: {
+          addListener: function() {},
+        },
+        postMessage: sinon.spy(),
+      });
       const wrapper = mount(Popup);
       const before = wrapper.vm.currentView;
       wrapper.setData({ isEnabled: true });

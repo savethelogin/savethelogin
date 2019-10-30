@@ -1,5 +1,4 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './components/Globals';
 
