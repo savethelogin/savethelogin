@@ -23,7 +23,12 @@ describe('Options', function() {
 
   beforeEach(function() {
     chrome.flush();
-    chrome.runtime.connect.withArgs(sinon.match.object).returns({ postMessage: sinon.spy() });
+    chrome.runtime.connect.withArgs(sinon.match.object).returns({
+      onMessage: {
+        addListener: function() {},
+      },
+      postMessage: sinon.spy(),
+    });
   });
 
   it('has data', function() {
