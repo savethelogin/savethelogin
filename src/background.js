@@ -54,8 +54,6 @@ export function onConnect(port) {
           chrome.browserAction.setIcon({
             path: '/icons/icon-off16.png',
           });
-        // Force trigger updated
-        enforceUpdate();
         break;
       }
       // Case when option changed
@@ -63,7 +61,6 @@ export function onConnect(port) {
         let oldValue = Context.get(message.name);
         Context.set(message.name, message.data);
         if (oldValue != message.data) {
-          enforceUpdate();
           port.postMessage({
             type: 'update_context',
             data: Context.serialize(),

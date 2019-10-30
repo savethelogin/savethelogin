@@ -180,6 +180,11 @@ export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
   port.onMessage.addListener(message => {
     switch (message.type) {
+      case 'update_toggle':
+      case 'update_options':
+        // Force trigger updated
+        enforceUpdate();
+        break;
       // Case when data updated by event listener
       case 'update_data': {
         if (!message.data) return;
@@ -280,13 +285,14 @@ export function onUpdated(tabId, changeInfo, tab) {
         }
       }, false);
 
-      var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
       var createBg = function() {
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.postMessage({
           type: 'create_background'
         });
       };
       var removeBg = function() {
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.postMessage({
           type: 'remove_background'
         });
