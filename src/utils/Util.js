@@ -1,4 +1,10 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+import config from '../classes/Config';
+const { PROJECT_PREFIX } = config;
+
+export function openDefaultPort() {
+  return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
+}
 
 export function executeScript({ tabId = undefined, details }) {
   console.log(tabId, details);
@@ -27,6 +33,7 @@ export function funcToStr(func) {
 }
 
 export default {
+  openDefaultPort: openDefaultPort,
   executeScript: executeScript,
   logError: logError,
   funcToStr: funcToStr,
