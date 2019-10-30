@@ -4,64 +4,50 @@ import config from './Config';
 
 class Context {
   constructor() {
+    this.names = [];
+
     // Is extenstion enabled?
-    this._enabled = false;
-
-    // Options
-    this._opt_plain_text = true;
-    this._opt_session_hijack = false;
-
-    // Cookies
-    this._cookies = [];
+    this.set('enabled', false);
   }
 
   /**
    * Context setter
    */
   set(name, value) {
-    this.name = value;
+    if (this.names.indexOf(name) === -1) {
+      this.names.push(name);
+    }
+    this[name] = value;
   }
 
   /**
    * Context getter
    */
   get(name) {
-    return this.name;
+    return this[name];
   }
 
   /**
-   * Properties
+   * Remove context variable
    */
-  get enabled() {
-    return this._enabled;
+  del(name) {
+    let list = this.list();
+    let index = list.indexOf(name);
+    this.names.splice(index, 1);
+    delete this[name];
   }
 
-  set enabled(enabled) {
-    this._enabled = enabled;
+  list() {
+    return this.names;
   }
 
-  get plainText() {
-    return this._opt_plain_text;
-  }
-
-  set plainText(newValue) {
-    this._opt_plain_text = newValue;
-  }
-
-  get sessHijack() {
-    return this._opt_session_hijack;
-  }
-
-  set sessHijack(newValue) {
-    this._opt_session_hijack = newValue;
-  }
-
-  get cookies() {
-    return this._cookies;
-  }
-
-  set cookies(newValue) {
-    this._cookies = newValue;
+  serialize() {
+    let retObj = {};
+    let list = this.list();
+    for (let i = 0; i < list.length; ++i) {
+      retObj[list[i]] = this.get(list[i]);
+    }
+    return JSON.stringify(retObj);
   }
 }
 

@@ -8,7 +8,7 @@ const { PROJECT_PREFIX } = config;
  * Store HTTP Response headers
  */
 export function onResponseStarted(details) {
-  if (!Context.enabled) return;
+  if (!Context.get('enabled')) return;
   if (details.statusCode === 200) {
     // If response type is not subframe
     if (details.type === 'main_frame') {

@@ -19,7 +19,7 @@ function unique(array) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  if (!Context.enabled || !Context.sessHijack) return {};
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
   chrome.cookies.getAll({ session: true }, cookies => {
     Context.cookies = cookies;
@@ -30,7 +30,7 @@ export function onUpdated(tabId, changeInfo, tab) {
 onUpdated();
 
 export function onBeforeSendHeaders(details) {
-  if (!Context.enabled || !Context.sessHijack) return {};
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
   if (details.requestHeaders) {
     // Get referer header

@@ -23,7 +23,7 @@ let sensitives = [];
  * Prepend inline script to header
  */
 function patch({ tabId, id, code }) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   executeScript({
     details: {
       allFrames: true,
@@ -57,7 +57,7 @@ function del(tabId) {
 
 // Bind event handler to webpage
 function bind(tabId) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   executeScript({
     tabId: tabId,
     details: {
@@ -213,63 +213,12 @@ export function onConnect(port) {
         tmp = undefined;
         break;
       }
-      // Case when toggle on/off button changed
-      case 'update_toggle': {
-        Context.enabled = message.data;
-        if (Context.enabled === true)
-          chrome.browserAction.setIcon({
-            path: '/icons/icon16.png',
-          });
-        else
-          chrome.browserAction.setIcon({
-            path: '/icons/icon-off16.png',
-          });
-        // Force trigger updated
-        enforceUpdate();
-        break;
-      }
-      // Case when option changed
-      case 'update_options': {
-        let target;
-        switch (message.name) {
-          case 'plain_text':
-            target = Context.plainText;
-            Context.plainText = message.data;
-            break;
-          case 'session_hijack':
-            target = Context.sessHijack;
-            Context.sessHijack = message.data;
-            break;
-          default:
-            break;
-        }
-        port.postMessage({
-          type: 'update_context',
-          data: JSON.stringify({
-            plainText: Context.plainText,
-            sessHijack: Context.sessHijack,
-          }),
-        });
-        if (target != message.data) enforceUpdate();
-        break;
-      }
       // Case when element id updated
       case 'update_id': {
         if (message.id > elementId) {
           console.log(elementId);
           elementId = message.id;
         }
-        break;
-      }
-      // Pass background context object to port
-      case 'retrieve_context': {
-        port.postMessage({
-          type: 'update_context',
-          data: JSON.stringify({
-            plainText: Context.plainText,
-            sessHijack: Context.sessHijack,
-          }),
-        });
         break;
       }
       // Ask background to create translucent background
@@ -282,14 +231,14 @@ export function onConnect(port) {
         break;
       }
       default:
-        console.error(message);
+        console.log(message);
         break;
     }
   });
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   console.log(tabId, changeInfo, tab);
 
   // Delete previous page informations
@@ -400,7 +349,7 @@ export function onUpdated(tabId, changeInfo, tab) {
 }
 
 export function onRemoved(tabId, removed) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   // Remove HTTP response headers record
   chrome.storage.local.remove([`${PROJECT_PREFIX}_tab_` + tabId], () => {});
   // Remove private data by tab id when tab closed
@@ -411,7 +360,7 @@ export function onRemoved(tabId, removed) {
  * Check HTTP POST Body data contains plain private data
  */
 export function onBeforeRequest(details) {
-  if (!Context.enabled || !Context.plainText) return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   if (details.method === 'POST' && details.requestBody) {
     const url = new URL(details.url);
     // If host is IPv4 range
