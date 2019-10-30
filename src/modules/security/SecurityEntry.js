@@ -6,14 +6,16 @@ import Security from './Security';
 const { PROJECT_PREFIX } = config;
 const defaultEnabled = false;
 
-chrome.storage.sync.get([`${PROJECT_PREFIX}_opt_security_enabled`], items => {
-  if (items[`${PROJECT_PREFIX}_opt_security_enabled`] === undefined) {
+const optionKey = `${PROJECT_PREFIX}_opt_security_enabled`;
+
+chrome.storage.sync.get([optionKey], items => {
+  if (items[optionKey] === undefined) {
     chrome.storage.sync.set({
-      [`${PROJECT_PREFIX}_opt_security_enabled`]: defaultEnabled,
+      [optionKey]: defaultEnabled,
     });
     Context.set('security_enabled', defaultEnabled);
   } else {
-    Context.set('security_enabled', items[`${PROJECT_PREFIX}_opt_security_enabled`]);
+    Context.set('security_enabled', items[optionKey]);
   }
 });
 
