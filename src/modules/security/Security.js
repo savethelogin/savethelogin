@@ -4,6 +4,7 @@ import config from '../../classes/Config';
 import Context from '../../classes/Context';
 
 let uniqueDomains = [];
+let allCookies = [];
 
 function extractRootDomain(hostname) {
   // Extract original(top) domain of url
@@ -21,7 +22,7 @@ export function onUpdated(tabId, changeInfo, tab) {
   if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
   chrome.cookies.getAll({ session: true }, cookies => {
-    Context.cookies = cookies;
+    allCookies = cookies;
     uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
   });
 }
@@ -50,8 +51,8 @@ export function onBeforeSendHeaders(details) {
     const refererRoot = extractRootDomain(refererUrl.hostname);
     // If referer session cookie exists
     if (uniqueDomains.includes(refererRoot)) {
-      let cookies = Context.cookies;
-      let refererCookies = cookies.filter(cookie => cookie.domain.includes(refererRoot));
+      const cookies = allCookies;
+      const refererCookies = cookies.filter(cookie => cookie.domain.includes(refererRoot));
       for (let i = 0; i < refererCookies.length; ++i) {
         const cookie = refererCookies[i];
         if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;
