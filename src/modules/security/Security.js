@@ -7,8 +7,7 @@ let uniqueDomains = [];
 
 function extractRootDomain(hostname) {
   // Extract original(top) domain of url
-  // FIXME: replace undefined
-  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [])[0].replace(
+  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
     /^www[0-9]*\./i,
     ''
   );
