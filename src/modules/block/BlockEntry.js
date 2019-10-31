@@ -6,14 +6,16 @@ import Block from './Block';
 const { PROJECT_PREFIX } = config;
 const defaultEnabled = true;
 
-chrome.storage.sync.get([`${PROJECT_PREFIX}_opt_block_enabled`], items => {
-  if (items[`${PROJECT_PREFIX}_opt_block_enabled`] === undefined) {
+const optionKey = `${PROJECT_PREFIX}_opt_block_enabled`;
+
+chrome.storage.sync.get([optionKey], items => {
+  if (items[optionKey] === undefined) {
     chrome.storage.sync.set({
-      [`${PROJECT_PREFIX}_opt_block_enabled`]: defaultEnabled,
+      [optionKey]: defaultEnabled,
     });
     Context.set('block_enabled', defaultEnabled);
   } else {
-    Context.set('block_enabled', items[`${PROJECT_PREFIX}_opt_block_enabled`]);
+    Context.set('block_enabled', items[optionKey]);
   }
 });
 

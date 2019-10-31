@@ -4,6 +4,11 @@ import Context from '../../classes/Context';
 
 const { PROJECT_PREFIX } = config;
 
+export function onRemoved(tabId, removed) {
+  // Remove HTTP response headers record
+  chrome.storage.local.remove([`${PROJECT_PREFIX}_tab_` + tabId], () => {});
+}
+
 /**
  * Store HTTP Response headers
  */
@@ -21,5 +26,6 @@ export function onResponseStarted(details) {
 }
 
 export default {
+  onRemoved: onRemoved,
   onResponseStarted: onResponseStarted,
 };
