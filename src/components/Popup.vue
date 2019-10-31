@@ -74,7 +74,7 @@ export default {
     // If toggle button state changed to enabled
     setEnabled: function(event) {
       let checked = event.target.checked;
-      chrome.storage.sync.set({ [`${config.PROJECT_PREFIX}_disabled`]: !checked }, () => {
+      chrome.storage.sync.set({ [`${config.PROJECT_PREFIX}_disabled`]: !!!checked }, () => {
         let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
         port.postMessage({
           type: 'update_toggle',
@@ -97,7 +97,7 @@ export default {
     chrome.storage.sync.get([`${config.PROJECT_PREFIX}_disabled`], items => {
       const item = items[`${config.PROJECT_PREFIX}_disabled`];
       if (item === undefined) this.isEnabled = true;
-      else this.isEnabled = !item;
+      else this.isEnabled = !!!item;
     });
   },
 };

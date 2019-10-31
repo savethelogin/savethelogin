@@ -21,6 +21,11 @@ chrome.storage.sync.get([optionKey], items => {
 
 // Security module
 chrome.tabs.onUpdated.addListener(Security.onUpdated);
+
+chrome.webRequest.onBeforeRequest.addListener(Security.onBeforeRequest, { urls: ['*://*/*'] }, [
+  'requestBody',
+  'blocking',
+]);
 chrome.webRequest.onBeforeSendHeaders.addListener(
   Security.onBeforeSendHeaders,
   { urls: ['*://*/*'] },
