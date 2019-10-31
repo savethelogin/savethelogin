@@ -17,27 +17,52 @@ function unique(array) {
   return array.filter((value, index) => array.indexOf(value) === index);
 }
 
-export function onUpdated(tabId, changeInfo, tab) {
-  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
-
-  chrome.cookies.getAll({ session: true }, cookies => {
-    allCookies = cookies;
-    uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
-  });
+function encode(string) {
+  return encodeURI(string);
 }
-// Initialize cookies when module loaded
-onUpdated();
 
-export function onBeforeSendHeaders(details) {
-  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
+function doubleEncode(string) {
+  return encode(encode(string));
+}
 
+function checkPayload(string) {
+  /**
+   * Patterns of malicious codes
+   */
+  const payloadFilter = [
+    new RegExp(encode('\0'), 'g'), // Null byte
+    new RegExp(doubleEncode('\0'), 'g'),
+    /**
+     * CSS Injection
+     */
+    new RegExp('<style.*?>', 'gi'),
+    new RegExp(encode('<') + 'style.*?' + encode('>'), 'gi'),
+    new RegExp(doubleEncode('<') + 'style.*?' + doubleEncode('>'), 'gi'),
+    new RegExp('\\[value.*?\\]', 'gi'),
+    new RegExp(encode('[') + 'value.*?' + encode(']'), 'gi'),
+    new RegExp(doubleEncode('[') + 'value.*?' + doubleEncode(']'), 'gi'),
+    new RegExp('\\{.*([a-z_-]+\\:\\s*url\\s*\\(.*?\\)).*\\}', 'gi'),
+    /**
+     * Open redirect attack
+     */
+    new RegExp('javascript:', 'g'),
+    new RegExp('javascript' + encode(':'), 'g'),
+    new RegExp('javascript' + doubleEncode(':'), 'g'),
+  ];
+  if (payloadFilter.some(pattern => string.match(pattern))) {
+    return true;
+  }
+  return false;
+}
+
+function checkCookie(details) {
   if (details.requestHeaders) {
     // Get referer header
     const refererHeader = (details.requestHeaders.filter(header =>
       header.name.match(/^Referer$/i)
     ) || [])[0];
 
-    if (!refererHeader) return {};
+    if (!refererHeader) return false;
 
     const referer = refererHeader.value;
 
@@ -45,7 +70,7 @@ export function onBeforeSendHeaders(details) {
     const refererUrl = new URL(referer);
 
     // Skip when same domain
-    if (currentUrl.hostname === refererUrl.hostname) return {};
+    if (currentUrl.hostname === refererUrl.hostname) return false;
 
     const refererRoot = extractRootDomain(refererUrl.hostname);
     // If referer session cookie exists
@@ -57,14 +82,47 @@ export function onBeforeSendHeaders(details) {
         if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;
         // Block when url contains session cookie
         if (currentUrl.toString().match(new RegExp(cookie.value, 'gi'))) {
-          return { cancel: true };
+          return true;
         }
       }
     }
   }
 }
 
+export function onUpdated(tabId, changeInfo, tab) {
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
+
+  chrome.cookies.getAll({ session: true }, cookies => {
+    allCookies = cookies;
+    uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
+  });
+}
+// Initialize cookies when module loaded
+onUpdated();
+
+/**
+ * Block request when url includes payload
+ */
+export function onBeforeRequest(details) {
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
+
+  console.log(details);
+  if (checkPayload(details.url)) {
+    return { cancel: true };
+  }
+}
+
+export function onBeforeSendHeaders(details) {
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
+
+  console.log(details);
+  if (checkCookie(details)) {
+    return { cancel: true };
+  }
+}
+
 export default {
   onUpdated: onUpdated,
+  onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
 };
