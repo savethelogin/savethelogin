@@ -356,8 +356,6 @@ export function onUpdated(tabId, changeInfo, tab) {
 
 export function onRemoved(tabId, removed) {
   if (!Context.get('enabled') || !Context.get('block_enabled')) return;
-  // Remove HTTP response headers record
-  chrome.storage.local.remove([`${PROJECT_PREFIX}_tab_` + tabId], () => {});
   // Remove private data by tab id when tab closed
   del(tabId);
 }
