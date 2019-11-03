@@ -9,31 +9,21 @@
     return ret;
   }
 
+  function replacer(match, p1, offset, string) {
+    return chrome.i18n.getMessage(p1.trim());
+  }
+
   function SimpleTemplate(obj) {
     if (!obj || !obj.target) return;
 
     var i;
+    var pattern = /\{\{([^\{\}]+?)\}\}/g;
     var target = document.querySelector(obj.target);
     var innerHTML = target.innerHTML;
-    var templateBraces = innerHTML.match(/\{\{([^\{\}]+?)\}\}/g);
+    var templateBraces = innerHTML.match(pattern);
     if (!templateBraces) return;
 
-    var variables = map(templateBraces, function(item) {
-      return item.match(/\{\{([^\{\}]+?)\}\}/)[1].trim();
-    });
-
-    for (i = 0; i < variables.length; ++i) {
-      try {
-        var result;
-        if (variables[i].match(/^[0-9]+$/)) {
-          result = parseInt(variables[i]);
-        } else {
-          result = chrome.i18n.getMessage(variables[i]);
-        }
-        innerHTML = innerHTML.replace(/\{\{[^\{\}]+?\}\}/, result);
-      } catch (e) {}
-    }
-    target.innerHTML = innerHTML;
+    target.innerHTML = innerHTML.replace(pattern, replacer);
   }
   window.SimpleTemplate = SimpleTemplate;
 })(window, document);
