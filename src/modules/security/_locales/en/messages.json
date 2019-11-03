@@ -12,6 +12,6 @@
     "message": "Disable"
   },
   "options_security_desc": {
-    "message": "Basic session hijacking protection"
+    "message": "Basic session hijacking, injection attack protection"
   }
 }
