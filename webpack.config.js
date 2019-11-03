@@ -102,6 +102,10 @@ const config = {
         to: 'manifest.json',
         transform: transformJson,
       },
+      {
+        from: 'modules/**/public/*.{html,js,css}',
+        to: '[name].[ext]',
+      },
     ]),
   ],
 };
