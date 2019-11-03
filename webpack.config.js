@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
 const { version } = require('./package.json');
@@ -102,7 +103,23 @@ const config = {
         to: 'manifest.json',
         transform: transformJson,
       },
+      {
+        from: 'modules/**/public/*.{html,js,css}',
+        to: '[name].[ext]',
+      },
     ]),
+    new MergeJsonWebpackPlugin({
+      debug: true,
+      space: 2,
+      output: {
+        groupBy: [
+          {
+            pattern: '{./modules/**/_locales/en/messages.json,./_locales/en/messages.json}',
+            fileName: './_locales/en/messages.json',
+          },
+        ],
+      },
+    }),
   ],
 };
 
@@ -138,13 +155,11 @@ if (process.env.HMR === 'true') {
   ]);
 }
 
-/* jslint ignore:start */
 function transformHtml(content) {
   return ejs.render(content.toString(), {
     ...process.env,
   });
 }
-/* jslint ignore:end */
 
 function transformJson(content) {
   const jsonContent = JSON.parse(content);
@@ -152,7 +167,7 @@ function transformJson(content) {
 
   if (process.env.NODE_ENV === 'development') {
     jsonContent.content_security_policy =
-      "script-src https://unpkg.com 'self' 'sha256-orSUajAOzVNSdc/3y0jjhLweFCR86EcSIAOaRvW3J3w=' 'sha256-KWgJIBwNKzxj/kdI4ZnAnSH+HhjGlgGtJGfUC/xJkYY=' 'unsafe-eval'; object-src 'self'";
+      "script-src https://unpkg.com 'self' 'unsafe-eval'; object-src 'self'";
   }
 
   return JSON.stringify(jsonContent, null, 2);

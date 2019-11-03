@@ -106,9 +106,18 @@ onUpdated();
 export function onBeforeRequest(details) {
   if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
-  console.log(details);
   if (checkPayload(details.url)) {
-    return { cancel: true };
+    switch (details.type) {
+      case 'main_frame':
+        delete details.requestBody;
+        return {
+          redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
+            '@@extension_id'
+          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+        };
+      default:
+        return { cancel: true };
+    }
   }
 }
 
@@ -117,7 +126,16 @@ export function onBeforeSendHeaders(details) {
 
   console.log(details);
   if (checkCookie(details)) {
-    return { cancel: true };
+    switch (details.type) {
+      case 'main_frame':
+        return {
+          redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
+            '@@extension_id'
+          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+        };
+      default:
+        return { cancel: true };
+    }
   }
 }
 

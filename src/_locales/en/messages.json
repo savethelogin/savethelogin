@@ -1,43 +1,4 @@
 {
-  "scheme": {
-    "message": "Scheme"
-  },
-  "hsts_policy": {
-    "message": "HSTS Policy"
-  },
-  "clickjacking_prevention": {
-    "message": "Clickjacking Prevention"
-  },
-  "xss_protection_policy": {
-    "message": "XSS Protection Policy"
-  },
-  "server_version_disclosure": {
-    "message": "Server Version Disclosure"
-  },
-  "servlet_spec_disclosure": {
-    "message": "Server Configuration Information Disclosure"
-  },
-  "session_cookie_xss": {
-    "message": "Session Cookie Vulnerability"
-  },
-  "confirm_request_block": {
-    "message": "We have detected and temporarily blocked the transmission of plaintext.\nUnencrypted personal information may be exposed during transmission.\nDo you want to continue?"
-  },
-  "request_blocked": {
-    "message": "Login request has been blocked."
-  },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">recommend</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">recommend</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
-  },
-  "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">recommend</span> <code>X-XSS-Protection: 1; mode=block</code> include in the server’s HTTP response header."
-  },
-  "no_information": {
-    "message": "No Information!"
-  },
   "agree": {
     "message": "agree"
   },
@@ -67,11 +28,5 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "options_block_desc": {
-    "message": "Notify about plain text login"
-  },
-  "options_security_desc": {
-    "message": "Basic session hijacking protection"
   }
 }

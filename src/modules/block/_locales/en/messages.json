@@ -1,0 +1,11 @@
+{
+  "confirm_request_block": {
+    "message": "We have detected and temporarily blocked the transmission of plaintext.\nUnencrypted personal information may be exposed during transmission.\nDo you want to continue?"
+  },
+  "request_blocked": {
+    "message": "Login request has been blocked."
+  },
+  "options_block_desc": {
+    "message": "Notify about plain text login"
+  }
+}
