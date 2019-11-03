@@ -1,0 +1,17 @@
+{
+  "security_page_blocked_title": {
+    "message": "Page Blocked"
+  },
+  "security_page_blocked_description": {
+    "message": "Save the login extension blocked request by detecting malicious payloads.\nWould you like to continue?"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "disable": {
+    "message": "Disable"
+  },
+  "options_security_desc": {
+    "message": "Basic session hijacking protection"
+  }
+}

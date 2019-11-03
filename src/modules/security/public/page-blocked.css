@@ -1,0 +1,39 @@
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+body {
+  text-align: center;
+}
+
+button {
+  background: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+button.dark {
+  background: #3c3c3c;
+  border-color: #2d2d2d;
+  color: #fff;
+}
+
+button.dark-red {
+  background: #d82525;
+  border-color: #841010;
+  color: #fff;
+}
+
+#root {
+  margin-top: 50px;
+}
+
+#notice-icon {
+  color: #c10b0b;
+  font-size: 64px;
+}
+
+.heading {
+  font-size: 32px;
+}
+
+.paragraph {
+  font-size: 24px;
+}
