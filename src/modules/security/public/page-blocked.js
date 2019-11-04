@@ -1,5 +1,13 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 (function(window, document) {
+  function stripTags(string) {
+    return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function nl2br(string) {
+    return string.replace(/\r?\n/g, '<br>');
+  }
+
   function map(arr, callback) {
     var i;
     var ret = [];
@@ -10,11 +18,11 @@
   }
 
   function r1(match, p1, offset, string) {
-    return chrome.i18n.getMessage(p1.trim()).replace(/\n/g, '<br>');
+    return nl2br(chrome.i18n.getMessage(p1.trim()));
   }
 
   function r2(match, p1, offset, string) {
-    return this.data[p1.trim()];
+    return stripTags(this.data[p1.trim()]);
   }
 
   // Constructor
@@ -68,7 +76,7 @@
   var st = new SimpleTemplate({
     target: '#root',
     data: {
-      detail: highlighter(details.url),
+      detail: details.url,
     },
   });
 
@@ -92,5 +100,9 @@
     if (uri.match(/#\!redirect/)) {
       window.location.href = details.url;
     }
+    // Highlight payload
+    var code = document.getElementsByTagName('code')[0];
+    var innerHTML = code.innerHTML;
+    code.innerHTML = highlighter(innerHTML);
   };
 })(window, document);
