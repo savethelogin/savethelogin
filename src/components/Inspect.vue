@@ -75,7 +75,7 @@ export default {
       });
     },
   },
-  created() {
+  async created() {
     let wrapper = {};
     const items = [
       'scheme',
@@ -94,107 +94,97 @@ export default {
     });
 
     // Start promise chain
-    this.tabPromise()
-      .then(currentTab => {
-        return this.storagePromise(currentTab);
-      })
-      .then(item => {
-        const url = new URL(item.url);
-        const scheme = url.protocol.slice(0, -1);
+    const currentTab = await this.tabPromise();
+    const item = await this.storagePromise(currentTab);
 
-        if (scheme === 'https') {
-          wrapper.scheme.grade = 'SAFE';
-        }
-        this.scheme = scheme;
+    const url = new URL(item.url);
+    const scheme = url.protocol.slice(0, -1);
 
-        wrapper.scheme.description = scheme;
+    if (scheme === 'https') {
+      wrapper.scheme.grade = 'SAFE';
+    }
+    this.scheme = scheme;
 
-        const headers = item.responseHeaders;
+    wrapper.scheme.description = scheme;
 
-        for (let i = 0; i < headers.length; ++i) {
-          const header = headers[i];
-          switch (header.name.toLowerCase()) {
-            // Check HSTS header
-            case 'strict-transport-security': {
-              if (scheme === 'https') {
-                // Get max-age value parsed from HSTS header
-                let maxAge = parseInt((/max\-age=([0-9]+)/gi.exec(header.value) || [, '0'])[1]);
-                wrapper.hsts_policy.description = `${chrome.i18n.getMessage('moderate')}`;
-                wrapper.hsts_policy.grade = 'NORM';
-                // Check HSTS header setting is safe from SSL Strip attack
-                if (header.value.toLowerCase().indexOf('includesubdomains') !== -1) {
-                  wrapper.hsts_policy.description = `${chrome.i18n.getMessage(
-                    'safe'
-                  )} (SSL Strip safe)`;
-                  wrapper.hsts_policy.grade = 'SAFE';
-                }
-              }
-              break;
-            }
-            case 'server': {
-              // Check server header contains any version value
-              if (header.value.match(/[0-9]+(\.([0-9]+))+/g)) {
-                wrapper.server_version_disclosure.description = `${chrome.i18n.getMessage(
-                  'vulnerable'
-                )}`;
-                wrapper.server_version_disclosure.grade = 'VULN';
-              }
-              break;
-            }
-            case 'x-frame-options': {
-              wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('moderate')}`;
-              wrapper.clickjacking_prevention.grade = 'NORM';
+    const headers = item.responseHeaders;
 
-              if (
-                header.value.toLowerCase() === 'deny' ||
-                header.value.toLowerCase() === 'sameorigin'
-              ) {
-                wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('safe')}`;
-                wrapper.clickjacking_prevention.grade = 'SAFE';
-              }
-              break;
+    for (let i = 0; i < headers.length; ++i) {
+      const header = headers[i];
+      switch (header.name.toLowerCase()) {
+        // Check HSTS header
+        case 'strict-transport-security': {
+          if (scheme === 'https') {
+            // Get max-age value parsed from HSTS header
+            let maxAge = parseInt((/max\-age=([0-9]+)/gi.exec(header.value) || [, '0'])[1]);
+            wrapper.hsts_policy.description = `${chrome.i18n.getMessage('moderate')}`;
+            wrapper.hsts_policy.grade = 'NORM';
+            // Check HSTS header setting is safe from SSL Strip attack
+            if (header.value.toLowerCase().indexOf('includesubdomains') !== -1) {
+              wrapper.hsts_policy.description = `${chrome.i18n.getMessage(
+                'safe'
+              )} (SSL Strip safe)`;
+              wrapper.hsts_policy.grade = 'SAFE';
             }
-            case 'x-xss-protection': {
-              if (header.value.toString() !== '0') {
-                wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage('moderate')}`;
-                wrapper.xss_protection_policy.grade = 'NORM';
-                if (header.value.indexOf('mode=block') !== -1) {
-                  wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage(
-                    'safe'
-                  )} (Rendering block)`;
-                  wrapper.xss_protection_policy.grade = 'SAFE';
-                }
-              }
-              break;
-            }
-            // Check if servlet value exposed
-            case 'x-powered-by': {
-              wrapper.servlet_spec_disclosure.description = `${chrome.i18n.getMessage(
-                'vulnerable'
-              )}`;
-              wrapper.xss_protection_policy.grade = 'VULN';
-              break;
-            }
-            default:
-              break;
           }
+          break;
         }
+        case 'server': {
+          // Check server header contains any version value
+          if (header.value.match(/[0-9]+(\.([0-9]+))+/g)) {
+            wrapper.server_version_disclosure.description = `${chrome.i18n.getMessage(
+              'vulnerable'
+            )}`;
+            wrapper.server_version_disclosure.grade = 'VULN';
+          }
+          break;
+        }
+        case 'x-frame-options': {
+          wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('moderate')}`;
+          wrapper.clickjacking_prevention.grade = 'NORM';
 
-        // Assign description by name with "recommend" suffix
-        Object.keys(wrapper).forEach(el => {
-          if (!wrapper[el].description)
-            wrapper[el].description = `${chrome.i18n.getMessage('vulnerable')}
-              ${chrome.i18n.getMessage(el + '_recommend')}`;
-        });
-        return this.cookiePromise(wrapper, item.url.toString());
-      })
-      .then(() => {
-        // Assign wrapped object to checklist
-        this.checklist = wrapper;
-      })
-      .catch(error => {
-        console.error(error);
-      });
+          if (
+            header.value.toLowerCase() === 'deny' ||
+            header.value.toLowerCase() === 'sameorigin'
+          ) {
+            wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('safe')}`;
+            wrapper.clickjacking_prevention.grade = 'SAFE';
+          }
+          break;
+        }
+        case 'x-xss-protection': {
+          if (header.value.toString() !== '0') {
+            wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage('moderate')}`;
+            wrapper.xss_protection_policy.grade = 'NORM';
+            if (header.value.indexOf('mode=block') !== -1) {
+              wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage(
+                'safe'
+              )} (Rendering block)`;
+              wrapper.xss_protection_policy.grade = 'SAFE';
+            }
+          }
+          break;
+        }
+        // Check if servlet value exposed
+        case 'x-powered-by': {
+          wrapper.servlet_spec_disclosure.description = `${chrome.i18n.getMessage('vulnerable')}`;
+          wrapper.xss_protection_policy.grade = 'VULN';
+          break;
+        }
+        default:
+          break;
+      }
+    }
+
+    // Assign description by name with "recommend" suffix
+    Object.keys(wrapper).forEach(el => {
+      if (!wrapper[el].description)
+        wrapper[el].description = `${chrome.i18n.getMessage('vulnerable')}
+          ${chrome.i18n.getMessage(el + '_recommend')}`;
+    });
+    await this.cookiePromise(wrapper, item.url.toString());
+    // Assign wrapped object to checklist
+    this.checklist = wrapper;
   },
 };
 </script>
