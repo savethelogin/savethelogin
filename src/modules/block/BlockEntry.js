@@ -1,6 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from '../../classes/Config';
 import Context from '../../classes/Context';
+import { getStorage, setStorage } from '../../classes/Utils';
 import Block from './Block';
 
 const { PROJECT_PREFIX } = config;
@@ -8,12 +9,15 @@ const defaultEnabled = true;
 
 const optionKey = `${PROJECT_PREFIX}_opt_block_enabled`;
 
-chrome.storage.sync.get([optionKey], items => {
+getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
   if (items[optionKey] === undefined) {
-    chrome.storage.sync.set({
-      [optionKey]: defaultEnabled,
+    setStorage({
+      area: 'sync',
+      items: {
+        [optionKey]: defaultEnabled,
+      },
     });
-    Context.set('block_enabled', defaultEnabled);
+    ontext.set('block_enabled', defaultEnabled);
   } else {
     Context.set('block_enabled', items[optionKey]);
   }

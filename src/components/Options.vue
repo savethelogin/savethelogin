@@ -19,8 +19,8 @@
 
 <script>
 import config from '../classes/Config';
+import { openDefaultPort } from '../classes/Utils';
 import ToggleSwitch from './ToggleSwitch';
-import { openDefaultPort } from '../utils/Util';
 
 const { PROJECT_PREFIX } = config;
 

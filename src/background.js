@@ -1,6 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from './classes/Config';
 import Context from './classes/Context';
+import { getStorage, setStorage } from './classes/Utils';
 
 const { PROJECT_PREFIX } = config;
 
@@ -28,10 +29,13 @@ const loadedModules = requireModules.keys().map(key =>
 console.log(loadedModules);
 
 // Check extension disabled
-chrome.storage.sync.get([`${PROJECT_PREFIX}_disabled`], items => {
+getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items => {
   if (items[`${PROJECT_PREFIX}_disabled`] === undefined) {
-    chrome.storage.sync.set({
-      [`${PROJECT_PREFIX}_disabled`]: false,
+    setStorage({
+      area: 'sync',
+      items: {
+        [`${PROJECT_PREFIX}_disabled`]: false,
+      },
     });
   }
   Context.set('enabled', !!!items[`${PROJECT_PREFIX}_disabled`] ? true : false);

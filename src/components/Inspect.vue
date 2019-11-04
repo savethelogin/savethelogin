@@ -5,6 +5,7 @@
 
 <script>
 import config from '../classes/Config';
+import { getStorage } from '../classes/Utils';
 import CheckList from './CheckList';
 
 export default {
@@ -30,7 +31,7 @@ export default {
     },
     storagePromise: function(currentTab) {
       return new Promise((resolve, reject) => {
-        chrome.storage.local.get([`${config.PROJECT_PREFIX}_tab_${currentTab.id}`], items => {
+        getStorage({ keys: [`${config.PROJECT_PREFIX}_tab_${currentTab.id}`] }).then(items => {
           const item = items[`${config.PROJECT_PREFIX}_tab_${currentTab.id}`];
           if (!item) return reject();
           return resolve(item);
