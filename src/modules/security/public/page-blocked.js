@@ -85,21 +85,18 @@
   };
 
   document.getElementById('disable').onclick = function() {
-    window.location.hash = '!redirect';
-
     var port = chrome.runtime.connect({ name: 'stl' });
     port.postMessage({
       type: 'update_options',
       name: 'security_enabled',
       data: false,
     });
+    setTimeout(function() {
+      window.location.href = details.url;
+    }, 500);
   };
 
   window.onload = function() {
-    var uri = window.location.href;
-    if (uri.match(/#\!redirect/)) {
-      window.location.href = details.url;
-    }
     // Highlight payload
     var code = document.getElementsByTagName('code')[0];
     var innerHTML = code.innerHTML;
