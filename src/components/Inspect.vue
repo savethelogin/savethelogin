@@ -5,7 +5,7 @@
 
 <script>
 import config from '../classes/Config';
-import { getStorage } from '../classes/Utils';
+import { queryTab, getStorage } from '../classes/Utils';
 import CheckList from './CheckList';
 
 export default {
@@ -22,13 +22,6 @@ export default {
     /**
      * Promises
      **/
-    tabPromise: function() {
-      return new Promise((resolve, reject) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-          return resolve(tabs[0]);
-        });
-      });
-    },
     storagePromise: function(currentTab) {
       return new Promise((resolve, reject) => {
         getStorage({ keys: [`${config.PROJECT_PREFIX}_tab_${currentTab.id}`] }).then(items => {
@@ -94,7 +87,8 @@ export default {
     });
 
     // Start promise chain
-    const currentTab = await this.tabPromise();
+    const tabs = await queryTab({ active: true, currentWindow: true });
+    const currentTab = tabs[0];
     const item = await this.storagePromise(currentTab);
 
     const url = new URL(item.url);

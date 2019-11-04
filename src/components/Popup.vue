@@ -65,21 +65,20 @@ export default {
       };
     },
     // If toggle button state changed to enabled
-    setEnabled: function(event) {
-      let checked = event.target.checked;
-      setStorage({
+    setEnabled: async function(event) {
+      const checked = event.target.checked;
+      await setStorage({
         area: 'sync',
         items: {
           [`${config.PROJECT_PREFIX}_disabled`]: !!!checked,
         },
-      }).then(() => {
-        let port = openDefaultPort();
-        port.postMessage({
-          type: 'update_toggle',
-          data: checked,
-        });
-        this.isEnabled = checked;
       });
+      const port = openDefaultPort();
+      port.postMessage({
+        type: 'update_toggle',
+        data: checked,
+      });
+      this.isEnabled = checked;
     },
     openWebsite: function() {
       createTab({ url: `https://${config.PROJECT_DOMAIN}/` });
@@ -91,12 +90,11 @@ export default {
       currentView: 'inspect',
     };
   },
-  created() {
-    getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] }).then(items => {
-      const item = items[`${config.PROJECT_PREFIX}_disabled`];
-      if (item === undefined) this.isEnabled = true;
-      else this.isEnabled = !!!item;
-    });
+  async created() {
+    const items = await getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] });
+    const item = items[`${config.PROJECT_PREFIX}_disabled`];
+    if (item === undefined) this.isEnabled = true;
+    else this.isEnabled = !!!item;
   },
 };
 </script>

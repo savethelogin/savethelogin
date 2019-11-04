@@ -47,6 +47,14 @@ export function removeStorage({ area = 'local', keys = undefined }) {
   });
 }
 
+export function queryTab(queryInfo) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query(queryInfo, result => {
+      promiseHandler({ resolve: resolve, reject: reject }, result);
+    });
+  });
+}
+
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
     chrome.tabs.create(createProperties, tab => {
@@ -85,8 +93,8 @@ export default {
   getStorage: getStorage,
   setStorage: setStorage,
   removeStorage: removeStorage,
-  createTab,
-  createTab,
+  queryTab: queryTab,
+  createTab: createTab,
   openDefaultPort: openDefaultPort,
   executeScript: executeScript,
   logError: logError,
