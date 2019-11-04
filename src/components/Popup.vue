@@ -44,6 +44,7 @@
 
 <script>
 import config from '../classes/Config';
+import { createTab, openDefaultPort, getStorage, setStorage } from '../classes/Utils';
 
 import Inspect from './Inspect';
 import Options from './Options';
@@ -64,19 +65,23 @@ export default {
       };
     },
     // If toggle button state changed to enabled
-    setEnabled: function(event) {
-      let checked = event.target.checked;
-      chrome.storage.sync.set({ [`${config.PROJECT_PREFIX}_disabled`]: !!!checked }, () => {
-        let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
-        port.postMessage({
-          type: 'update_toggle',
-          data: checked,
-        });
-        this.isEnabled = checked;
+    setEnabled: async function(event) {
+      const checked = event.target.checked;
+      await setStorage({
+        area: 'sync',
+        items: {
+          [`${config.PROJECT_PREFIX}_disabled`]: !!!checked,
+        },
       });
+      const port = openDefaultPort();
+      port.postMessage({
+        type: 'update_toggle',
+        data: checked,
+      });
+      this.isEnabled = checked;
     },
     openWebsite: function() {
-      chrome.tabs.create({ url: `https://${config.PROJECT_DOMAIN}/` });
+      createTab({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
   },
   data() {
@@ -85,12 +90,11 @@ export default {
       currentView: 'inspect',
     };
   },
-  created() {
-    chrome.storage.sync.get([`${config.PROJECT_PREFIX}_disabled`], items => {
-      const item = items[`${config.PROJECT_PREFIX}_disabled`];
-      if (item === undefined) this.isEnabled = true;
-      else this.isEnabled = !!!item;
-    });
+  async created() {
+    const items = await getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] });
+    const item = items[`${config.PROJECT_PREFIX}_disabled`];
+    if (item === undefined) this.isEnabled = true;
+    else this.isEnabled = !!!item;
   },
 };
 </script>

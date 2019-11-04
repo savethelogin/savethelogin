@@ -6,7 +6,7 @@
 import config from '../../classes/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { executeScript } from '../../utils/Util';
+import { executeScript } from '../../classes/Utils';
 import Context from '../../classes/Context';
 
 // Store private datas
@@ -183,7 +183,7 @@ export function onConnect(port) {
       case 'update_toggle':
       case 'update_options':
         // Force trigger updated
-        enforceUpdate();
+        if (message.data) enforceUpdate();
         break;
       // Case when data updated by event listener
       case 'update_data': {

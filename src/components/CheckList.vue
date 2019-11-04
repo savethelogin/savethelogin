@@ -32,6 +32,7 @@
 
 <script>
 import CheckItem from './CheckItem';
+import { queryTab } from '../classes/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {
@@ -72,15 +73,11 @@ export default {
     // Return text style class by grade
     gradeColor: gradeColor,
     // Refresh tab and close popup
-    refreshPage: function() {
-      return new Promise((resolve, reject) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-          resolve(tabs[0]);
-        });
-      }).then(currentTab => {
-        chrome.tabs.reload(currentTab.id, {}, () => {});
-        window.close();
-      });
+    refreshPage: async function() {
+      const tabs = await queryTab({ active: true, currentWindow: true });
+      const currentTab = tabs[0];
+      chrome.tabs.reload(currentTab.id, {}, () => {});
+      window.close();
     },
   },
 };
