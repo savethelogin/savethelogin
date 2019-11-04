@@ -25,7 +25,7 @@ function doubleEncode(string) {
   return encode(encode(string));
 }
 
-function checkPayload(string) {
+function checkPayload({ string, retBool = undefined }) {
   /**
    * Patterns of malicious codes
    */
@@ -50,9 +50,15 @@ function checkPayload(string) {
     new RegExp('javascript' + doubleEncode(':'), 'g'),
   ];
   if (payloadFilter.some(pattern => string.match(pattern))) {
-    return true;
+    if (retBool === undefined) return true;
+    const payload = payloadFilter
+      .map(pattern => string.match(pattern))
+      .filter(x => x)
+      .pop()
+      .pop();
+    return payload;
   }
-  return false;
+  return retBool === undefined ? false : undefined;
 }
 
 function checkCookie(details) {
@@ -105,15 +111,18 @@ onUpdated();
  */
 export function onBeforeRequest(details) {
   if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
-
-  if (checkPayload(details.url)) {
+  const payload = checkPayload({
+    string: details.url,
+    retBool: false,
+  });
+  if (payload) {
     switch (details.type) {
       case 'main_frame':
         delete details.requestBody;
         return {
           redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
             '@@extension_id'
-          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}&highlight=${btoa(payload)}`,
         };
       default:
         return { cancel: true };

@@ -37,3 +37,19 @@ button.dark-red {
 .paragraph {
   font-size: 24px;
 }
+
+.visualize {
+  margin-bottom: 15px;
+}
+
+.visualize code {
+  font-size: 18px;
+}
+
+.visualize code span.highlight {
+  padding: 2px 2px;
+  background: #d42c2c;
+  border-radius: 3px;
+  border: 1px solid #8a1c1c;
+  color: #fff;
+}
