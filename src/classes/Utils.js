@@ -2,11 +2,19 @@
 import config from '../classes/Config';
 const { PROJECT_PREFIX } = config;
 
-function promiseHandler({ resolve, reject = () => {} }, ...args) {
+function promiseHandler(
+  {
+    resolve,
+    reject = value => {
+      value;
+    },
+  },
+  value
+) {
   if (chrome.runtime.lastError) {
-    return reject(...args);
+    return reject(value);
   } else {
-    return resolve(...args);
+    return resolve(value);
   }
 }
 

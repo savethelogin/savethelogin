@@ -17,7 +17,7 @@ getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
         [optionKey]: defaultEnabled,
       },
     });
-    ontext.set('block_enabled', defaultEnabled);
+    Context.set('block_enabled', defaultEnabled);
   } else {
     Context.set('block_enabled', items[optionKey]);
   }
