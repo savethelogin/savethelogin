@@ -22,13 +22,13 @@
               v-bind:classes="currentView === 'inspect' ? ['active'] : []"
               v-bind:callback="changeView('inspect')"
             >
-              {{ msgInspect }}
+              <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
               v-bind:classes="currentView === 'options' ? ['active'] : []"
               v-bind:callback="changeView('options')"
             >
-              {{ msgOptions }}
+              <vue-chrome-i18n>__MSG_options__</vue-chrome-i18n>
             </BaseButton>
           </div>
         </div>
@@ -55,14 +55,6 @@ export default {
     inspect: Inspect,
     options: Options,
     ToggleSwitch,
-  },
-  computed: {
-    msgInspect: function() {
-      return chrome.i18n.getMessage('inspect');
-    },
-    msgOptions: function() {
-      return chrome.i18n.getMessage('options');
-    },
   },
   methods: {
     changeView: function(newView) {
