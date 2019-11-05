@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-import config from '../../classes/Config';
-import Context from '../../classes/Context';
-import { removeStorage, setStorage } from '../../classes/Utils';
+import config from '../../common/Config';
+import Context from '../../common/Context';
+import { removeStorage, setStorage } from '../../common/Utils';
 
 const { PROJECT_PREFIX } = config;
 

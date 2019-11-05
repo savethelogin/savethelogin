@@ -32,7 +32,7 @@
 
 <script>
 import CheckItem from './CheckItem';
-import { queryTab } from '../classes/Utils';
+import { queryTab } from '../common/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {

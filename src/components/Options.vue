@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import config from '../classes/Config';
-import { openDefaultPort } from '../classes/Utils';
+import config from '../common/Config';
+import { openDefaultPort } from '../common/Utils';
 import ToggleSwitch from './ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;

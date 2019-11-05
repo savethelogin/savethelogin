@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import chrome from 'sinon-chrome/extensions';
 import flushPromises from 'flush-promises';
 
-import { executeScript, funcToStr } from '../../src/classes/Utils';
+import { executeScript, funcToStr } from '../../src/common/Utils';
 
 describe('Util', function() {
   before(function() {
