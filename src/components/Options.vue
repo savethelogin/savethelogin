@@ -9,7 +9,7 @@
           <p>{{ getDescription(key) }}</p>
         </div>
         <div class="float-right">
-          <ToggleSwitch v-bind:checked="val" v-bind:callback="updateOption(key)" />
+          <ToggleSwitch v-bind:checked="val" v-on:toggle="updateOption(key, $event)" />
         </div>
         <div class="clearfix"></div>
       </div>
@@ -61,15 +61,13 @@ export default {
       let name = this._keyToName(key);
       return chrome.i18n.getMessage(`options_${name}_desc`);
     },
-    updateOption: function(key) {
-      return function(event) {
-        let port = openDefaultPort();
-        port.postMessage({
-          type: 'update_options',
-          name: key,
-          data: event.target.checked,
-        });
-      };
+    updateOption: function(key, event) {
+      let port = openDefaultPort();
+      port.postMessage({
+        type: 'update_options',
+        name: key,
+        data: event.target.checked,
+      });
     },
   },
 };

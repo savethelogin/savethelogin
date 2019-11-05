@@ -1,7 +1,7 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <label class="switch">
-    <input type="checkbox" v-bind:checked="checked" v-on:change="callback" />
+    <input type="checkbox" v-bind:checked="checked" v-on:change="onToggle" />
     <span v-bind:class="'slider' + (type === 'round' && ' round')" />
   </label>
 </template>
@@ -18,8 +18,10 @@ export default {
       type: String,
       default: 'round',
     },
-    callback: {
-      type: Function,
+  },
+  methods: {
+    onToggle: function(event) {
+      this.$emit('toggle', event);
     },
   },
 };

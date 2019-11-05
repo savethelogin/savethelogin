@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-12">
         <div class="float-right">
-          <ToggleSwitch v-bind:checked="isEnabled" v-bind:callback="setEnabled" />
+          <ToggleSwitch v-bind:checked="isEnabled" v-on:toggle="setEnabled($event)" />
         </div>
         <div class="clearfix"></div>
       </div>
