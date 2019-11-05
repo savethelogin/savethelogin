@@ -87,7 +87,7 @@ function checkCookie(details) {
         const cookie = refererCookies[i];
         if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;
         // Block when url contains session cookie
-        if (currentUrl.toString().match(new RegExp(cookie.value, 'gi'))) {
+        if (currentUrl.toString().match(cookie.value, 'gi')) {
           return true;
         }
       }
