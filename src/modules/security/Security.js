@@ -3,6 +3,7 @@ import config from '../../common/Config';
 import Context from '../../common/Context';
 import { updateTab } from '../../common/Utils';
 
+let previousUrl = {};
 let uniqueDomains = [];
 let allCookies = [];
 
@@ -66,14 +67,8 @@ function checkPayload({ string, retBool = undefined }) {
 
 function checkCookie(details) {
   if (details.requestHeaders) {
-    // Get referer header
-    const refererHeader = (details.requestHeaders.filter(header =>
-      header.name.match(/^Referer$/i)
-    ) || [])[0];
-
-    if (!refererHeader) return false;
-
-    const referer = refererHeader.value;
+    const referer = previousUrl[details.tabId];
+    if (!referer) return false;
 
     const currentUrl = new URL(details.url);
     const refererUrl = new URL(referer);
@@ -90,7 +85,8 @@ function checkCookie(details) {
         const cookie = refererCookies[i];
         if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;
         // Block when url contains session cookie
-        if (currentUrl.toString().match(cookie.value, 'gi')) {
+        console.log(currentUrl.toString(), cookie.value);
+        if (currentUrl.toString().includes(cookie.value)) {
           return true;
         }
       }
@@ -108,6 +104,10 @@ export function onUpdated(tabId, changeInfo, tab) {
 }
 // Initialize cookies when module loaded
 onUpdated();
+
+export function onRemoved(tabId, removeInfo) {
+  delete previousUrl[tabId];
+}
 
 /**
  * Block request when url includes payload
@@ -144,10 +144,17 @@ export function onBeforeSendHeaders(details) {
         return { cancel: true };
     }
   }
+  switch (details.type) {
+    case 'main_frame':
+      previousUrl[details.tabId] = details.url;
+      break;
+    default:
+      break;
+  }
 }
 
 export function onErrorOccurred(details) {
-  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return;
 
   console.log(details);
   if (cancelled.includes(details.requestId) && details.type === 'main_frame') {
@@ -172,6 +179,7 @@ export function onErrorOccurred(details) {
 
 export default {
   onUpdated: onUpdated,
+  onRemoved: onRemoved,
   onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
   onErrorOccurred: onErrorOccurred,
