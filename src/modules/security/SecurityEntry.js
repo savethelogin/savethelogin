@@ -25,7 +25,9 @@ getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
 
 // Security module
 chrome.tabs.onUpdated.addListener(Security.onUpdated);
-
+chrome.webRequest.onErrorOccurred.addListener(Security.onErrorOccurred, {
+  urls: ['*://*/*'],
+});
 chrome.webRequest.onBeforeRequest.addListener(Security.onBeforeRequest, { urls: ['*://*/*'] }, [
   'requestBody',
   'blocking',

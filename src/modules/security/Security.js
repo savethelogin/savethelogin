@@ -1,6 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 import config from '../../classes/Config';
 import Context from '../../classes/Context';
+import { updateTab } from '../../classes/Utils';
 
 let uniqueDomains = [];
 let allCookies = [];
@@ -136,14 +137,27 @@ export function onBeforeSendHeaders(details) {
   console.log(details);
   if (checkCookie(details)) {
     switch (details.type) {
-      case 'main_frame':
-        return {
-          redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
-            '@@extension_id'
-          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
-        };
       default:
         return { cancel: true };
+    }
+  }
+}
+
+export function onErrorOccurred(details) {
+  console.log(details);
+  if (details.type === 'main_frame') {
+    switch (details.error) {
+      case 'net::ERR_BLOCKED_BY_CLIENT':
+        updateTab({
+          updateProperties: {
+            url: `chrome-extension://${chrome.i18n.getMessage(
+              '@@extension_id'
+            )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+          },
+        });
+        break;
+      default:
+        break;
     }
   }
 }
@@ -152,4 +166,5 @@ export default {
   onUpdated: onUpdated,
   onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
+  onErrorOccurred: onErrorOccurred,
 };

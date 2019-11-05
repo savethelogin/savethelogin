@@ -46,11 +46,14 @@
 })(window, document);
 
 (function(window, document) {
-  var detailsArg = location.href.match(
-    /^[a-z-]+:\/\/[a-z]+\/page\-blocked\.html\?.*&?details=([a-z0-9\/\+=]+)/i
-  )[1];
-  if (!detailsArg) return;
-  var details = JSON.parse(atob(detailsArg));
+  var details;
+  var detailsArg;
+  try {
+    detailsArg = location.href.match(
+      /^[a-z-]+:\/\/[a-z]+\/page\-blocked\.html\?.*&?details=([a-z0-9\/\+=]+)/i
+    )[1];
+    details = JSON.parse(atob(detailsArg));
+  } catch (e) {}
 
   var highlight;
   try {
@@ -72,11 +75,15 @@
         '</span>'
     );
   };
+  var url = details ? details.url : '';
+
+  // Only accept http scheme
+  url = url.match(/^https?:\/\//) ? url : 'about:blank';
 
   var st = new SimpleTemplate({
     target: '#root',
     data: {
-      detail: details.url,
+      detail: url,
     },
   });
 
@@ -92,7 +99,7 @@
       data: false,
     });
     setTimeout(function() {
-      window.location.href = details.url;
+      window.location.href = url;
     }, 500);
   };
 

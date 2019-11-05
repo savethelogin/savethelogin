@@ -63,6 +63,14 @@ export function createTab(createProperties) {
   });
 }
 
+export function updateTab({ tabId = undefined, updateProperties }) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.update(tabId, updateProperties, tab => {
+      promiseHandler({ resolve: resolve }, tab);
+    });
+  });
+}
+
 export function openDefaultPort() {
   return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
 }
@@ -95,6 +103,7 @@ export default {
   removeStorage: removeStorage,
   queryTab: queryTab,
   createTab: createTab,
+  updateTab: updateTab,
   openDefaultPort: openDefaultPort,
   executeScript: executeScript,
   logError: logError,
