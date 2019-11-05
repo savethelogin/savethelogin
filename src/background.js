@@ -39,7 +39,20 @@ getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items =>
     });
   }
   Context.set('enabled', !!!items[`${PROJECT_PREFIX}_disabled`] ? true : false);
+  setIcon(Context.get('enabled'));
 });
+
+function setIcon(isEnabled) {
+  if (isEnabled === true) {
+    chrome.browserAction.setIcon({
+      path: '/icons/icon16.png',
+    });
+  } else {
+    chrome.browserAction.setIcon({
+      path: '/icons/icon-off16.png',
+    });
+  }
+}
 
 chrome.runtime.onConnect.addListener(onConnect);
 
@@ -50,14 +63,7 @@ export function onConnect(port) {
       // Case when toggle on/off button changed
       case 'update_toggle': {
         Context.set('enabled', message.data);
-        if (Context.get('enabled') === true)
-          chrome.browserAction.setIcon({
-            path: '/icons/icon16.png',
-          });
-        else
-          chrome.browserAction.setIcon({
-            path: '/icons/icon-off16.png',
-          });
+        setIcon(Context.get('enabled'));
         break;
       }
       // Case when option changed
