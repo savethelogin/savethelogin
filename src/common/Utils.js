@@ -1,5 +1,5 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from '../classes/Config';
+import config from './Config';
 const { PROJECT_PREFIX } = config;
 
 function promiseHandler(

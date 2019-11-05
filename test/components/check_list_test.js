@@ -11,7 +11,7 @@ import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
 import '../../src/components/Globals';
-import config from '../../src/classes/Config';
+import config from '../../src/common/Config';
 import CheckList from '../../src/components/CheckList';
 
 describe('CheckList', function() {

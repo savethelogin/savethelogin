@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import config from '../classes/Config';
-import { createTab, openDefaultPort, getStorage, setStorage } from '../classes/Utils';
+import config from '../common/Config';
+import { createTab, openDefaultPort, getStorage, setStorage } from '../common/Utils';
 
 import Inspect from './Inspect';
 import Options from './Options';

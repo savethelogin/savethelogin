@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import config from '../classes/Config';
-import { queryTab, getStorage } from '../classes/Utils';
+import config from '../common/Config';
+import { queryTab, getStorage } from '../common/Utils';
 import CheckList from './CheckList';
 
 export default {

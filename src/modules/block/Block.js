@@ -3,11 +3,11 @@
 /**
  * HTTP Request blocker module
  */
-import config from '../../classes/Config';
+import config from '../../common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { executeScript } from '../../classes/Utils';
-import Context from '../../classes/Context';
+import { executeScript } from '../../common/Utils';
+import Context from '../../common/Context';
 
 // Store private datas
 let privateData = {};
