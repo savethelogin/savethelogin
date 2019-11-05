@@ -40,6 +40,8 @@ button.dark-red {
 
 .visualize {
   margin-bottom: 15px;
+  overflow: auto;
+  word-break: break-all;
 }
 
 .visualize code {

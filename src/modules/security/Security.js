@@ -6,6 +6,8 @@ import { updateTab } from '../../common/Utils';
 let uniqueDomains = [];
 let allCookies = [];
 
+let cancelled = [];
+
 function extractRootDomain(hostname) {
   // Extract original(top) domain of url
   return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
@@ -138,14 +140,20 @@ export function onBeforeSendHeaders(details) {
   if (checkCookie(details)) {
     switch (details.type) {
       default:
+        cancelled.push(details.requestId);
         return { cancel: true };
     }
   }
 }
 
 export function onErrorOccurred(details) {
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
+
   console.log(details);
-  if (details.type === 'main_frame') {
+  if (cancelled.includes(details.requestId) && details.type === 'main_frame') {
+    let index = cancelled.indexOf(details.requestId);
+    cancelled.splice(index, 1);
+
     switch (details.error) {
       case 'net::ERR_BLOCKED_BY_CLIENT':
         updateTab({
