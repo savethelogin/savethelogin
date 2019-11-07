@@ -1,0 +1,11 @@
+{
+  "confirm_request_block": {
+    "message": "\uc744 \ud558\uace0\uc744 \ub85c \ucc28\ub2e8 \ub2e4\n\uc54a\uc740 \uc9c0\uc815 \uc815\ubcf4 \uc815\ubcf4\n\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c"
+  },
+  "options_block_desc": {
+    "message": "\ud14d \uc778 \uc778"
+  },
+  "request_blocked": {
+    "message": "\uc694\uccad \uc774 \ucc28\ub2e8 \ub2e4"
+  }
+}

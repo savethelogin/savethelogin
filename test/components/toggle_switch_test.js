@@ -6,7 +6,7 @@ import { shallowMount } from '@vue/test-utils';
 import ToggleSwitch from '../../src/components/ToggleSwitch';
 
 describe('ToggleSwitch', function() {
-  it('calls callback function when state changed', function(done) {
+  it('sends event when toggle', function(done) {
     const callback = e => {
       done();
     };
@@ -15,9 +15,9 @@ describe('ToggleSwitch', function() {
       propsData: {
         checked: false,
         type: 'round',
-        callback: callback,
       },
     });
+    wrapper.vm.$on('toggle', callback);
 
     const checkBoxInput = wrapper.find('input[type="checkbox"]');
     checkBoxInput.setChecked();

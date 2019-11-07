@@ -3,11 +3,11 @@
 /**
  * HTTP Request blocker module
  */
-import config from '../../classes/Config';
+import config from '../../common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
 
-import { executeScript } from '../../utils/Util';
-import Context from '../../classes/Context';
+import { executeScript } from '../../common/Utils';
+import Context from '../../common/Context';
 
 // Store private datas
 let privateData = {};
@@ -183,7 +183,7 @@ export function onConnect(port) {
       case 'update_toggle':
       case 'update_options':
         // Force trigger updated
-        enforceUpdate();
+        if (message.data) enforceUpdate();
         break;
       // Case when data updated by event listener
       case 'update_data': {

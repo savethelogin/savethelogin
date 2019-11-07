@@ -14,6 +14,9 @@
   "vulnerable": {
     "message": "vulnerable"
   },
+  "malicious": {
+    "message": "Malicious"
+  },
   "refresh": {
     "message": "refresh"
   },

@@ -1,6 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from '../../classes/Config';
-import Context from '../../classes/Context';
+import config from '../../common/Config';
+import Context from '../../common/Context';
+import { getStorage, setStorage } from '../../common/Utils';
 import Security from './Security';
 
 const { PROJECT_PREFIX } = config;
@@ -8,10 +9,13 @@ const defaultEnabled = false;
 
 const optionKey = `${PROJECT_PREFIX}_opt_security_enabled`;
 
-chrome.storage.sync.get([optionKey], items => {
+getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
   if (items[optionKey] === undefined) {
-    chrome.storage.sync.set({
-      [optionKey]: defaultEnabled,
+    setStorage({
+      area: 'sync',
+      items: {
+        [optionKey]: defaultEnabled,
+      },
     });
     Context.set('security_enabled', defaultEnabled);
   } else {
@@ -21,7 +25,10 @@ chrome.storage.sync.get([optionKey], items => {
 
 // Security module
 chrome.tabs.onUpdated.addListener(Security.onUpdated);
-
+chrome.tabs.onRemoved.addListener(Security.onRemoved);
+chrome.webRequest.onErrorOccurred.addListener(Security.onErrorOccurred, {
+  urls: ['*://*/*'],
+});
 chrome.webRequest.onBeforeRequest.addListener(Security.onBeforeRequest, { urls: ['*://*/*'] }, [
   'requestBody',
   'blocking',

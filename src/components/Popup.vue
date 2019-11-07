@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-12">
         <div class="float-right">
-          <ToggleSwitch v-bind:checked="isEnabled" v-bind:callback="setEnabled" />
+          <ToggleSwitch v-bind:checked="isEnabled" v-on:toggle="setEnabled($event)" />
         </div>
         <div class="clearfix"></div>
       </div>
@@ -22,13 +22,13 @@
               v-bind:classes="currentView === 'inspect' ? ['active'] : []"
               v-bind:callback="changeView('inspect')"
             >
-              {{ msgInspect }}
+              <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
               v-bind:classes="currentView === 'options' ? ['active'] : []"
               v-bind:callback="changeView('options')"
             >
-              {{ msgOptions }}
+              <vue-chrome-i18n>__MSG_options__</vue-chrome-i18n>
             </BaseButton>
           </div>
         </div>
@@ -43,7 +43,8 @@
 </template>
 
 <script>
-import config from '../classes/Config';
+import config from '../common/Config';
+import { createTab, openDefaultPort, getStorage, setStorage } from '../common/Utils';
 
 import Inspect from './Inspect';
 import Options from './Options';
@@ -56,14 +57,6 @@ export default {
     options: Options,
     ToggleSwitch,
   },
-  computed: {
-    msgInspect: function() {
-      return chrome.i18n.getMessage('inspect');
-    },
-    msgOptions: function() {
-      return chrome.i18n.getMessage('options');
-    },
-  },
   methods: {
     changeView: function(newView) {
       let view = newView;
@@ -72,19 +65,23 @@ export default {
       };
     },
     // If toggle button state changed to enabled
-    setEnabled: function(event) {
-      let checked = event.target.checked;
-      chrome.storage.sync.set({ [`${config.PROJECT_PREFIX}_disabled`]: !!!checked }, () => {
-        let port = chrome.runtime.connect({ name: `${config.PROJECT_PREFIX}` });
-        port.postMessage({
-          type: 'update_toggle',
-          data: checked,
-        });
-        this.isEnabled = checked;
+    setEnabled: async function(event) {
+      const checked = event.target.checked;
+      await setStorage({
+        area: 'sync',
+        items: {
+          [`${config.PROJECT_PREFIX}_disabled`]: !!!checked,
+        },
       });
+      const port = openDefaultPort();
+      port.postMessage({
+        type: 'update_toggle',
+        data: checked,
+      });
+      this.isEnabled = checked;
     },
     openWebsite: function() {
-      chrome.tabs.create({ url: `https://${config.PROJECT_DOMAIN}/` });
+      createTab({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
   },
   data() {
@@ -93,12 +90,11 @@ export default {
       currentView: 'inspect',
     };
   },
-  created() {
-    chrome.storage.sync.get([`${config.PROJECT_PREFIX}_disabled`], items => {
-      const item = items[`${config.PROJECT_PREFIX}_disabled`];
-      if (item === undefined) this.isEnabled = true;
-      else this.isEnabled = !!!item;
-    });
+  async created() {
+    const items = await getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] });
+    const item = items[`${config.PROJECT_PREFIX}_disabled`];
+    if (item === undefined) this.isEnabled = true;
+    else this.isEnabled = !!!item;
   },
 };
 </script>

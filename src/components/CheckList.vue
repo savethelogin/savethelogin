@@ -13,10 +13,17 @@
       <CheckItem v-bind:item="checklist.session_cookie_xss" v-bind:classify="gradeColor" />
     </table>
     <div class="alert alert-danger w-100 mb-0 text-center" v-else>
-      <h4 class="alert-heading">{{ msgNoInformation }}</h4>
+      <h4 class="alert-heading">
+        <vue-chrome-i18n>__MSG_no_information__</vue-chrome-i18n>
+      </h4>
       <p class="mb-0">
-        <BaseButton theme="link" v-bind:callback="refreshPage" v-bind:classes="['text-danger']">
-          <i class="material-icons">refresh</i> {{ msgRefresh }}
+        <BaseButton
+          theme="link"
+          v-bind:callback="refreshPage"
+          v-bind:classes="['text-danger']"
+          v-chrome-i18n
+        >
+          <i class="material-icons">refresh</i> __MSG_refresh__
         </BaseButton>
       </p>
     </div>
@@ -25,6 +32,7 @@
 
 <script>
 import CheckItem from './CheckItem';
+import { queryTab } from '../common/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {
@@ -65,15 +73,11 @@ export default {
     // Return text style class by grade
     gradeColor: gradeColor,
     // Refresh tab and close popup
-    refreshPage: function() {
-      return new Promise((resolve, reject) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-          resolve(tabs[0]);
-        });
-      }).then(currentTab => {
-        chrome.tabs.reload(currentTab.id, {}, () => {});
-        window.close();
-      });
+    refreshPage: async function() {
+      const tabs = await queryTab({ active: true, currentWindow: true });
+      const currentTab = tabs[0];
+      chrome.tabs.reload(currentTab.id, {}, () => {});
+      window.close();
     },
   },
 };

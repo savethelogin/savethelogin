@@ -1,9 +1,13 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-import config from '../../classes/Config';
-import Context from '../../classes/Context';
+import config from '../../common/Config';
+import Context from '../../common/Context';
+import { updateTab } from '../../common/Utils';
 
+let previousUrl = {};
 let uniqueDomains = [];
 let allCookies = [];
+
+let cancelled = [];
 
 function extractRootDomain(hostname) {
   // Extract original(top) domain of url
@@ -25,7 +29,7 @@ function doubleEncode(string) {
   return encode(encode(string));
 }
 
-function checkPayload(string) {
+function checkPayload({ string, retBool = undefined }) {
   /**
    * Patterns of malicious codes
    */
@@ -50,21 +54,21 @@ function checkPayload(string) {
     new RegExp('javascript' + doubleEncode(':'), 'g'),
   ];
   if (payloadFilter.some(pattern => string.match(pattern))) {
-    return true;
+    if (retBool === undefined) return true;
+    const payload = payloadFilter
+      .map(pattern => string.match(pattern))
+      .filter(x => x)
+      .pop()
+      .pop();
+    return payload;
   }
-  return false;
+  return retBool === undefined ? false : undefined;
 }
 
 function checkCookie(details) {
   if (details.requestHeaders) {
-    // Get referer header
-    const refererHeader = (details.requestHeaders.filter(header =>
-      header.name.match(/^Referer$/i)
-    ) || [])[0];
-
-    if (!refererHeader) return false;
-
-    const referer = refererHeader.value;
+    const referer = previousUrl[details.tabId];
+    if (!referer) return false;
 
     const currentUrl = new URL(details.url);
     const refererUrl = new URL(referer);
@@ -81,7 +85,8 @@ function checkCookie(details) {
         const cookie = refererCookies[i];
         if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;
         // Block when url contains session cookie
-        if (currentUrl.toString().match(new RegExp(cookie.value, 'gi'))) {
+        console.log(currentUrl.toString(), cookie.value);
+        if (currentUrl.toString().includes(cookie.value)) {
           return true;
         }
       }
@@ -100,20 +105,27 @@ export function onUpdated(tabId, changeInfo, tab) {
 // Initialize cookies when module loaded
 onUpdated();
 
+export function onRemoved(tabId, removeInfo) {
+  delete previousUrl[tabId];
+}
+
 /**
  * Block request when url includes payload
  */
 export function onBeforeRequest(details) {
   if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
-
-  if (checkPayload(details.url)) {
+  const payload = checkPayload({
+    string: details.url,
+    retBool: false,
+  });
+  if (payload) {
     switch (details.type) {
       case 'main_frame':
         delete details.requestBody;
         return {
           redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
             '@@extension_id'
-          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}&highlight=${btoa(payload)}`,
         };
       default:
         return { cancel: true };
@@ -127,20 +139,48 @@ export function onBeforeSendHeaders(details) {
   console.log(details);
   if (checkCookie(details)) {
     switch (details.type) {
-      case 'main_frame':
-        return {
-          redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
-            '@@extension_id'
-          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
-        };
       default:
+        cancelled.push(details.requestId);
         return { cancel: true };
+    }
+  }
+  switch (details.type) {
+    case 'main_frame':
+      previousUrl[details.tabId] = details.url;
+      break;
+    default:
+      break;
+  }
+}
+
+export function onErrorOccurred(details) {
+  if (!Context.get('enabled') || !Context.get('security_enabled')) return;
+
+  console.log(details);
+  if (cancelled.includes(details.requestId) && details.type === 'main_frame') {
+    let index = cancelled.indexOf(details.requestId);
+    cancelled.splice(index, 1);
+
+    switch (details.error) {
+      case 'net::ERR_BLOCKED_BY_CLIENT':
+        updateTab({
+          updateProperties: {
+            url: `chrome-extension://${chrome.i18n.getMessage(
+              '@@extension_id'
+            )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+          },
+        });
+        break;
+      default:
+        break;
     }
   }
 }
 
 export default {
   onUpdated: onUpdated,
+  onRemoved: onRemoved,
   onBeforeRequest: onBeforeRequest,
   onBeforeSendHeaders: onBeforeSendHeaders,
+  onErrorOccurred: onErrorOccurred,
 };
