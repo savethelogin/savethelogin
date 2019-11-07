@@ -1,7 +1,9 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-import config from '../../common/Config';
 import Context from '../../common/Context';
 import { updateTab } from '../../common/Utils';
+
+// https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
+const SESS_THRESHOLD = 22;
 
 let previousUrl = {};
 let uniqueDomains = [];
@@ -83,7 +85,7 @@ function checkCookie(details) {
       const refererCookies = cookies.filter(cookie => cookie.domain.includes(refererRoot));
       for (let i = 0; i < refererCookies.length; ++i) {
         const cookie = refererCookies[i];
-        if (!cookie || !cookie.value || cookie.value.length < config.HASH_THRESHOLD) continue;
+        if (!cookie || !cookie.value || cookie.value.length < SESS_THRESHOLD) continue;
         // Block when url contains session cookie
         console.log(currentUrl.toString(), cookie.value);
         if (currentUrl.toString().includes(cookie.value)) {

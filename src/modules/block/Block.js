@@ -4,10 +4,13 @@
  * HTTP Request blocker module
  */
 import config from '../../common/Config';
-const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN, SHORTEN_LENGTH } = config;
+const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
 import { executeScript } from '../../common/Utils';
 import Context from '../../common/Context';
+
+// Shorten value to improve performance
+const SHORTEN_LENGTH = 0x10;
 
 // Store private datas
 let privateData = {};
