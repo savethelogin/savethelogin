@@ -117,6 +117,30 @@ const config = {
             pattern: '{./modules/**/_locales/en/messages.json,./_locales/en/messages.json}',
             fileName: './_locales/en/messages.json',
           },
+          {
+            pattern: '{./modules/**/_locales/de/messages.json,./_locales/de/messages.json}',
+            fileName: './_locales/de/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/fr/messages.json,./_locales/fr/messages.json}',
+            fileName: './_locales/fr/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/ja/messages.json,./_locales/ja/messages.json}',
+            fileName: './_locales/ja/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/ko/messages.json,./_locales/ko/messages.json}',
+            fileName: './_locales/ko/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/ru/messages.json,./_locales/ko/messages.json}',
+            fileName: './_locales/ru/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/zh-CN/messages.json,./_locales/ko/messages.json}',
+            fileName: './_locales/zh-CN/messages.json',
+          },
         ],
       },
     }),

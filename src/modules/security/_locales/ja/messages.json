@@ -1,0 +1,17 @@
+{
+  "options_security_desc": {
+    "message": "\ubcf8\uc774\uc138\uc158\ud558\uc774\uc7ac\ud0b9\u3001\uc8fc\uc785\uacf5\uaca9\ubcf4\ud638\ubcf4\ud638"
+  },
+  "security_page_blocked_description": {
+    "message": "\ud655\uc7a5\uadf8\ub7a8\ub85c\uadf8\ub7a8\uc774\uc545\uc131\ub85c\uc774\ub85c\ub4dc\ub4dc\ub97c\uc9c0\ud558\uc5ec\ucc28\ub2e8\ud588\uc2b5\ub2c8\ub2e4\u3002\n\uacc4\uc18d\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c\uff1f"
+  },
+  "security_page_blocked_title": {
+    "message": "\ucc28\ub2e8\ub41c\ud398\uc774\uc9c0"
+  },
+  "disable": {
+    "message": "\ube44\ud65c\uc131\ud654"
+  },
+  "back": {
+    "message": "\ub4a4"
+  }
+}

@@ -3,7 +3,7 @@
     "message": "Page Blocked"
   },
   "security_page_blocked_description": {
-    "message": "Save the login extension blocked request by detecting malicious payloads.\nWould you like to continue?"
+    "message": "Extension blocked request by detecting malicious payloads.\nWould you like to continue?"
   },
   "back": {
     "message": "Back"

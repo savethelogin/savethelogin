@@ -1,0 +1,17 @@
+{
+  "options_security_desc": {
+    "message": "\uff0c\uc774\uc138\uc158\uc774\uff0c\uff0c\uacf5"
+  },
+  "security_page_blocked_description": {
+    "message": "\ub85c\ub85c\ub85c\ub85c\uc774\uc774\uc774\uc774\n\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c"
+  },
+  "security_page_blocked_title": {
+    "message": "\ucc28\ub2e8\ucc28\ub2e8\ub41c"
+  },
+  "disable": {
+    "message": "\ube44\ud65c\uc131\ud654"
+  },
+  "back": {
+    "message": "\ub4a4"
+  }
+}

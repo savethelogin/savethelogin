@@ -1,0 +1,35 @@
+{
+  "deny": {
+    "message": "\ub3d9\uc758 \ub3d9\uc758 \ud558\uc9c0"
+  },
+  "malicious": {
+    "message": "\uc545\uc758 \uc545\uc758"
+  },
+  "inspect": {
+    "message": "\uac80\uc0ac"
+  },
+  "safe": {
+    "message": "\uc548\uc804\ud55c"
+  },
+  "refresh": {
+    "message": "\uc0c8\ub86d\uac8c \uc0c8\ub86d\uac8c"
+  },
+  "options": {
+    "message": "\uc635\uc158"
+  },
+  "basics": {
+    "message": "\uae30\ucd08"
+  },
+  "experimental": {
+    "message": "\uc2e4\ud5d8\uc801"
+  },
+  "moderate": {
+    "message": "\ubcf4\ud1b5 \ubcf4\ud1b5 \u3001 \uc911\ub3c4 \uc911\ub3c4"
+  },
+  "agree": {
+    "message": "\ub3d9\uc758 \ub3d9\uc758"
+  },
+  "vulnerable": {
+    "message": "\ucde8\uc57d"
+  }
+}
