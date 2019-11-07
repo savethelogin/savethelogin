@@ -134,11 +134,11 @@ const config = {
             fileName: './_locales/ko/messages.json',
           },
           {
-            pattern: '{./modules/**/_locales/ru/messages.json,./_locales/ko/messages.json}',
+            pattern: '{./modules/**/_locales/ru/messages.json,./_locales/ru/messages.json}',
             fileName: './_locales/ru/messages.json',
           },
           {
-            pattern: '{./modules/**/_locales/zh-CN/messages.json,./_locales/ko/messages.json}',
+            pattern: '{./modules/**/_locales/zh-CN/messages.json,./_locales/zh-CN/messages.json}',
             fileName: './_locales/zh-CN/messages.json',
           },
         ],
