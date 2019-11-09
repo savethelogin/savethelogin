@@ -180,9 +180,9 @@ export function onErrorOccurred(details) {
 }
 
 export default {
-  onUpdated: onUpdated,
-  onRemoved: onRemoved,
-  onBeforeRequest: onBeforeRequest,
-  onBeforeSendHeaders: onBeforeSendHeaders,
-  onErrorOccurred: onErrorOccurred,
+  onUpdated,
+  onRemoved,
+  onBeforeRequest,
+  onBeforeSendHeaders,
+  onErrorOccurred,
 };

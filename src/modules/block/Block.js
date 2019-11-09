@@ -493,11 +493,11 @@ export function onErrorOccurred(details) {
 }
 
 export default {
-  onConnect: onConnect,
-  onUpdated: onUpdated,
-  onRemoved: onRemoved,
-  onBeforeRequest: onBeforeRequest,
-  onBeforeSendHeaders: onBeforeSendHeaders,
-  onCompleted: onCompleted,
-  onErrorOccurred: onErrorOccurred,
+  onConnect,
+  onUpdated,
+  onRemoved,
+  onBeforeRequest,
+  onBeforeSendHeaders,
+  onCompleted,
+  onErrorOccurred,
 };
