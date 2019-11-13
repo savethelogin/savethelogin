@@ -2,7 +2,10 @@
   "name": "savethelogin",
   "version": "1.0.5",
   "description": "Save the login",
-  "author": "team stl",
+  "author": {
+    "name": "Team STL",
+    "email": "savethelogin@gmail.com"
+  },
   "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .js,.vue src",

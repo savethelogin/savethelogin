@@ -7,7 +7,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
-const { version } = require('./package.json');
+const { version, author } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -192,7 +192,7 @@ function transformJson(content) {
   if (process.env.GECKO === 'true') {
     jsonContent.applications = {
       gecko: {
-        id: 'savethelogin@gmail.com',
+        id: author.email,
       },
     };
   }
