@@ -29,6 +29,6 @@ export function onResponseStarted(details) {
 }
 
 export default {
-  onRemoved: onRemoved,
-  onResponseStarted: onResponseStarted,
+  onRemoved,
+  onResponseStarted,
 };

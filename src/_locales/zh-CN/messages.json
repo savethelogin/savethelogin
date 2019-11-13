@@ -1,35 +1,35 @@
 {
   "deny": {
-    "message": "\ud558\ud558\uc9c0"
+    "message": "不同意"
   },
   "malicious": {
-    "message": "\uc545\uc758"
+    "message": "恶意的"
   },
   "inspect": {
-    "message": "\uac80\uc0ac"
+    "message": "检查"
   },
   "safe": {
-    "message": "\uc548\uc804\ud55c"
+    "message": "安全"
   },
   "refresh": {
-    "message": "\uc0c8\ub86d\uac8c"
+    "message": "刷新"
   },
   "options": {
-    "message": "\uc635\uc158"
+    "message": "选件"
   },
   "basics": {
-    "message": "\uae30\ucd08"
+    "message": "基本"
   },
   "experimental": {
-    "message": "\uc2e4\ud5d8\uc801"
+    "message": "实验性"
   },
   "moderate": {
-    "message": "\ubcf4\ud1b5\ubcf4\ud1b5\uff0c\uc911\ub3c4"
+    "message": "中等"
   },
   "agree": {
-    "message": "\ub3d9\uc758"
+    "message": "同意"
   },
   "vulnerable": {
-    "message": "\ucde8\uc57d"
+    "message": "脆弱的"
   }
 }

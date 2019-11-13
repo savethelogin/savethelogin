@@ -1,17 +1,17 @@
 {
   "options_security_desc": {
-    "message": "\uff0c\uc774\uc138\uc158\uc774\uff0c\uff0c\uacf5"
+    "message": "基本会话劫持，注入攻击防护"
   },
   "security_page_blocked_description": {
-    "message": "\ub85c\ub85c\ub85c\ub85c\uc774\uc774\uc774\uc774\n\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c"
+    "message": "扩展程序通过检测恶意负载阻止了请求。\n你想继续吗？"
   },
   "security_page_blocked_title": {
-    "message": "\ucc28\ub2e8\ucc28\ub2e8\ub41c"
+    "message": "页面被阻止"
   },
   "disable": {
-    "message": "\ube44\ud65c\uc131\ud654"
+    "message": "禁用"
   },
   "back": {
-    "message": "\ub4a4"
+    "message": "背部"
   }
 }

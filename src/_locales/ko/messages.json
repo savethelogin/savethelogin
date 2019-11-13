@@ -1,35 +1,35 @@
 {
   "deny": {
-    "message": "\ub3d9\uc758\ud558\uc9c0 \uc54a\ub294\ub2e4"
+    "message": "거부"
   },
   "malicious": {
-    "message": "\uc545\uc758 \uc788\ub294"
+    "message": "악성"
   },
   "inspect": {
-    "message": "\uac80\uc0ac"
+    "message": "검사"
   },
   "safe": {
-    "message": "\uc548\uc804\ud55c"
+    "message": "안전한"
   },
   "refresh": {
-    "message": "\uc0c8\ub86d\uac8c \ud558\ub2e4"
+    "message": "새로 고침"
   },
   "options": {
-    "message": "\uc635\uc158"
+    "message": "옵션"
   },
   "basics": {
-    "message": "\uae30\ucd08"
+    "message": "기초"
   },
   "experimental": {
-    "message": "\uc2e4\ud5d8\uc801"
+    "message": "실험적"
   },
   "moderate": {
-    "message": "\ubcf4\ud1b5\uc758, \uc911\ub3c4\uc758"
+    "message": "보통"
   },
   "agree": {
-    "message": "\ub3d9\uc758\ud558\ub2e4"
+    "message": "동의"
   },
   "vulnerable": {
-    "message": "\ucde8\uc57d"
+    "message": "취약"
   }
 }

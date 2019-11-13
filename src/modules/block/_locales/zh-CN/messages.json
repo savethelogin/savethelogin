@@ -1,11 +1,11 @@
 {
   "confirm_request_block": {
-    "message": "\ud14d\uc2a4\uc744\uc744\ud558\uace0\uc744\ub85c\ucc28\ub2e8\ub2e4\n\uc54a\uc740\uc9c0\uc54a\uc740\uc9c0\uc54a\uc740\uc9c0\uc815\uc815\ubcf4\uc815\ubcf4\uc815\ubcf4\n\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c"
+    "message": "我们已经检测到并暂时阻止了明文的传输。\n在传输过程中可能会暴露未加密的个人信息。\n你想继续吗？"
   },
   "options_block_desc": {
-    "message": "\uadf8\uc778\uc2a4\ud14d\ub85c\uadf8\uc778\uc778\uadf8\uc778\uc778"
+    "message": "通知有关纯文本登录"
   },
   "request_blocked": {
-    "message": "\uc774\uc774\uc694\uccad\uc774\ucc28\ub2e8\ub2e4"
+    "message": "登录请求已被阻止。"
   }
 }

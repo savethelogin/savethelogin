@@ -1,35 +1,35 @@
 {
   "hsts_policy": {
-    "message": "HSTS \uc815\ucc45"
+    "message": "HSTS 정책"
   },
   "xss_protection_policy": {
-    "message": "XSS \ubcf4\ud638 \uc815\ucc45"
+    "message": "XSS 보호 정책"
   },
   "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">\uad8c\ud558\ub2e4</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+    "message": "<span class=\"badge badge-info\">추천</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
   },
   "servlet_spec_disclosure": {
-    "message": "\uc11c\ubc84 \uad6c\uc131 \uc815\ubcf4 \uacf5\uac1c"
+    "message": "서버 구성 정보 노출"
   },
   "no_information": {
-    "message": "\uc815\ubcf4 \uc5c6\uc74c!"
+    "message": "정보 없음!"
   },
   "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">\uad8c\ud558\ub2e4</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+    "message": "<span class=\"badge badge-info\">추천</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
   },
   "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">\uad8c\ud558\ub2e4</span> <code>X-XSS-Protection: 1; mode=block</code>\u00a0\uc11c\ubc84\uc758 HTTP \uc751\ub2f5 \ud5e4\ub354\uc5d0 \ud3ec\ud568\ud558\uc2ed\uc2dc\uc624."
+    "message": "<span class=\"badge badge-info\">추천</span> <code>X-XSS-Protection: 1; mode=block</code> 서버의 HTTP 응답 헤더에 포함하십시오."
   },
   "server_version_disclosure": {
-    "message": "\uc11c\ubc84 \ubc84\uc804 \uacf5\uac1c"
+    "message": "서버 버전 노출"
   },
   "scheme": {
-    "message": "\uacc4\ud68d"
+    "message": "스키마"
   },
   "session_cookie_xss": {
-    "message": "\uc138\uc158 \ucfe0\ud0a4 \ucde8\uc57d\uc810"
+    "message": "세션 쿠키 취약점"
   },
   "clickjacking_prevention": {
-    "message": "\ud074\ub9ad \uc7ac\ud0b9 \ubc29\uc9c0"
+    "message": "클릭 재킹 방지"
   }
 }

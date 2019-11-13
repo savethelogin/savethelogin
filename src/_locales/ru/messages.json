@@ -1,35 +1,35 @@
 {
   "deny": {
-    "message": "\ud558\uc9c0"
+    "message": "не соглашаться"
   },
   "malicious": {
-    "message": "\uc545\uc758"
+    "message": "злонамеренный"
   },
   "inspect": {
-    "message": "\uac80\uc0ac"
+    "message": "Осмотреть"
   },
   "safe": {
-    "message": "\uc548\uc804\ud55c"
+    "message": "безопасный"
   },
   "refresh": {
-    "message": "\uc0c8\ub86d\uac8c"
+    "message": "обновление"
   },
   "options": {
-    "message": "\uc635\uc158"
+    "message": "Параметры"
   },
   "basics": {
-    "message": "\uae30\ucd08"
+    "message": "основы"
   },
   "experimental": {
-    "message": "\uc2e4\ud5d8\uc801"
+    "message": "экспериментальный"
   },
   "moderate": {
-    "message": "\ubcf4\ud1b5 \uff0c \uc911\ub3c4"
+    "message": "умеренной"
   },
   "agree": {
-    "message": "\ub3d9\uc758"
+    "message": "согласны"
   },
   "vulnerable": {
-    "message": "\ucde8\uc57d"
+    "message": "уязвимый"
   }
 }

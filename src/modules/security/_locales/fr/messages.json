@@ -1,17 +1,17 @@
 {
   "options_security_desc": {
-    "message": "\uc774 \uc138\uc158 \uc774 \uff0c\uff0c \uacf5"
+    "message": "Détournement de session de base, protection contre les attaques par injection"
   },
   "security_page_blocked_description": {
-    "message": "\ub85c \ub85c \uc774\uc774 \uc774\uc774\n\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c"
+    "message": "Extension de la demande bloquée en détectant les charges utiles malveillantes.\nVoulez-vous continuer?"
   },
   "security_page_blocked_title": {
-    "message": "\ucc28\ub2e8 \ub41c"
+    "message": "Page bloquée"
   },
   "disable": {
-    "message": "\ube44\ud65c\uc131\ud654"
+    "message": "Désactiver"
   },
   "back": {
-    "message": "\ub4a4"
+    "message": "Retour"
   }
 }
