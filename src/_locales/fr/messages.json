@@ -1,35 +1,35 @@
 {
   "deny": {
-    "message": "\ud558\uc9c0"
+    "message": "être en désaccord"
   },
   "malicious": {
-    "message": "\uc545\uc758"
+    "message": "Mal intentionné"
   },
   "inspect": {
-    "message": "\uac80\uc0ac"
+    "message": "Inspecter"
   },
   "safe": {
-    "message": "\uc548\uc804\ud55c"
+    "message": "sûr"
   },
   "refresh": {
-    "message": "\uc0c8\ub86d\uac8c"
+    "message": "rafraîchir"
   },
   "options": {
-    "message": "\uc635\uc158"
+    "message": "Les options"
   },
   "basics": {
-    "message": "\uae30\ucd08"
+    "message": "Les bases"
   },
   "experimental": {
-    "message": "\uc2e4\ud5d8\uc801"
+    "message": "Expérimental"
   },
   "moderate": {
-    "message": "\ubcf4\ud1b5 \uff0c \uc911\ub3c4"
+    "message": "modéré"
   },
   "agree": {
-    "message": "\ub3d9\uc758"
+    "message": "se mettre d'accord"
   },
   "vulnerable": {
-    "message": "\ucde8\uc57d"
+    "message": "vulnérable"
   }
 }

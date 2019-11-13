@@ -1,35 +1,35 @@
 {
   "deny": {
-    "message": "\ub3d9\uc758 \ub3d9\uc758 \ud558\uc9c0"
+    "message": "nicht zustimmen"
   },
   "malicious": {
-    "message": "\uc545\uc758 \uc545\uc758"
+    "message": "Bösartig"
   },
   "inspect": {
-    "message": "\uac80\uc0ac"
+    "message": "Prüfen"
   },
   "safe": {
-    "message": "\uc548\uc804\ud55c"
+    "message": "sicher"
   },
   "refresh": {
-    "message": "\uc0c8\ub86d\uac8c \uc0c8\ub86d\uac8c"
+    "message": "Aktualisierung"
   },
   "options": {
-    "message": "\uc635\uc158"
+    "message": "Optionen"
   },
   "basics": {
-    "message": "\uae30\ucd08"
+    "message": "Grundlagen"
   },
   "experimental": {
-    "message": "\uc2e4\ud5d8\uc801"
+    "message": "Experimental"
   },
   "moderate": {
-    "message": "\ubcf4\ud1b5 \ubcf4\ud1b5 \u3001 \uc911\ub3c4 \uc911\ub3c4"
+    "message": "mäßig"
   },
   "agree": {
-    "message": "\ub3d9\uc758 \ub3d9\uc758"
+    "message": "zustimmen"
   },
   "vulnerable": {
-    "message": "\ucde8\uc57d"
+    "message": "verletzlich"
   }
 }

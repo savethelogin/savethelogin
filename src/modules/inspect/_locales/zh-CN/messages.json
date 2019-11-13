@@ -1,35 +1,35 @@
 {
   "hsts_policy": {
-    "message": "HSTS\uc815\ucc45"
+    "message": "HSTS政策"
   },
   "xss_protection_policy": {
-    "message": "XSS\ubcf4\ud638\ubcf4\ud638"
+    "message": "XSS保护政策"
   },
   "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">\uad8c\ud558\ub2e4</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+    "message": "<span class=\"badge badge-info\">推荐</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
   },
   "servlet_spec_disclosure": {
-    "message": "\uc815\uc815\uc815\uc815\ubcf4"
+    "message": "服务器配置信息披露"
   },
   "no_information": {
-    "message": "\uc815\ubcf4\uc815\uc815\uc5c6\uc74c"
+    "message": "无信息！"
   },
   "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">\uad8c\ud558\ub2e4</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+    "message": "<span class=\"badge badge-info\">推荐</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
   },
   "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">\uad8c\ud558\ub2e4</span> <code>X-XSS-Protection: 1; mode=block</code>\uc11c\ubc84HTTP\uc751\ub2f5\ud5e4\ub354\ud3ec\ud568\ud3ec\ud568"
+    "message": "<span class=\"badge badge-info\">推荐</span> <code>X-XSS-Protection: 1; mode=block</code> 包含在服务器的HTTP响应标头中。"
   },
   "server_version_disclosure": {
-    "message": "\ubc84\uc804"
+    "message": "服务器版本披露"
   },
   "scheme": {
-    "message": "\uacc4\ud68d"
+    "message": "方案"
   },
   "session_cookie_xss": {
-    "message": "\ucfe0\ud0a4"
+    "message": "会话Cookie漏洞"
   },
   "clickjacking_prevention": {
-    "message": "\uc7ac\ud0b9"
+    "message": "防止点击劫持"
   }
 }

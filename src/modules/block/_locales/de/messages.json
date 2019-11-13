@@ -1,11 +1,11 @@
 {
   "confirm_request_block": {
-    "message": "\uc77c\ubc18 \uc77c\ubc18 \uc2a4\ud14d \uc804\uc1a1 \uc744 \uc744\uc9c0 \ud558\uace0 \ud558\uace0 \ub85c \ucc28\ub2e8 \ud588\uc2b5\ub2c8\ub2e4\n\uc54a\uc740\uc9c0 \uc54a\uc740\uc9c0 \uc54a\uc740\uc9c0 \uac1c\uc778 \uc554\ud638\ud654 \ub418 \ub178\ucd9c \ub178\ucd9c \uc815\ubcf4 \uc815\ubcf4\n\uacc4\uc18d \uacc4\uc18d \ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c"
+    "message": "Wir haben die Übertragung von Klartext erkannt und vorübergehend blockiert.\nWährend der Übertragung können unverschlüsselte persönliche Informationen angezeigt werden.\nMöchtest du weiter machen?"
   },
   "options_block_desc": {
-    "message": "\uc77c\ubc18 \uc77c\ubc18 \ud14d\uc2a4\ud2b8 \ub85c\uadf8\uc778 \uc5d0 \uadf8 \uc778 \uc5d0"
+    "message": "Benachrichtigen Sie über Klartext-Login"
   },
   "request_blocked": {
-    "message": "\uadf8\uc778 \uadf8\uc778 \uc774 \uc694\uccad \uc774 \ucc28\ub2e8 \ub418\uc5c8\uc2b5\ub2c8\ub2e4"
+    "message": "Login-Anfrage wurde gesperrt."
   }
 }
