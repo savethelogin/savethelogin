@@ -1,6 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 import Context from '../../common/Context';
-import { updateTab } from '../../common/Utils';
+import { browser, getBrowser, updateTab } from '../../common/Utils';
 
 // https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
 const SESS_THRESHOLD = 22;
@@ -99,7 +99,7 @@ function checkCookie(details) {
 export function onUpdated(tabId, changeInfo, tab) {
   if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
-  chrome.cookies.getAll({ session: true }, cookies => {
+  browser.cookies.getAll({ session: true }, cookies => {
     allCookies = cookies;
     uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
   });
@@ -125,7 +125,7 @@ export function onBeforeRequest(details) {
       case 'main_frame':
         delete details.requestBody;
         return {
-          redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
+          redirectUrl: `${getBrowser().scheme}://${browser.i18n.getMessage(
             '@@extension_id'
           )}/page-blocked.html?details=${btoa(JSON.stringify(details))}&highlight=${btoa(payload)}`,
         };
@@ -167,7 +167,7 @@ export function onErrorOccurred(details) {
       case 'net::ERR_BLOCKED_BY_CLIENT':
         updateTab({
           updateProperties: {
-            url: `chrome-extension://${chrome.i18n.getMessage(
+            url: `${getBrowser().scheme}://${browser.i18n.getMessage(
               '@@extension_id'
             )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
           },

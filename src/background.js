@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from './common/Config';
 import Context from './common/Context';
-import { getStorage, setStorage } from './common/Utils';
+import { browser, getStorage, setStorage } from './common/Utils';
 
 const { PROJECT_PREFIX } = config;
 
@@ -44,17 +44,17 @@ getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items =>
 
 function setIcon(isEnabled) {
   if (isEnabled === true) {
-    chrome.browserAction.setIcon({
+    browser.browserAction.setIcon({
       path: '/icons/icon16.png',
     });
   } else {
-    chrome.browserAction.setIcon({
+    browser.browserAction.setIcon({
       path: '/icons/icon-off16.png',
     });
   }
 }
 
-chrome.runtime.onConnect.addListener(onConnect);
+browser.runtime.onConnect.addListener(onConnect);
 
 export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);

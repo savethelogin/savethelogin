@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from '../../common/Config';
 import Context from '../../common/Context';
-import { getStorage, setStorage } from '../../common/Utils';
+import { browser, getStorage, setStorage } from '../../common/Utils';
 import Security from './Security';
 
 const { PROJECT_PREFIX } = config;
@@ -24,16 +24,16 @@ getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
 });
 
 // Security module
-chrome.tabs.onUpdated.addListener(Security.onUpdated);
-chrome.tabs.onRemoved.addListener(Security.onRemoved);
-chrome.webRequest.onErrorOccurred.addListener(Security.onErrorOccurred, {
+browser.tabs.onUpdated.addListener(Security.onUpdated);
+browser.tabs.onRemoved.addListener(Security.onRemoved);
+browser.webRequest.onErrorOccurred.addListener(Security.onErrorOccurred, {
   urls: ['*://*/*'],
 });
-chrome.webRequest.onBeforeRequest.addListener(Security.onBeforeRequest, { urls: ['*://*/*'] }, [
+browser.webRequest.onBeforeRequest.addListener(Security.onBeforeRequest, { urls: ['*://*/*'] }, [
   'requestBody',
   'blocking',
 ]);
-chrome.webRequest.onBeforeSendHeaders.addListener(
+browser.webRequest.onBeforeSendHeaders.addListener(
   Security.onBeforeSendHeaders,
   { urls: ['*://*/*'] },
   ['requestHeaders', 'extraHeaders', 'blocking']

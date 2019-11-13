@@ -6,7 +6,7 @@
 import config from '../../common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
-import { executeScript } from '../../common/Utils';
+import { browser, getBrowser, executeScript } from '../../common/Utils';
 import Context from '../../common/Context';
 
 // Shorten value to improve performance
@@ -88,7 +88,7 @@ function bind(tabId) {
             }
 
             // Send event to extension
-            var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -98,7 +98,7 @@ function bind(tabId) {
           };
         };
 
-        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
         var target = 'input[type=password]';
@@ -176,7 +176,7 @@ function removeBg() {
 
 function enforceUpdate() {
   onUpdated();
-  chrome.tabs.reload(undefined, { bypassCache: true });
+  browser.tabs.reload(undefined, { bypassCache: true });
 }
 
 export function onConnect(port) {
@@ -260,7 +260,7 @@ export function onUpdated(tabId, changeInfo, tab) {
     details: {
       code: `
       (function() {
-        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.onMessage.addListener(function(message) {
           if (message.type === 'update_context') {
             window.postMessage(message.data, "*");
@@ -289,13 +289,13 @@ export function onUpdated(tabId, changeInfo, tab) {
       }, false);
 
       var createBg = function() {
-        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.postMessage({
           type: 'create_background'
         });
       };
       var removeBg = function() {
-        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.postMessage({
           type: 'remove_background'
         });
@@ -323,14 +323,14 @@ export function onUpdated(tabId, changeInfo, tab) {
               for (var i = 0; i < targets.length; ++i) {
                 if (context.plainText && body.indexOf(targets[i].value) !== -1) {
                   createBg();
-                  if (confirm("${chrome.i18n
+                  if (confirm("${browser.i18n
                     .getMessage('confirm_request_block')
                     .replace(/\n/g, '\\\\n')}")) {;
                     isSensitive = true;
                     removeBg();
                     break;
                   } else {
-                    alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
+                    alert("${browser.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
                     removeBg();
                     // Cancel request
                     return;
@@ -466,8 +466,8 @@ export function onBeforeSendHeaders(details) {
     }
 
     createBg();
-    if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
-      alert(chrome.i18n.getMessage('request_blocked'));
+    if (!confirm(browser.i18n.getMessage('confirm_request_block'))) {
+      alert(browser.i18n.getMessage('request_blocked'));
       removeBg();
 
       return { cancel: true };
@@ -487,7 +487,7 @@ export function onErrorOccurred(details) {
   console.log(details);
   if (details.error === 'net::ERR_BLOCKED_BY_CLIENT' && details.type.slice(-5) === 'frame') {
     if (sensitives.includes(details.requestId)) {
-      chrome.tabs.reload(details.tabId, { bypassCache: true });
+      browser.tabs.reload(details.tabId, { bypassCache: true });
     }
   }
 }

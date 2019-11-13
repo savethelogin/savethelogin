@@ -2,6 +2,19 @@
 import config from './Config';
 const { PROJECT_PREFIX } = config;
 
+export function getBrowser() {
+  if (typeof whale === 'object') {
+    return { name: 'whale', scheme: 'whale-extension', browser: whale };
+  } else if (typeof browser === 'object') {
+    return { name: 'browser', scheme: 'moz-extension', browser: browser };
+  } else if (typeof chrome === 'object') {
+    return { name: 'chrome', scheme: 'chrome-extension', browser: chrome };
+  } else {
+    throw new Error('browser is unknown');
+  }
+}
+export const browser = getBrowser().browser;
+
 function promiseHandler(
   {
     resolve,
@@ -11,7 +24,7 @@ function promiseHandler(
   },
   value
 ) {
-  if (chrome.runtime.lastError) {
+  if (browser.runtime.lastError) {
     return reject(value);
   } else {
     return resolve(value);
@@ -20,7 +33,7 @@ function promiseHandler(
 
 export function getStorage({ area = 'local', keys = null }) {
   return new Promise((resolve, reject) => {
-    chrome.storage[area].get(keys, items => {
+    browser.storage[area].get(keys, items => {
       promiseHandler({ resolve: resolve, reject: reject }, items);
     });
   });
@@ -28,7 +41,7 @@ export function getStorage({ area = 'local', keys = null }) {
 
 export function setStorage({ area = 'local', items }) {
   return new Promise((resolve, reject) => {
-    chrome.storage[area].set(items, () => {
+    browser.storage[area].set(items, () => {
       promiseHandler({ resolve: resolve, reject: reject });
     });
   });
@@ -40,16 +53,16 @@ export function removeStorage({ area = 'local', keys = undefined }) {
       promiseHandler({ resolve: resolve, reject: reject });
     };
     if (keys === undefined) {
-      chrome.storage[area].clear(callback);
+      browser.storage[area].clear(callback);
     } else {
-      chrome.storage[area].remove(keys, callback);
+      browser.storage[area].remove(keys, callback);
     }
   });
 }
 
 export function queryTab(queryInfo) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.query(queryInfo, result => {
+    browser.tabs.query(queryInfo, result => {
       promiseHandler({ resolve: resolve, reject: reject }, result);
     });
   });
@@ -57,7 +70,7 @@ export function queryTab(queryInfo) {
 
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.create(createProperties, tab => {
+    browser.tabs.create(createProperties, tab => {
       promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
@@ -65,28 +78,28 @@ export function createTab(createProperties) {
 
 export function updateTab({ tabId = undefined, updateProperties }) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.update(tabId, updateProperties, tab => {
+    browser.tabs.update(tabId, updateProperties, tab => {
       promiseHandler({ resolve: resolve }, tab);
     });
   });
 }
 
 export function openDefaultPort() {
-  return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
+  return browser.runtime.connect({ name: `${PROJECT_PREFIX}` });
 }
 
 export function executeScript({ tabId = undefined, details }) {
   console.log(tabId, details);
   return new Promise((resolve, reject) => {
-    chrome.tabs.executeScript(tabId, details, results => {
+    browser.tabs.executeScript(tabId, details, results => {
       promiseHandler({ resolve: resolve, reject: reject }, results);
     });
   }).catch(logError);
 }
 
 export function logError(e) {
-  if (chrome.runtime.lastError) {
-    console.log(e, chrome.runtime.lastError);
+  if (browser.runtime.lastError) {
+    console.log(e, browser.runtime.lastError);
   } else {
     console.log(e);
   }
@@ -98,14 +111,16 @@ export function funcToStr(func) {
 }
 
 export default {
-  getStorage: getStorage,
-  setStorage: setStorage,
-  removeStorage: removeStorage,
-  queryTab: queryTab,
-  createTab: createTab,
-  updateTab: updateTab,
-  openDefaultPort: openDefaultPort,
-  executeScript: executeScript,
-  logError: logError,
-  funcToStr: funcToStr,
+  getStorage,
+  setStorage,
+  removeStorage,
+  queryTab,
+  createTab,
+  updateTab,
+  openDefaultPort,
+  executeScript,
+  logError,
+  funcToStr,
+  getBrowser,
+  browser,
 };
