@@ -41,7 +41,8 @@ const buildZip = (src, dist, zipFilename) => {
 
 const main = () => {
   const { name, version } = extractExtensionData();
-  const zipFilename = `${name}-v${version}.zip`;
+  const zipFilename =
+    process.env.GECKO === 'true' ? `${name}-v${version}-gecko.zip` : `${name}-v${version}.zip`;
 
   makeDestZipDirIfNotExists();
 

@@ -154,7 +154,6 @@ if (!process.argv.includes('--watch')) {
 if (config.mode === 'production') {
   if (!config.optimization) config.optimization = {};
   config.optimization.minimizer = (config.optimization.minimizer || []).concat([
-    /*
     new TerserPlugin({
       terserOptions: {
         compress: {
@@ -162,7 +161,6 @@ if (config.mode === 'production') {
         },
       },
     }),
-    */
   ]);
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
