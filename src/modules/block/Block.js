@@ -6,7 +6,7 @@
 import config from '../../common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
-import { browser, getBrowser, executeScript } from '../../common/Utils';
+import { browser, browserName, executeScript } from '../../common/Utils';
 import Context from '../../common/Context';
 
 // Shorten value to improve performance
@@ -88,7 +88,7 @@ function bind(tabId) {
             }
 
             // Send event to extension
-            var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -98,7 +98,7 @@ function bind(tabId) {
           };
         };
 
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
         var target = 'input[type=password]';
@@ -260,7 +260,7 @@ export function onUpdated(tabId, changeInfo, tab) {
     details: {
       code: `
       (function() {
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.onMessage.addListener(function(message) {
           if (message.type === 'update_context') {
             window.postMessage(message.data, "*");
@@ -289,13 +289,13 @@ export function onUpdated(tabId, changeInfo, tab) {
       }, false);
 
       var createBg = function() {
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.postMessage({
           type: 'create_background'
         });
       };
       var removeBg = function() {
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.postMessage({
           type: 'remove_background'
         });

@@ -154,6 +154,7 @@ if (!process.argv.includes('--watch')) {
 if (config.mode === 'production') {
   if (!config.optimization) config.optimization = {};
   config.optimization.minimizer = (config.optimization.minimizer || []).concat([
+    /*
     new TerserPlugin({
       terserOptions: {
         compress: {
@@ -161,6 +162,7 @@ if (config.mode === 'production') {
         },
       },
     }),
+    */
   ]);
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
@@ -188,6 +190,14 @@ function transformHtml(content) {
 function transformJson(content) {
   const jsonContent = JSON.parse(content);
   jsonContent.version = version;
+
+  if (process.env.GECKO === 'true') {
+    jsonContent.applications = {
+      gecko: {
+        id: 'savethelogin@gmail.com',
+      },
+    };
+  }
 
   if (process.env.NODE_ENV === 'development') {
     jsonContent.content_security_policy =

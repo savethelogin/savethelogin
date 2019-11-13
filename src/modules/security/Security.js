@@ -1,6 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 import Context from '../../common/Context';
-import { browser, getBrowser, updateTab } from '../../common/Utils';
+import { browser, updateTab } from '../../common/Utils';
 
 // https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
 const SESS_THRESHOLD = 22;
@@ -124,11 +124,8 @@ export function onBeforeRequest(details) {
     switch (details.type) {
       case 'main_frame':
         delete details.requestBody;
-        return {
-          redirectUrl: `${getBrowser().scheme}://${browser.i18n.getMessage(
-            '@@extension_id'
-          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}&highlight=${btoa(payload)}`,
-        };
+        cancelled.push(details.requestId);
+        return { cancel: true };
       default:
         return { cancel: true };
     }
@@ -164,12 +161,11 @@ export function onErrorOccurred(details) {
     cancelled.splice(index, 1);
 
     switch (details.error) {
+      case 'NS_ERROR_ABORT':
       case 'net::ERR_BLOCKED_BY_CLIENT':
         updateTab({
           updateProperties: {
-            url: `${getBrowser().scheme}://${browser.i18n.getMessage(
-              '@@extension_id'
-            )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+            url: `/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
           },
         });
         break;

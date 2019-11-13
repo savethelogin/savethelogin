@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from '../../common/Config';
 import Context from '../../common/Context';
-import { browser, getStorage, setStorage } from '../../common/Utils';
+import { browser, browserName, getStorage, setStorage } from '../../common/Utils';
 import Block from './Block';
 
 const { PROJECT_PREFIX } = config;
@@ -35,7 +35,10 @@ browser.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['
 browser.webRequest.onBeforeSendHeaders.addListener(
   Block.onBeforeSendHeaders,
   { urls: ['http://*/*'] },
-  ['requestHeaders', 'extraHeaders', 'blocking']
+  Array.prototype.slice.apply(
+    ['blocking', 'requestHeaders', 'extraHeaders'],
+    browserName !== 'whale' && browserName !== 'chrome' ? [0, -1] : [0, -1]
+  )
 );
 browser.webRequest.onCompleted.addListener(Block.onCompleted, {
   urls: ['https://*/*', 'http://*/*'],

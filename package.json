@@ -9,6 +9,7 @@
     "prettier": "prettier \"src/**/*.{js,vue}\"",
     "prettier:write": "yarn run prettier --write",
     "build": "cross-env NODE_ENV=production webpack --hide-modules && prettier --write dist/**/*.js",
+    "build:gecko": "cross-env GECKO=true yarn run build-zip",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
     "build-zip": "yarn run build && node scripts/build-zip.js",
     "watch": "yarn run build --watch",
