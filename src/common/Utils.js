@@ -6,6 +6,38 @@ export function getBrowser() {
   if (typeof whale === 'object') {
     return { name: 'whale', scheme: 'whale-extension', browser: whale };
   } else if (typeof browser === 'object') {
+    // addListener override
+    const events = [
+      'onBeforeRequest',
+      'onBeforeSendHeaders',
+      'onSendHeaders',
+      'onHeadersReceived',
+      'onAuthRequired',
+      'onResponseStarted',
+      'onBeforeRedirect',
+      'onCompleted',
+      'onErrorOccurred',
+    ];
+    for (event of events) {
+      if (browser.webRequest[event]) {
+        const originalFunc = browser.webRequest[event];
+        const newAddListener = function(...args) {
+          let extraInfoSpec = args[2];
+          if (extraInfoSpec.includes('extraHeaders')) {
+            const index = extraInfoSpec.indexOf('extraHeaders');
+            extraInfoSpec.splice(index, 1);
+          }
+          originalFunc.apply(
+            this,
+            args
+              .slice(0, 2)
+              .concat(extraInfoSpec)
+              .concat(args.slice(4))
+          );
+        };
+        browser.webRequest[event].addListener = newAddListener;
+      }
+    }
     return { name: 'browser', scheme: 'moz-extension', browser: browser };
   } else if (typeof chrome === 'object') {
     return { name: 'chrome', scheme: 'chrome-extension', browser: chrome };
