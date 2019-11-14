@@ -11,6 +11,7 @@
         dragMode="move"
         v-bind:src="capture"
         alt="Source Image"
+        v-bind:guides="false"
         v-bind:minContainerWidth="520"
         v-bind:minContainerHeight="300"
       />
