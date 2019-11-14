@@ -40,7 +40,9 @@
         </div>
         <div class="row">
           <transition name="component-fade" mode="out-in">
-            <component v-bind:is="currentView" />
+            <keep-alive>
+              <component v-bind:is="currentView" />
+            </keep-alive>
           </transition>
         </div>
       </div>

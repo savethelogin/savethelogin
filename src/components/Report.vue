@@ -4,13 +4,15 @@
     <h4 class="mb-2 mt-3">Report</h4>
     <div v-if="capture">
       <vue-cropper
-        id="capture"
-        viewMode="2"
-        v-bind:ready="captureReady"
         ref="cropper"
+        id="capture"
+        v-bind:viewMode="2"
+        v-bind:ready="captureReady"
         dragMode="move"
         v-bind:src="capture"
         alt="Source Image"
+        v-bind:minContainerWidth="520"
+        v-bind:minContainerHeight="300"
       />
     </div>
     <div class="btn-group mt-3">
@@ -30,7 +32,9 @@ export default {
   methods: {
     captureSetImage: function(dataUrl) {
       this.capture = dataUrl;
-      this.$refs.cropper.replace(dataUrl);
+      this.$nextTick(() => {
+        this.$refs.cropper.replace(dataUrl);
+      });
     },
     capturePage: function() {
       chrome.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
