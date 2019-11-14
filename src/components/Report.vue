@@ -30,7 +30,6 @@ export default {
     captureSetImage: function(dataUrl) {
       this.capture = dataUrl;
       this.$refs.cropper.replace(dataUrl);
-      const image = document.querySelector('#capture img');
     },
     capturePage: function() {
       chrome.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
@@ -39,11 +38,9 @@ export default {
     },
     captureCrop: function() {
       this.$refs.cropper.getCroppedCanvas().toBlob(blob => {
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onloadend = () => {
-          console.log(reader.result);
           this.captureSetImage(reader.result);
-          console.log(this.$refs.cropper.getData(true));
         };
         reader.readAsDataURL(blob);
       });
