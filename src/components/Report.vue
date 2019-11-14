@@ -5,6 +5,7 @@
     <div v-if="capture">
       <vue-cropper
         id="capture"
+        viewMode="2"
         v-bind:ready="captureReady"
         ref="cropper"
         dragMode="move"
@@ -60,4 +61,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+#capture img {
+  max-width: 100%;
+  max-height: 300px;
+}
+</style>
