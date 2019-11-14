@@ -2456,6 +2456,11 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cropperjs@^1.5.6:
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.5.6.tgz#82faf432bec709d828f2f7a96d1179198edaf0e2"
+  integrity sha512-eAgWf4j7sNJIG329qUHIFi17PSV0VtuWyAu9glZSgu/KlQSrfTQOC2zAz+jHGa5fAB+bJldEnQwvJEaJ8zRf5A==
+
 cross-env@^5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.1.tgz#b2c76c1ca7add66dc874d11798466094f551b34d"
@@ -8168,6 +8173,13 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
   integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
+
+vue-cropperjs@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/vue-cropperjs/-/vue-cropperjs-4.0.1.tgz#1d4cd2f7b5292ffe83de780c76e4a2dec2b66118"
+  integrity sha512-THkBBhiRHUX188QdVnyQzFWOW2g0oBMbEQ2t7sWenPxpaGZ1tFMePG2878Iw+6z6PRzq+dT0FubTtfZZzdSyxw==
+  dependencies:
+    cropperjs "^1.5.6"
 
 vue-eslint-parser@^5.0.0:
   version "5.0.0"
