@@ -1,6 +1,7 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div class="col-12 mb-3">
+    <h4 class="mb-2 mt-3">Report</h4>
     <div v-if="capture">
       <vue-cropper
         id="capture"
@@ -11,8 +12,10 @@
         alt="Source Image"
       />
     </div>
-    <button type="button" v-on:click="capturePage">Capture test</button>
-    <button type="button" v-on:click="captureCrop">Crop</button>
+    <div class="btn-group mt-3">
+      <button type="button" class="btn btn-primary" v-on:click="capturePage">Capture</button>
+      <button type="button" class="btn btn-primary" v-on:click="captureCrop">Crop</button>
+    </div>
   </div>
 </template>
 
