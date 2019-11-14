@@ -1,4 +1,7 @@
 {
+  "options": {
+    "message": "Options"
+  },
   "confirm_request_block": {
     "message": "We have detected and temporarily blocked the transmission of plaintext.\nUnencrypted personal information may be exposed during transmission.\nDo you want to continue?"
   },
