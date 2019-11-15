@@ -18,12 +18,21 @@
     </div>
     <div class="mt-3">
       <div class="btn-group float-left">
-        <button type="button" class="btn btn-primary" v-on:click="capturePage">Capture</button>
-        <button type="button" class="btn btn-primary" v-on:click="captureCrop">Crop</button>
+        <button type="button" class="btn btn-primary" v-on:click="capturePage" v-chrome-i18n>
+          __MSG_capture__
+        </button>
+        <button type="button" class="btn btn-primary" v-on:click="captureCrop" v-chrome-i18n>
+          __MSG_crop__
+        </button>
       </div>
       <div class="btn-group float-right">
-        <button type="button" class="btn btn-dark float-right" v-on:click="captureDownload">
-          Download
+        <button
+          type="button"
+          class="btn btn-dark float-right"
+          v-on:click="captureDownload"
+          v-chrome-i18n
+        >
+          __MSG_download__
         </button>
       </div>
       <div class="clearfix"></div>
