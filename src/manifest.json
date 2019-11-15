@@ -8,6 +8,7 @@
     "activeTab",
     "cookies",
     "storage",
+    "downloads",
     "management",
     "webRequest",
     "webRequestBlocking",
