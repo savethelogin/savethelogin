@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from '../../common/Config';
 import Context from '../../common/Context';
-import { browser, browserName, getStorage, setStorage } from '../../common/Utils';
+import { browser, getBrowser, getStorage, setStorage } from '../../common/Utils';
 import Security from './Security';
 
 const { PROJECT_PREFIX } = config;
@@ -38,6 +38,6 @@ browser.webRequest.onBeforeSendHeaders.addListener(
   { urls: ['*://*/*'] },
   Array.prototype.slice.apply(
     ['blocking', 'requestHeaders', 'extraHeaders'],
-    browserName !== 'whale' && browserName !== 'chrome' ? [0, -1] : [0, -1]
+    getBrowser().name !== 'whale' && getBrowser().name !== 'chrome' ? [0, -1] : []
   )
 );

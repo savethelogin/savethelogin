@@ -8,6 +8,7 @@
     "cookies",
     "storage",
     "management",
+    "notifications",
     "webRequest",
     "webRequestBlocking",
     "*://*/*"

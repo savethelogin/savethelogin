@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from '../../common/Config';
 import Context from '../../common/Context';
-import { browser, browserName, getStorage, setStorage } from '../../common/Utils';
+import { browser, getBrowser, getStorage, setStorage } from '../../common/Utils';
 import Block from './Block';
 
 const { PROJECT_PREFIX } = config;
@@ -26,6 +26,8 @@ getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
 // Blocker module
 browser.runtime.onConnect.addListener(Block.onConnect);
 
+browser.notifications.onClicked.addListener(Block.onClicked);
+
 browser.tabs.onUpdated.addListener(Block.onUpdated);
 browser.tabs.onRemoved.addListener(Block.onRemoved);
 
@@ -37,7 +39,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(
   { urls: ['http://*/*'] },
   Array.prototype.slice.apply(
     ['blocking', 'requestHeaders', 'extraHeaders'],
-    browserName !== 'whale' && browserName !== 'chrome' ? [0, -1] : [0, -1]
+    getBrowser().name !== 'whale' && getBrowser().name !== 'chrome' ? [0, -1] : []
   )
 );
 browser.webRequest.onCompleted.addListener(Block.onCompleted, {

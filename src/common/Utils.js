@@ -13,11 +13,7 @@ export function getBrowser() {
     throw new Error('browser is unknown');
   }
 }
-const _browser = getBrowser();
-export const browser = _browser.browser;
-export const browserName = _browser.name;
-
-window.getBrowser = getBrowser;
+export const browser = getBrowser().browser;
 
 function promiseHandler(
   {
@@ -33,6 +29,37 @@ function promiseHandler(
   } else {
     return resolve(value);
   }
+}
+
+export function createNotification({
+  notificationId = undefined,
+  type = 'basic',
+  iconUrl = '/icons/icon.png',
+  title,
+  message,
+  contextMessage,
+}) {
+  return new Promise((resolve, reject) => {
+    let options = {
+      type: type,
+      iconUrl: iconUrl,
+      title: title,
+      message: message,
+    };
+    if (contextMessage) options['contextMessage'] = contextMessage;
+
+    browser.notifications.create(notificationId, options, id => {
+      promiseHandler({ resolve: resolve, reject: reject }, id);
+    });
+  });
+}
+
+export function clearNotification(notificationId = undefined) {
+  return new Promise((resolve, reject) => {
+    browser.notifications.clear(notificationId, wasCleard => {
+      promiseHandler({ resolve: resolve, reject: reject }, wasCleared);
+    });
+  });
 }
 
 export function getStorage({ area = 'local', keys = null }) {
@@ -93,7 +120,6 @@ export function openDefaultPort() {
 }
 
 export function executeScript({ tabId = undefined, details }) {
-  console.log(tabId, details);
   return new Promise((resolve, reject) => {
     browser.tabs.executeScript(tabId, details, results => {
       promiseHandler({ resolve: resolve, reject: reject }, results);
@@ -117,7 +143,8 @@ export function funcToStr(func) {
 export default {
   getBrowser,
   browser,
-  browserName,
+  createNotification,
+  clearNotification,
   getStorage,
   setStorage,
   removeStorage,
@@ -128,6 +155,4 @@ export default {
   executeScript,
   logError,
   funcToStr,
-  getBrowser,
-  browser,
 };

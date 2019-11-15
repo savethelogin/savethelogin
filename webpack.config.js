@@ -15,6 +15,7 @@ const config = {
   entry: {
     popup: './popup.js',
     background: './background.js',
+    bundle: './bundle.js',
   },
   output: {
     path: __dirname + '/dist',

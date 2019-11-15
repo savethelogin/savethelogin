@@ -6,7 +6,14 @@
 import config from '../../common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
-import { browser, browserName, executeScript } from '../../common/Utils';
+import {
+  getBrowser,
+  browser,
+  createNotification,
+  clearNotification,
+  createTab,
+  executeScript,
+} from '../../common/Utils';
 import Context from '../../common/Context';
 
 // Shorten value to improve performance
@@ -88,7 +95,7 @@ function bind(tabId) {
             }
 
             // Send event to extension
-            var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -98,7 +105,7 @@ function bind(tabId) {
           };
         };
 
-        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
         var target = 'input[type=password]';
@@ -135,41 +142,6 @@ function bind(tabId) {
           }
         }
       })();`,
-    },
-  });
-}
-
-// Create translucent black background when alert appears
-function createBg() {
-  executeScript({
-    details: {
-      code: `
-      (function() {
-        var bg = document.createElement('div');
-        bg.style.background = '#000';
-        bg.style.opacity = '0.8';
-        bg.style.width = '100%';
-        bg.style.height = '100%';
-        bg.style.position = 'absolute';
-        bg.style.zIndex = '2147483647';
-        bg.style.top = '0';
-        bg.style.left = '0';
-        bg.id = '${ID_PREFIX}bg';
-        document.body.appendChild(bg);
-      })()`,
-    },
-  });
-}
-
-// Remove background which created by createBg()
-function removeBg() {
-  executeScript({
-    details: {
-      code: `
-      (function() {
-        var bg = document.getElementById('${ID_PREFIX}bg');
-        bg.parentElement.removeChild(bg);
-      })()`,
     },
   });
 }
@@ -229,15 +201,6 @@ export function onConnect(port) {
         }
         break;
       }
-      // Ask background to create translucent background
-      case 'create_background': {
-        createBg();
-        break;
-      }
-      case 'remove_background': {
-        removeBg();
-        break;
-      }
       default:
         console.log(message);
         break;
@@ -250,7 +213,7 @@ export function onUpdated(tabId, changeInfo, tab) {
   console.log(tabId, changeInfo, tab);
 
   // Delete previous page informations
-  del(tabId);
+  if (changeInfo && changeInfo.status === 'complete') del(tabId);
 
   // Bind once per tab
   bind(tabId);
@@ -260,7 +223,7 @@ export function onUpdated(tabId, changeInfo, tab) {
     details: {
       code: `
       (function() {
-        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.onMessage.addListener(function(message) {
           if (message.type === 'update_context') {
             window.postMessage(message.data, "*");
@@ -288,20 +251,6 @@ export function onUpdated(tabId, changeInfo, tab) {
         }
       }, false);
 
-      var createBg = function() {
-        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
-        port.postMessage({
-          type: 'create_background'
-        });
-      };
-      var removeBg = function() {
-        var port = ${browserName}.runtime.connect({name: "${PROJECT_PREFIX}"});
-        port.postMessage({
-          type: 'remove_background'
-        });
-      };
-
-
       var open = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function() {
         var method = arguments[0];
@@ -317,31 +266,15 @@ export function onUpdated(tabId, changeInfo, tab) {
         if (method.match(/^POST$/i) && action.match(/^http:/i)) {
           var send = this.send;
           this.send = function(body) {
-            var isSensitive = false;
             try {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
-                if (context.plainText && body.indexOf(targets[i].value) !== -1) {
-                  createBg();
-                  if (confirm("${browser.i18n
-                    .getMessage('confirm_request_block')
-                    .replace(/\n/g, '\\\\n')}")) {;
-                    isSensitive = true;
-                    removeBg();
-                    break;
-                  } else {
-                    alert("${browser.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
-                    removeBg();
-                    // Cancel request
-                    return;
-                  }
+                if (context.block_enabled && body.indexOf(targets[i].value) !== -1) {
+                  this.setRequestHeader('X-Plaintext-Login', 'DETECTED');
+                  break;
                 }
               }
             } catch (e) {}
-            // Inject header
-            if (isSensitive) {
-              this.setRequestHeader("X-Plaintext-Login", "GRANTED");
-            }
             // Call original send method
             try {
               send.call(this, body);
@@ -455,24 +388,20 @@ export function onBeforeRequest(details) {
  * Block request before send headers
  */
 export function onBeforeSendHeaders(details) {
-  if (sensitives.includes(details.requestId)) {
-    if (details.requestHeaders) {
-      const headers = details.requestHeaders;
-      for (let i = 0; i < headers.length; ++i) {
-        if (headers[i].name === 'X-Plaintext-Login') {
-          if (headers[i].value === 'GRANTED') return;
+  if (details.requestHeaders) {
+    const headers = details.requestHeaders;
+    for (let i = 0; i < headers.length; ++i) {
+      if (headers[i].name === 'X-Plaintext-Login') {
+        if (headers[i].value === 'DETECTED') {
+          sensitives.push(details.requestId);
+          break;
         }
       }
     }
+  }
 
-    createBg();
-    if (!confirm(browser.i18n.getMessage('confirm_request_block'))) {
-      alert(browser.i18n.getMessage('request_blocked'));
-      removeBg();
-
-      return { cancel: true };
-    }
-    removeBg();
+  if (sensitives.includes(details.requestId)) {
+    return { cancel: true };
   }
 }
 
@@ -485,10 +414,26 @@ export function onCompleted(details) {
 
 export function onErrorOccurred(details) {
   console.log(details);
-  if (details.error === 'net::ERR_BLOCKED_BY_CLIENT' && details.type.slice(-5) === 'frame') {
-    if (sensitives.includes(details.requestId)) {
-      browser.tabs.reload(details.tabId, { bypassCache: true });
+  if (sensitives.includes(details.requestId)) {
+    switch (details.error) {
+      case 'net::ERR_BLOCKED_BY_CLIENT':
+      case 'NS_ERROR_ABORT':
+        createNotification({
+          notificationId: 'notification_request_blocked',
+          title: browser.i18n.getMessage('request_blocked_title'),
+          message: browser.i18n.getMessage('request_blocked_message'),
+          contextMessage: browser.i18n.getMessage('request_blocked_context_message'),
+        });
+        //browser.tabs.reload(details.tabId);
+        break;
     }
+  }
+}
+
+export function onClicked(notificationId) {
+  if (notificationId === 'notification_request_blocked') {
+    createTab({ url: '/block-whitelist.html' });
+    clearNotification(notificationId);
   }
 }
 
@@ -500,4 +445,5 @@ export default {
   onBeforeSendHeaders,
   onCompleted,
   onErrorOccurred,
+  onClicked,
 };
