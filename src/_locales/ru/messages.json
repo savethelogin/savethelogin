@@ -2,23 +2,17 @@
   "deny": {
     "message": "не соглашаться"
   },
-  "malicious": {
-    "message": "злонамеренный"
-  },
-  "inspect": {
-    "message": "Осмотреть"
+  "basics": {
+    "message": "основы"
   },
   "safe": {
     "message": "безопасный"
   },
+  "malicious": {
+    "message": "злонамеренный"
+  },
   "refresh": {
     "message": "обновление"
-  },
-  "options": {
-    "message": "Параметры"
-  },
-  "basics": {
-    "message": "основы"
   },
   "experimental": {
     "message": "экспериментальный"

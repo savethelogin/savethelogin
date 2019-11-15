@@ -2,23 +2,17 @@
   "deny": {
     "message": "nicht zustimmen"
   },
-  "malicious": {
-    "message": "Bösartig"
-  },
-  "inspect": {
-    "message": "Prüfen"
+  "basics": {
+    "message": "Grundlagen"
   },
   "safe": {
     "message": "sicher"
   },
+  "malicious": {
+    "message": "Bösartig"
+  },
   "refresh": {
     "message": "Aktualisierung"
-  },
-  "options": {
-    "message": "Optionen"
-  },
-  "basics": {
-    "message": "Grundlagen"
   },
   "experimental": {
     "message": "Experimental"

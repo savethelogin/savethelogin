@@ -5,17 +5,20 @@
   "xss_protection_policy": {
     "message": "XSS保护政策"
   },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">推荐</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
   "hsts_policy_recommend": {
     "message": "<span class=\"badge badge-info\">推荐</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "inspect": {
+    "message": "检查"
   },
   "servlet_spec_disclosure": {
     "message": "服务器配置信息披露"
   },
   "no_information": {
     "message": "无信息！"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">推荐</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
   },
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">推荐</span> <code>X-XSS-Protection: 1; mode=block</code> 包含在服务器的HTTP响应标头中。"

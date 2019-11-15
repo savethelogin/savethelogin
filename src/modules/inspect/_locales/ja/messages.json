@@ -5,17 +5,20 @@
   "xss_protection_policy": {
     "message": "XSS保護ポリシー"
   },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">お勧め</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
   "hsts_policy_recommend": {
     "message": "<span class=\"badge badge-info\">お勧め</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "inspect": {
+    "message": "調べる"
   },
   "servlet_spec_disclosure": {
     "message": "サーバー構成情報の開示"
   },
   "no_information": {
     "message": "情報なし！"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">お勧め</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
   },
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">お勧め</span> <code>X-XSS-Protection: 1; mode=block</code> サーバーのHTTP応答ヘッダーに含めます。"
