@@ -16,14 +16,25 @@
         v-bind:minContainerHeight="300"
       />
     </div>
-    <div class="btn-group mt-3">
-      <button type="button" class="btn btn-primary" v-on:click="capturePage">Capture</button>
-      <button type="button" class="btn btn-primary" v-on:click="captureCrop">Crop</button>
+    <div class="mt-3">
+      <div class="btn-group float-left">
+        <button type="button" class="btn btn-primary" v-on:click="capturePage">Capture</button>
+        <button type="button" class="btn btn-primary" v-on:click="captureCrop">Crop</button>
+      </div>
+      <div class="btn-group float-right">
+        <button type="button" class="btn btn-dark float-right" v-on:click="captureDownload">
+          Download
+        </button>
+      </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 </template>
 
 <script>
+import config from '../common/Config';
+const { PROJECT_PREFIX } = config;
+
 export default {
   data() {
     return {
@@ -31,6 +42,17 @@ export default {
     };
   },
   methods: {
+    _getCroppedImage: function() {
+      return new Promise((resolve, reject) => {
+        this.$refs.cropper.getCroppedCanvas().toBlob(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
+          reader.readAsDataURL(blob);
+        });
+      });
+    },
     captureSetImage: function(dataUrl) {
       this.capture = dataUrl;
       this.$nextTick(() => {
@@ -42,14 +64,9 @@ export default {
         this.captureSetImage(dataUrl);
       });
     },
-    captureCrop: function() {
-      this.$refs.cropper.getCroppedCanvas().toBlob(blob => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          this.captureSetImage(reader.result);
-        };
-        reader.readAsDataURL(blob);
-      });
+    captureCrop: async function() {
+      let croppedImage = await this._getCroppedImage();
+      this.captureSetImage(croppedImage);
     },
     captureReady: function(e) {
       const canvasData = this.$refs.cropper.getCanvasData();
@@ -61,6 +78,13 @@ export default {
       cropBoxData.height = canvasData.height;
 
       this.$refs.cropper.setCropBoxData(cropBoxData);
+    },
+    captureDownload: async function(e) {
+      let imgUrl = await this._getCroppedImage();
+      chrome.downloads.download({
+        url: imgUrl,
+        filename: `${PROJECT_PREFIX}_report.png`,
+      });
     },
   },
 };
