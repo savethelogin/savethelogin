@@ -56,7 +56,7 @@ export function createNotification({
 
 export function clearNotification(notificationId = undefined) {
   return new Promise((resolve, reject) => {
-    browser.notifications.clear(notificationId, wasCleard => {
+    browser.notifications.clear(notificationId, wasCleared => {
       promiseHandler({ resolve: resolve, reject: reject }, wasCleared);
     });
   });

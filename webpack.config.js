@@ -13,8 +13,11 @@ const config = {
   mode: process.env.NODE_ENV,
   context: __dirname + '/src',
   entry: {
+    // Extension popup
     popup: './popup.js',
+    // Extension background
     background: './background.js',
+    // Extension access page
     bundle: './bundle.js',
   },
   output: {

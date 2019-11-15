@@ -28,6 +28,7 @@ let recycleStack = [];
 let elementId = 0;
 // Request may be cancelled
 let sensitives = [];
+let cancelled = {};
 
 /**
  * Prepend inline script to header
@@ -379,6 +380,7 @@ export function onBeforeRequest(details) {
     // If formData or rawData contains plain private data
     if (isSensitive) {
       sensitives.push(details.requestId);
+      cancelled[details.requestId] = hostname;
     }
     del(details.tabId);
   }
@@ -419,7 +421,7 @@ export function onErrorOccurred(details) {
       case 'net::ERR_BLOCKED_BY_CLIENT':
       case 'NS_ERROR_ABORT':
         createNotification({
-          notificationId: 'notification_request_blocked',
+          notificationId: `notification_request_blocked@${details.requestId}`,
           title: browser.i18n.getMessage('request_blocked_title'),
           message: browser.i18n.getMessage('request_blocked_message'),
           contextMessage: browser.i18n.getMessage('request_blocked_context_message'),
@@ -431,9 +433,13 @@ export function onErrorOccurred(details) {
 }
 
 export function onClicked(notificationId) {
-  if (notificationId === 'notification_request_blocked') {
-    createTab({ url: '/block-whitelist.html' });
+  if (notificationId.match(/^notification_request_blocked/)) {
+    let requestId = parseInt(notificationId.split('@').slice(-1));
+    createTab({
+      url: `/block-whitelist.html?domain=${cancelled[requestId]}`,
+    });
     clearNotification(notificationId);
+    delete cancelled[requestId];
   }
 }
 
