@@ -1,12 +1,15 @@
 {
-  "options": {
-    "message": "Options"
+  "request_blocked_title": {
+    "message": "Login request has been blocked"
   },
-  "confirm_request_block": {
-    "message": "We have detected and temporarily blocked the transmission of plaintext.\nUnencrypted personal information may be exposed during transmission.\nDo you want to continue?"
+  "request_blocked_message": {
+    "message": "We have detected and blocked the transmission of plaintext.\n"
   },
-  "request_blocked": {
-    "message": "Login request has been blocked."
+  "request_blocked_context_message": {
+    "message": "Click here to unblock request"
+  },
+  "request_blocked_warning": {
+    "message": "Unencrypted personal information may be exposed during transmission."
   },
   "options_block_desc": {
     "message": "Notify about plain text login"

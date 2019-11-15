@@ -7,14 +7,18 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
-const { version } = require('./package.json');
+const { version, author } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
   context: __dirname + '/src',
   entry: {
+    // Extension popup
     popup: './popup.js',
+    // Extension background
     background: './background.js',
+    // Extension access page
+    bundle: './bundle.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -96,7 +100,6 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: '_locales', to: '_locales' },
       { from: 'popup.html', to: 'popup.html', transform: transformHtml },
       {
         from: 'manifest.json',
@@ -157,7 +160,7 @@ if (config.mode === 'production') {
     new TerserPlugin({
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: false,
         },
       },
     }),
@@ -188,6 +191,14 @@ function transformHtml(content) {
 function transformJson(content) {
   const jsonContent = JSON.parse(content);
   jsonContent.version = version;
+
+  if (process.env.GECKO === 'true') {
+    jsonContent.applications = {
+      gecko: {
+        id: author.email,
+      },
+    };
+  }
 
   if (process.env.NODE_ENV === 'development') {
     jsonContent.content_security_policy =

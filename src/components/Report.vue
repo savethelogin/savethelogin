@@ -21,7 +21,13 @@
         <button type="button" class="btn btn-primary" v-on:click="capturePage" v-chrome-i18n>
           __MSG_capture__
         </button>
-        <button type="button" class="btn btn-primary" v-on:click="captureCrop" v-chrome-i18n>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-on:click="captureCrop"
+          v-bind:disabled="capture === ''"
+          v-chrome-i18n
+        >
           __MSG_crop__
         </button>
       </div>
@@ -30,6 +36,7 @@
           type="button"
           class="btn btn-dark float-right"
           v-on:click="captureDownload"
+          v-bind:disabled="capture === ''"
           v-chrome-i18n
         >
           __MSG_download__
@@ -43,6 +50,8 @@
 <script>
 import config from '../common/Config';
 const { PROJECT_PREFIX } = config;
+
+import { browser, getBrowser, openDefaultPort } from '../common/Utils';
 
 export default {
   data() {
@@ -69,7 +78,7 @@ export default {
       });
     },
     capturePage: function() {
-      chrome.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
+      browser.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
         this.captureSetImage(dataUrl);
       });
     },
@@ -90,10 +99,19 @@ export default {
     },
     captureDownload: async function(e) {
       let imgUrl = await this._getCroppedImage();
-      chrome.downloads.download({
+      let options = {
         url: imgUrl,
         filename: `${PROJECT_PREFIX}_report.png`,
-      });
+      };
+      if (getBrowser().type !== 'gecko') {
+        browser.downloads.download(options);
+      } else {
+        let port = openDefaultPort();
+        port.postMessage({
+          type: 'download_gecko',
+          data: options,
+        });
+      }
     },
   },
 };

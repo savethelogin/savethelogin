@@ -2,6 +2,34 @@
 import config from './Config';
 const { PROJECT_PREFIX } = config;
 
+export function getBrowser() {
+  if (typeof whale === 'object') {
+    return {
+      name: 'whale',
+      type: 'chromium',
+      scheme: 'whale-extension',
+      browser: whale,
+    };
+  } else if (typeof browser === 'object') {
+    return {
+      name: 'browser',
+      type: 'gecko',
+      scheme: 'moz-extension',
+      browser: browser,
+    };
+  } else if (typeof chrome === 'object') {
+    return {
+      name: 'chrome',
+      type: 'chromium',
+      scheme: 'chrome-extension',
+      browser: chrome,
+    };
+  } else {
+    throw new Error('browser is unknown');
+  }
+}
+export const browser = getBrowser().browser;
+
 function promiseHandler(
   {
     resolve,
@@ -11,16 +39,47 @@ function promiseHandler(
   },
   value
 ) {
-  if (chrome.runtime.lastError) {
+  if (browser.runtime.lastError) {
     return reject(value);
   } else {
     return resolve(value);
   }
 }
 
+export function createNotification({
+  notificationId = undefined,
+  type = 'basic',
+  iconUrl = '/icons/icon.png',
+  title,
+  message,
+  contextMessage,
+}) {
+  return new Promise((resolve, reject) => {
+    let options = {
+      type: type,
+      iconUrl: iconUrl,
+      title: title,
+      message: message,
+    };
+    if (contextMessage) options['contextMessage'] = contextMessage;
+
+    browser.notifications.create(notificationId, options, id => {
+      promiseHandler({ resolve: resolve, reject: reject }, id);
+    });
+  });
+}
+
+export function clearNotification(notificationId = undefined) {
+  return new Promise((resolve, reject) => {
+    browser.notifications.clear(notificationId, wasCleared => {
+      promiseHandler({ resolve: resolve, reject: reject }, wasCleared);
+    });
+  });
+}
+
 export function getStorage({ area = 'local', keys = null }) {
   return new Promise((resolve, reject) => {
-    chrome.storage[area].get(keys, items => {
+    browser.storage[area].get(keys, items => {
       promiseHandler({ resolve: resolve, reject: reject }, items);
     });
   });
@@ -28,7 +87,7 @@ export function getStorage({ area = 'local', keys = null }) {
 
 export function setStorage({ area = 'local', items }) {
   return new Promise((resolve, reject) => {
-    chrome.storage[area].set(items, () => {
+    browser.storage[area].set(items, () => {
       promiseHandler({ resolve: resolve, reject: reject });
     });
   });
@@ -40,24 +99,32 @@ export function removeStorage({ area = 'local', keys = undefined }) {
       promiseHandler({ resolve: resolve, reject: reject });
     };
     if (keys === undefined) {
-      chrome.storage[area].clear(callback);
+      browser.storage[area].clear(callback);
     } else {
-      chrome.storage[area].remove(keys, callback);
+      browser.storage[area].remove(keys, callback);
     }
   });
 }
 
 export function queryTab(queryInfo) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.query(queryInfo, result => {
+    browser.tabs.query(queryInfo, result => {
       promiseHandler({ resolve: resolve, reject: reject }, result);
+    });
+  });
+}
+
+export function currentTab() {
+  return new Promise((resolve, reject) => {
+    browser.tabs.getCurrent(tab => {
+      promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
 }
 
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.create(createProperties, tab => {
+    browser.tabs.create(createProperties, tab => {
       promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
@@ -65,28 +132,35 @@ export function createTab(createProperties) {
 
 export function updateTab({ tabId = undefined, updateProperties }) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.update(tabId, updateProperties, tab => {
+    browser.tabs.update(tabId, updateProperties, tab => {
       promiseHandler({ resolve: resolve }, tab);
     });
   });
 }
 
+export function removeTab(tabIds) {
+  return new Promise((resolve, reject) => {
+    browser.tabs.remove(tabIds, () => {
+      promiseHandler({ resolve: resolve, reject: reject });
+    });
+  });
+}
+
 export function openDefaultPort() {
-  return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
+  return browser.runtime.connect({ name: `${PROJECT_PREFIX}` });
 }
 
 export function executeScript({ tabId = undefined, details }) {
-  console.log(tabId, details);
   return new Promise((resolve, reject) => {
-    chrome.tabs.executeScript(tabId, details, results => {
+    browser.tabs.executeScript(tabId, details, results => {
       promiseHandler({ resolve: resolve, reject: reject }, results);
     });
   }).catch(logError);
 }
 
 export function logError(e) {
-  if (chrome.runtime.lastError) {
-    console.log(e, chrome.runtime.lastError);
+  if (browser.runtime.lastError) {
+    console.log(e, browser.runtime.lastError);
   } else {
     console.log(e);
   }
@@ -97,15 +171,60 @@ export function funcToStr(func) {
   return func.toString().replace(/^function\s\w*\(.*?\)\s\{(.*)\}$/s, '$1');
 }
 
+// https://stackoverflow.com/a/12300351
+export function dataURItoBlob(dataURI) {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  let byteString = atob(dataURI.split(',')[1]);
+  // separate out the mime component
+  let mimeString = dataURI
+    .split(',')[0]
+    .split(':')[1]
+    .split(';')[0];
+  // write the bytes of the string to an ArrayBuffer
+  let ab = new ArrayBuffer(byteString.length);
+  // create a view into the buffer
+  let ia = new Uint8Array(ab);
+  // set the bytes of the buffer to the correct values
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  // write the ArrayBuffer to a blob, and you're done
+  let blob = new Blob([ab], { type: mimeString });
+
+  return blob;
+}
+
+export function extractRootDomain(hostname) {
+  // Extract original(top) domain of url
+  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
+    /^www[0-9]*\./i,
+    ''
+  );
+}
+
+export function unique(array) {
+  return array.filter((value, index) => array.indexOf(value) === index);
+}
+
 export default {
-  getStorage: getStorage,
-  setStorage: setStorage,
-  removeStorage: removeStorage,
-  queryTab: queryTab,
-  createTab: createTab,
-  updateTab: updateTab,
-  openDefaultPort: openDefaultPort,
-  executeScript: executeScript,
-  logError: logError,
-  funcToStr: funcToStr,
+  getBrowser,
+  browser,
+  createNotification,
+  clearNotification,
+  getStorage,
+  setStorage,
+  removeStorage,
+  queryTab,
+  currentTab,
+  createTab,
+  updateTab,
+  removeTab,
+  openDefaultPort,
+  executeScript,
+  logError,
+  funcToStr,
+  dataURItoBlob,
+  extractRootDomain,
+  unique,
 };

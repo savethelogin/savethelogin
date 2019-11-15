@@ -1,6 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 import Context from '../../common/Context';
-import { updateTab } from '../../common/Utils';
+import { browser, updateTab, extractRootDomain, unique } from '../../common/Utils';
 
 // https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
 const SESS_THRESHOLD = 22;
@@ -10,17 +10,17 @@ let uniqueDomains = [];
 let allCookies = [];
 
 let cancelled = [];
+let detailsStore = {};
 
-function extractRootDomain(hostname) {
-  // Extract original(top) domain of url
-  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
-    /^www[0-9]*\./i,
-    ''
-  );
+function addCancelledRequest(details) {
+  cancelled.push(details.requestId);
+  detailsStore[details.requestId] = details;
 }
 
-function unique(array) {
-  return array.filter((value, index) => array.indexOf(value) === index);
+function removeCancelledRequest(details) {
+  let index = cancelled.indexOf(details.requestId);
+  cancelled.splice(index, 1);
+  delete detailsStore[details.requestId];
 }
 
 function encode(string) {
@@ -99,7 +99,7 @@ function checkCookie(details) {
 export function onUpdated(tabId, changeInfo, tab) {
   if (!Context.get('enabled') || !Context.get('security_enabled')) return {};
 
-  chrome.cookies.getAll({ session: true }, cookies => {
+  browser.cookies.getAll({ session: true }, cookies => {
     allCookies = cookies;
     uniqueDomains = unique(cookies.map(cookie => extractRootDomain(cookie.domain)));
   });
@@ -124,11 +124,8 @@ export function onBeforeRequest(details) {
     switch (details.type) {
       case 'main_frame':
         delete details.requestBody;
-        return {
-          redirectUrl: `chrome-extension://${chrome.i18n.getMessage(
-            '@@extension_id'
-          )}/page-blocked.html?details=${btoa(JSON.stringify(details))}&highlight=${btoa(payload)}`,
-        };
+        addCancelledRequest(details);
+        return { cancel: true };
       default:
         return { cancel: true };
     }
@@ -142,7 +139,7 @@ export function onBeforeSendHeaders(details) {
   if (checkCookie(details)) {
     switch (details.type) {
       default:
-        cancelled.push(details.requestId);
+        addCancelledRequest(details);
         return { cancel: true };
     }
   }
@@ -160,16 +157,15 @@ export function onErrorOccurred(details) {
 
   console.log(details);
   if (cancelled.includes(details.requestId) && details.type === 'main_frame') {
-    let index = cancelled.indexOf(details.requestId);
-    cancelled.splice(index, 1);
+    let storedDetails = detailsStore[details.requestId];
+    removeCancelledRequest(details);
 
     switch (details.error) {
+      case 'NS_ERROR_ABORT':
       case 'net::ERR_BLOCKED_BY_CLIENT':
         updateTab({
           updateProperties: {
-            url: `chrome-extension://${chrome.i18n.getMessage(
-              '@@extension_id'
-            )}/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+            url: `/page-blocked.html?details=${btoa(JSON.stringify(storedDetails))}`,
           },
         });
         break;
