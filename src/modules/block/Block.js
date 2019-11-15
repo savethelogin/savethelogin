@@ -397,6 +397,11 @@ export function onBeforeRequest(details) {
  * Block request before send headers
  */
 export function onBeforeSendHeaders(details) {
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
+
+  const url = new URL(details.url);
+  if (whitelist.includes(url.hostname)) return;
+
   if (details.requestHeaders) {
     const headers = details.requestHeaders;
     for (let i = 0; i < headers.length; ++i) {

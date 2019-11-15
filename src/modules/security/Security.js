@@ -1,6 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 import Context from '../../common/Context';
-import { browser, updateTab } from '../../common/Utils';
+import { browser, updateTab, extractRootDomain, unique } from '../../common/Utils';
 
 // https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
 const SESS_THRESHOLD = 22;
@@ -21,18 +21,6 @@ function removeCancelledRequest(details) {
   let index = cancelled.indexOf(details.requestId);
   cancelled.splice(index, 1);
   delete detailsStore[details.requestId];
-}
-
-function extractRootDomain(hostname) {
-  // Extract original(top) domain of url
-  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
-    /^www[0-9]*\./i,
-    ''
-  );
-}
-
-function unique(array) {
-  return array.filter((value, index) => array.indexOf(value) === index);
 }
 
 function encode(string) {

@@ -195,6 +195,18 @@ export function dataURItoBlob(dataURI) {
   return blob;
 }
 
+export function extractRootDomain(hostname) {
+  // Extract original(top) domain of url
+  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
+    /^www[0-9]*\./i,
+    ''
+  );
+}
+
+export function unique(array) {
+  return array.filter((value, index) => array.indexOf(value) === index);
+}
+
 export default {
   getBrowser,
   browser,
@@ -213,4 +225,6 @@ export default {
   logError,
   funcToStr,
   dataURItoBlob,
+  extractRootDomain,
+  unique,
 };
