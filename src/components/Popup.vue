@@ -25,6 +25,12 @@
               <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
+              v-bind:classes="currentView === 'report' ? ['active'] : []"
+              v-bind:callback="changeView('report')"
+            >
+              <vue-chrome-i18n>__MSG_report__</vue-chrome-i18n>
+            </BaseButton>
+            <BaseButton
               v-bind:classes="currentView === 'options' ? ['active'] : []"
               v-bind:callback="changeView('options')"
             >
@@ -34,7 +40,9 @@
         </div>
         <div class="row">
           <transition name="component-fade" mode="out-in">
-            <component v-bind:is="currentView" />
+            <keep-alive>
+              <component v-bind:is="currentView" />
+            </keep-alive>
           </transition>
         </div>
       </div>
@@ -47,6 +55,7 @@ import config from '../common/Config';
 import { createTab, openDefaultPort, getStorage, setStorage } from '../common/Utils';
 
 import Inspect from './Inspect';
+import Report from './Report';
 import Options from './Options';
 import ToggleSwitch from './ToggleSwitch';
 
@@ -54,6 +63,7 @@ export default {
   name: 'Popup',
   components: {
     inspect: Inspect,
+    report: Report,
     options: Options,
     ToggleSwitch,
   },
@@ -100,6 +110,34 @@ export default {
 </script>
 
 <style>
+/**
+ * Global
+ */
+html,
+body {
+  width: 550px;
+  min-height: 100px;
+  max-height: 700px;
+  position: relative;
+  vertical-align: middle;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+body::-webkit-scrollbar {
+  background-color: #fff;
+  width: 16px;
+}
+body::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #babac0;
+  border-radius: 16px;
+  border: 4px solid #fff;
+}
+body::-webkit-scrollbar-button {
+  display: none;
+}
 /**
  * Layout
  **/

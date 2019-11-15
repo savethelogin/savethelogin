@@ -2,23 +2,17 @@
   "deny": {
     "message": "être en désaccord"
   },
-  "malicious": {
-    "message": "Mal intentionné"
-  },
-  "inspect": {
-    "message": "Inspecter"
+  "basics": {
+    "message": "Les bases"
   },
   "safe": {
     "message": "sûr"
   },
+  "malicious": {
+    "message": "Mal intentionné"
+  },
   "refresh": {
     "message": "rafraîchir"
-  },
-  "options": {
-    "message": "Les options"
-  },
-  "basics": {
-    "message": "Les bases"
   },
   "experimental": {
     "message": "Expérimental"

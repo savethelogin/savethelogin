@@ -2,23 +2,17 @@
   "deny": {
     "message": "거부"
   },
+  "basics": {
+    "message": "일반"
+  },
+  "safe": {
+    "message": "안전"
+  },
   "malicious": {
     "message": "악성"
   },
-  "inspect": {
-    "message": "검사"
-  },
-  "safe": {
-    "message": "안전한"
-  },
   "refresh": {
     "message": "새로 고침"
-  },
-  "options": {
-    "message": "옵션"
-  },
-  "basics": {
-    "message": "기초"
   },
   "experimental": {
     "message": "실험적"

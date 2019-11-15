@@ -5,12 +5,15 @@
   "version": "1.0.5",
   "permissions": [
     "tabs",
+    "activeTab",
     "cookies",
     "storage",
+    "downloads",
     "management",
     "webRequest",
     "webRequestBlocking",
-    "*://*/*"
+    "*://*/*",
+    "<all_urls>"
   ],
   "manifest_version": 2,
   "background": {

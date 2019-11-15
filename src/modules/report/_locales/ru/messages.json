@@ -1,0 +1,14 @@
+{
+  "report": {
+    "message": "отчет"
+  },
+  "capture": {
+    "message": "Захватить"
+  },
+  "download": {
+    "message": "Скачать"
+  },
+  "crop": {
+    "message": "урожай"
+  }
+}
