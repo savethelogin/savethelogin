@@ -4,11 +4,26 @@ const { PROJECT_PREFIX } = config;
 
 export function getBrowser() {
   if (typeof whale === 'object') {
-    return { name: 'whale', scheme: 'whale-extension', browser: whale };
+    return {
+      name: 'whale',
+      type: 'chromium',
+      scheme: 'whale-extension',
+      browser: whale,
+    };
   } else if (typeof browser === 'object') {
-    return { name: 'browser', scheme: 'moz-extension', browser: browser };
+    return {
+      name: 'browser',
+      type: 'gecko',
+      scheme: 'moz-extension',
+      browser: browser,
+    };
   } else if (typeof chrome === 'object') {
-    return { name: 'chrome', scheme: 'chrome-extension', browser: chrome };
+    return {
+      name: 'chrome',
+      type: 'chromium',
+      scheme: 'chrome-extension',
+      browser: chrome,
+    };
   } else {
     throw new Error('browser is unknown');
   }
@@ -140,6 +155,30 @@ export function funcToStr(func) {
   return func.toString().replace(/^function\s\w*\(.*?\)\s\{(.*)\}$/s, '$1');
 }
 
+// https://stackoverflow.com/a/12300351
+export function dataURItoBlob(dataURI) {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  let byteString = atob(dataURI.split(',')[1]);
+  // separate out the mime component
+  let mimeString = dataURI
+    .split(',')[0]
+    .split(':')[1]
+    .split(';')[0];
+  // write the bytes of the string to an ArrayBuffer
+  let ab = new ArrayBuffer(byteString.length);
+  // create a view into the buffer
+  let ia = new Uint8Array(ab);
+  // set the bytes of the buffer to the correct values
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  // write the ArrayBuffer to a blob, and you're done
+  let blob = new Blob([ab], { type: mimeString });
+
+  return blob;
+}
+
 export default {
   getBrowser,
   browser,
@@ -155,4 +194,5 @@ export default {
   executeScript,
   logError,
   funcToStr,
+  dataURItoBlob,
 };

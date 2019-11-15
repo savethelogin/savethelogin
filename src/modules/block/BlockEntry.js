@@ -39,7 +39,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(
   { urls: ['http://*/*'] },
   Array.prototype.slice.apply(
     ['blocking', 'requestHeaders', 'extraHeaders'],
-    getBrowser().name !== 'whale' && getBrowser().name !== 'chrome' ? [0, -1] : []
+    getBrowser().type !== 'gecko' ? [] : [0, -1]
   )
 );
 browser.webRequest.onCompleted.addListener(Block.onCompleted, {
