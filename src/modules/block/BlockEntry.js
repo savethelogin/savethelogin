@@ -7,9 +7,13 @@ import Block from './Block';
 const { PROJECT_PREFIX } = config;
 const defaultEnabled = true;
 
-const optionKey = `${PROJECT_PREFIX}_opt_block_enabled`;
+const prefix = 'block';
+const optionKey = `${PROJECT_PREFIX}_opt_${prefix}_enabled`;
 
-getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
+getStorage({
+  area: 'sync',
+  keys: [optionKey, `${prefix}_whitelist`],
+}).then(items => {
   if (items[optionKey] === undefined) {
     setStorage({
       area: 'sync',
@@ -17,9 +21,10 @@ getStorage({ area: 'sync', keys: [optionKey] }).then(items => {
         [optionKey]: defaultEnabled,
       },
     });
-    Context.set('block_enabled', defaultEnabled);
+    Context.set(`${prefix}_enabled`, defaultEnabled);
   } else {
-    Context.set('block_enabled', items[optionKey]);
+    Context.set(`${prefix}_enabled`, items[optionKey]);
+    Context.set(`${prefix}_whitelist`, items[`${prefix}_whitelist`]);
   }
 });
 

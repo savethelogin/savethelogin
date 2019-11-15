@@ -30,6 +30,9 @@ let elementId = 0;
 let sensitives = [];
 let cancelled = {};
 
+// Whitelist domains
+let whitelist = [];
+
 /**
  * Prepend inline script to header
  */
@@ -200,6 +203,10 @@ export function onConnect(port) {
           console.log(elementId);
           elementId = message.id;
         }
+        break;
+      }
+      case 'update_whitelist': {
+        whitelist = message.data;
         break;
       }
       default:

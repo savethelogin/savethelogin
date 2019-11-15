@@ -114,6 +114,14 @@ export function queryTab(queryInfo) {
   });
 }
 
+export function currentTab() {
+  return new Promise((resolve, reject) => {
+    browser.tabs.getCurrent(tab => {
+      promiseHandler({ resolve: resolve, reject: reject }, tab);
+    });
+  });
+}
+
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
     browser.tabs.create(createProperties, tab => {
@@ -126,6 +134,14 @@ export function updateTab({ tabId = undefined, updateProperties }) {
   return new Promise((resolve, reject) => {
     browser.tabs.update(tabId, updateProperties, tab => {
       promiseHandler({ resolve: resolve }, tab);
+    });
+  });
+}
+
+export function removeTab(tabIds) {
+  return new Promise((resolve, reject) => {
+    browser.tabs.remove(tabIds, () => {
+      promiseHandler({ resolve: resolve, reject: reject });
     });
   });
 }
@@ -188,8 +204,10 @@ export default {
   setStorage,
   removeStorage,
   queryTab,
+  currentTab,
   createTab,
   updateTab,
+  removeTab,
   openDefaultPort,
   executeScript,
   logError,

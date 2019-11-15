@@ -100,7 +100,6 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: '_locales', to: '_locales' },
       { from: 'popup.html', to: 'popup.html', transform: transformHtml },
       {
         from: 'manifest.json',
@@ -161,7 +160,7 @@ if (config.mode === 'production') {
     new TerserPlugin({
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: false,
         },
       },
     }),
