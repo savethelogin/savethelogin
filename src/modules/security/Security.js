@@ -10,6 +10,18 @@ let uniqueDomains = [];
 let allCookies = [];
 
 let cancelled = [];
+let detailsStore = {};
+
+function addCancelledRequest(details) {
+  cancelled.push(details.requestId);
+  detailsStore[details.requestId] = details;
+}
+
+function removeCancelledRequest(details) {
+  let index = cancelled.indexOf(details.requestId);
+  cancelled.splice(index, 1);
+  delete detailsStore[details.requestId];
+}
 
 function extractRootDomain(hostname) {
   // Extract original(top) domain of url
@@ -124,7 +136,7 @@ export function onBeforeRequest(details) {
     switch (details.type) {
       case 'main_frame':
         delete details.requestBody;
-        cancelled.push(details.requestId);
+        addCancelledRequest(details);
         return { cancel: true };
       default:
         return { cancel: true };
@@ -139,7 +151,7 @@ export function onBeforeSendHeaders(details) {
   if (checkCookie(details)) {
     switch (details.type) {
       default:
-        cancelled.push(details.requestId);
+        addCancelledRequest(details);
         return { cancel: true };
     }
   }
@@ -157,15 +169,15 @@ export function onErrorOccurred(details) {
 
   console.log(details);
   if (cancelled.includes(details.requestId) && details.type === 'main_frame') {
-    let index = cancelled.indexOf(details.requestId);
-    cancelled.splice(index, 1);
+    let storedDetails = detailsStore[details.requestId];
+    removeCancelledRequest(details);
 
     switch (details.error) {
       case 'NS_ERROR_ABORT':
       case 'net::ERR_BLOCKED_BY_CLIENT':
         updateTab({
           updateProperties: {
-            url: `/page-blocked.html?details=${btoa(JSON.stringify(details))}`,
+            url: `/page-blocked.html?details=${btoa(JSON.stringify(storedDetails))}`,
           },
         });
         break;

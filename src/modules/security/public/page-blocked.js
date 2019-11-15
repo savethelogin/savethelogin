@@ -57,22 +57,18 @@
   })(window, document);
 
   (function(window, document) {
+    var currentUrl = new URL(location.href);
+    var params = currentUrl.searchParams;
     var details;
-    var detailsArg;
     try {
-      detailsArg = location.href.match(
-        /^[a-z-]+:\/\/[a-z]+\/page\-blocked\.html\?.*&?details=([a-z0-9\/\+=]+)/i
-      )[1];
-      details = JSON.parse(atob(detailsArg));
+      details = JSON.parse(atob(params.get('details')));
     } catch (e) {}
 
     var highlight;
     try {
-      var highlightMatch = location.href.match(
-        /^[a-z-]+:\/\/[a-z]+\/page\-blocked\.html\?.*&?highlight=([a-z0-9\/\+=]+)/i
-      );
+      var highlightMatch = params.get('highlight');
       if (highlightMatch) {
-        highlight = atob(highlightMatch[1]);
+        highlight = atob(highlightMatch);
       }
     } catch (e) {}
 
