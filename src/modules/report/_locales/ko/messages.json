@@ -1,0 +1,14 @@
+{
+  "report": {
+    "message": "보고서"
+  },
+  "capture": {
+    "message": "포착"
+  },
+  "download": {
+    "message": "다운로드"
+  },
+  "crop": {
+    "message": "수확고"
+  }
+}

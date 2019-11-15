@@ -1,4 +1,7 @@
 {
+  "options": {
+    "message": "选件"
+  },
   "confirm_request_block": {
     "message": "我们已经检测到并暂时阻止了明文的传输。\n在传输过程中可能会暴露未加密的个人信息。\n你想继续吗？"
   },

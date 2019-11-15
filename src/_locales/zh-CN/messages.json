@@ -2,23 +2,17 @@
   "deny": {
     "message": "不同意"
   },
-  "malicious": {
-    "message": "恶意的"
-  },
-  "inspect": {
-    "message": "检查"
+  "basics": {
+    "message": "基本"
   },
   "safe": {
     "message": "安全"
   },
+  "malicious": {
+    "message": "恶意的"
+  },
   "refresh": {
     "message": "刷新"
-  },
-  "options": {
-    "message": "选件"
-  },
-  "basics": {
-    "message": "基本"
   },
   "experimental": {
     "message": "实验性"

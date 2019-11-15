@@ -2,23 +2,17 @@
   "deny": {
     "message": "反対"
   },
-  "malicious": {
-    "message": "悪意のある"
-  },
-  "inspect": {
-    "message": "調べる"
+  "basics": {
+    "message": "基礎"
   },
   "safe": {
     "message": "安全"
   },
+  "malicious": {
+    "message": "悪意のある"
+  },
   "refresh": {
     "message": "リフレッシュ"
-  },
-  "options": {
-    "message": "オプション"
-  },
-  "basics": {
-    "message": "基礎"
   },
   "experimental": {
     "message": "実験的"

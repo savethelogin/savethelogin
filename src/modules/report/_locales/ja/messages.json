@@ -1,0 +1,14 @@
+{
+  "report": {
+    "message": "報告書"
+  },
+  "capture": {
+    "message": "キャプチャー"
+  },
+  "download": {
+    "message": "ダウンロード"
+  },
+  "crop": {
+    "message": "切り抜き"
+  }
+}

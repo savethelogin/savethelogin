@@ -1,4 +1,7 @@
 {
+  "options": {
+    "message": "Optionen"
+  },
   "confirm_request_block": {
     "message": "Wir haben die Übertragung von Klartext erkannt und vorübergehend blockiert.\nWährend der Übertragung können unverschlüsselte persönliche Informationen angezeigt werden.\nMöchtest du weiter machen?"
   },
