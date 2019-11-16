@@ -4,31 +4,15 @@ const { PROJECT_PREFIX } = config;
 
 export function getBrowser() {
   if (typeof whale === 'object') {
-    return {
-      name: 'whale',
-      type: 'chromium',
-      scheme: 'whale-extension',
-      browser: whale,
-    };
+    return 'whale';
   } else if (typeof browser === 'object') {
-    return {
-      name: 'browser',
-      type: 'gecko',
-      scheme: 'moz-extension',
-      browser: browser,
-    };
+    return 'firefox';
   } else if (typeof chrome === 'object') {
-    return {
-      name: 'chrome',
-      type: 'chromium',
-      scheme: 'chrome-extension',
-      browser: chrome,
-    };
+    return 'chrome';
   } else {
-    throw new Error('browser is unknown');
+    throw new Error('Unknown browser');
   }
 }
-export const browser = getBrowser().browser;
 
 function promiseHandler(
   {
@@ -39,7 +23,7 @@ function promiseHandler(
   },
   value
 ) {
-  if (browser.runtime.lastError) {
+  if (chrome.runtime.lastError) {
     return reject(value);
   } else {
     return resolve(value);
@@ -63,7 +47,7 @@ export function createNotification({
     };
     if (contextMessage) options['contextMessage'] = contextMessage;
 
-    browser.notifications.create(notificationId, options, id => {
+    chrome.notifications.create(notificationId, options, id => {
       promiseHandler({ resolve: resolve, reject: reject }, id);
     });
   });
@@ -71,7 +55,7 @@ export function createNotification({
 
 export function clearNotification(notificationId = undefined) {
   return new Promise((resolve, reject) => {
-    browser.notifications.clear(notificationId, wasCleared => {
+    chrome.notifications.clear(notificationId, wasCleared => {
       promiseHandler({ resolve: resolve, reject: reject }, wasCleared);
     });
   });
@@ -79,7 +63,7 @@ export function clearNotification(notificationId = undefined) {
 
 export function getStorage({ area = 'local', keys = null }) {
   return new Promise((resolve, reject) => {
-    browser.storage[area].get(keys, items => {
+    chrome.storage[area].get(keys, items => {
       promiseHandler({ resolve: resolve, reject: reject }, items);
     });
   });
@@ -87,7 +71,7 @@ export function getStorage({ area = 'local', keys = null }) {
 
 export function setStorage({ area = 'local', items }) {
   return new Promise((resolve, reject) => {
-    browser.storage[area].set(items, () => {
+    chrome.storage[area].set(items, () => {
       promiseHandler({ resolve: resolve, reject: reject });
     });
   });
@@ -99,16 +83,16 @@ export function removeStorage({ area = 'local', keys = undefined }) {
       promiseHandler({ resolve: resolve, reject: reject });
     };
     if (keys === undefined) {
-      browser.storage[area].clear(callback);
+      chrome.storage[area].clear(callback);
     } else {
-      browser.storage[area].remove(keys, callback);
+      chrome.storage[area].remove(keys, callback);
     }
   });
 }
 
 export function queryTab(queryInfo) {
   return new Promise((resolve, reject) => {
-    browser.tabs.query(queryInfo, result => {
+    chrome.tabs.query(queryInfo, result => {
       promiseHandler({ resolve: resolve, reject: reject }, result);
     });
   });
@@ -116,7 +100,7 @@ export function queryTab(queryInfo) {
 
 export function currentTab() {
   return new Promise((resolve, reject) => {
-    browser.tabs.getCurrent(tab => {
+    chrome.tabs.getCurrent(tab => {
       promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
@@ -124,7 +108,7 @@ export function currentTab() {
 
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
-    browser.tabs.create(createProperties, tab => {
+    chrome.tabs.create(createProperties, tab => {
       promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
@@ -132,7 +116,7 @@ export function createTab(createProperties) {
 
 export function updateTab({ tabId = undefined, updateProperties }) {
   return new Promise((resolve, reject) => {
-    browser.tabs.update(tabId, updateProperties, tab => {
+    chrome.tabs.update(tabId, updateProperties, tab => {
       promiseHandler({ resolve: resolve }, tab);
     });
   });
@@ -140,27 +124,27 @@ export function updateTab({ tabId = undefined, updateProperties }) {
 
 export function removeTab(tabIds) {
   return new Promise((resolve, reject) => {
-    browser.tabs.remove(tabIds, () => {
+    chrome.tabs.remove(tabIds, () => {
       promiseHandler({ resolve: resolve, reject: reject });
     });
   });
 }
 
 export function openDefaultPort() {
-  return browser.runtime.connect({ name: `${PROJECT_PREFIX}` });
+  return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
 }
 
 export function executeScript({ tabId = undefined, details }) {
   return new Promise((resolve, reject) => {
-    browser.tabs.executeScript(tabId, details, results => {
+    chrome.tabs.executeScript(tabId, details, results => {
       promiseHandler({ resolve: resolve, reject: reject }, results);
     });
   }).catch(logError);
 }
 
 export function logError(e) {
-  if (browser.runtime.lastError) {
-    console.log(e, browser.runtime.lastError);
+  if (chrome.runtime.lastError) {
+    console.log(e, chrome.runtime.lastError);
   } else {
     console.log(e);
   }
@@ -209,7 +193,6 @@ export function unique(array) {
 
 export default {
   getBrowser,
-  browser,
   createNotification,
   clearNotification,
   getStorage,

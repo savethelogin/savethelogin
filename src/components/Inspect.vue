@@ -5,7 +5,7 @@
 
 <script>
 import config from '../common/Config';
-import { browser, queryTab, getStorage } from '../common/Utils';
+import { queryTab, getStorage } from '../common/Utils';
 import CheckList from './CheckList';
 
 export default {
@@ -33,7 +33,7 @@ export default {
     },
     cookiePromise: function(wrapper, url) {
       return new Promise((resolve, reject) => {
-        browser.cookies.getAll({ url: url }, cookies => {
+        chrome.cookies.getAll({ url: url }, cookies => {
           let flag = false;
           for (let i = 0; i < cookies.length; ++i) {
             // If cookie type is session and httpOnly flag is disabled
@@ -60,7 +60,7 @@ export default {
             }
           }
           if (!flag) {
-            wrapper.session_cookie_xss.description = browser.i18n.getMessage('safe');
+            wrapper.session_cookie_xss.description = chrome.i18n.getMessage('safe');
             wrapper.session_cookie_xss.grade = 'SAFE';
           }
           return resolve();
@@ -82,7 +82,7 @@ export default {
     // Set default values
     items.forEach(el => {
       wrapper[el] = {};
-      wrapper[el].name = browser.i18n.getMessage(el);
+      wrapper[el].name = chrome.i18n.getMessage(el);
       wrapper[el].grade = 'VULN'; // Default grade to 'vulnerable'
     });
 
@@ -111,11 +111,11 @@ export default {
           if (scheme === 'https') {
             // Get max-age value parsed from HSTS header
             let maxAge = parseInt((/max\-age=([0-9]+)/gi.exec(header.value) || [, '0'])[1]);
-            wrapper.hsts_policy.description = `${browser.i18n.getMessage('moderate')}`;
+            wrapper.hsts_policy.description = `${chrome.i18n.getMessage('moderate')}`;
             wrapper.hsts_policy.grade = 'NORM';
             // Check HSTS header setting is safe from SSL Strip attack
             if (header.value.toLowerCase().indexOf('includesubdomains') !== -1) {
-              wrapper.hsts_policy.description = `${browser.i18n.getMessage(
+              wrapper.hsts_policy.description = `${chrome.i18n.getMessage(
                 'safe'
               )} (SSL Strip safe)`;
               wrapper.hsts_policy.grade = 'SAFE';
@@ -126,7 +126,7 @@ export default {
         case 'server': {
           // Check server header contains any version value
           if (header.value.match(/[0-9]+(\.([0-9]+))+/g)) {
-            wrapper.server_version_disclosure.description = `${browser.i18n.getMessage(
+            wrapper.server_version_disclosure.description = `${chrome.i18n.getMessage(
               'vulnerable'
             )}`;
             wrapper.server_version_disclosure.grade = 'VULN';
@@ -134,24 +134,24 @@ export default {
           break;
         }
         case 'x-frame-options': {
-          wrapper.clickjacking_prevention.description = `${browser.i18n.getMessage('moderate')}`;
+          wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('moderate')}`;
           wrapper.clickjacking_prevention.grade = 'NORM';
 
           if (
             header.value.toLowerCase() === 'deny' ||
             header.value.toLowerCase() === 'sameorigin'
           ) {
-            wrapper.clickjacking_prevention.description = `${browser.i18n.getMessage('safe')}`;
+            wrapper.clickjacking_prevention.description = `${chrome.i18n.getMessage('safe')}`;
             wrapper.clickjacking_prevention.grade = 'SAFE';
           }
           break;
         }
         case 'x-xss-protection': {
           if (header.value.toString() !== '0') {
-            wrapper.xss_protection_policy.description = `${browser.i18n.getMessage('moderate')}`;
+            wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage('moderate')}`;
             wrapper.xss_protection_policy.grade = 'NORM';
             if (header.value.indexOf('mode=block') !== -1) {
-              wrapper.xss_protection_policy.description = `${browser.i18n.getMessage(
+              wrapper.xss_protection_policy.description = `${chrome.i18n.getMessage(
                 'safe'
               )} (Rendering block)`;
               wrapper.xss_protection_policy.grade = 'SAFE';
@@ -161,7 +161,7 @@ export default {
         }
         // Check if servlet value exposed
         case 'x-powered-by': {
-          wrapper.servlet_spec_disclosure.description = `${browser.i18n.getMessage('vulnerable')}`;
+          wrapper.servlet_spec_disclosure.description = `${chrome.i18n.getMessage('vulnerable')}`;
           wrapper.xss_protection_policy.grade = 'VULN';
           break;
         }
@@ -173,8 +173,8 @@ export default {
     // Assign description by name with "recommend" suffix
     Object.keys(wrapper).forEach(el => {
       if (!wrapper[el].description)
-        wrapper[el].description = `${browser.i18n.getMessage('vulnerable')}
-          ${browser.i18n.getMessage(el + '_recommend')}`;
+        wrapper[el].description = `${chrome.i18n.getMessage('vulnerable')}
+          ${chrome.i18n.getMessage(el + '_recommend')}`;
     });
     await this.cookiePromise(wrapper, item.url.toString());
     // Assign wrapped object to checklist

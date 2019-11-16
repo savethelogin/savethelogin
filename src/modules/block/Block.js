@@ -8,7 +8,6 @@ const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
 import {
   getBrowser,
-  browser,
   createNotification,
   clearNotification,
   createTab,
@@ -99,7 +98,7 @@ function bind(tabId) {
             }
 
             // Send event to extension
-            var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -109,7 +108,7 @@ function bind(tabId) {
           };
         };
 
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
         var target = 'input[type=password]';
@@ -152,7 +151,7 @@ function bind(tabId) {
 
 function enforceUpdate() {
   onUpdated();
-  browser.tabs.reload(undefined, { bypassCache: true });
+  chrome.tabs.reload(undefined, { bypassCache: true });
 }
 
 export function onConnect(port) {
@@ -231,7 +230,7 @@ export function onUpdated(tabId, changeInfo, tab) {
     details: {
       code: `
       (function() {
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.onMessage.addListener(function(message) {
           if (message.type === 'update_context') {
             window.postMessage(message.data, "*");
@@ -434,11 +433,10 @@ export function onErrorOccurred(details) {
       case 'NS_ERROR_ABORT':
         createNotification({
           notificationId: `notification_request_blocked@${details.requestId}`,
-          title: browser.i18n.getMessage('request_blocked_title'),
-          message: browser.i18n.getMessage('request_blocked_message'),
-          contextMessage: browser.i18n.getMessage('request_blocked_context_message'),
+          title: chrome.i18n.getMessage('request_blocked_title'),
+          message: chrome.i18n.getMessage('request_blocked_message'),
+          contextMessage: chrome.i18n.getMessage('request_blocked_context_message'),
         });
-        //browser.tabs.reload(details.tabId);
         break;
     }
   }

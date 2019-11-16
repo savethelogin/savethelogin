@@ -51,7 +51,7 @@
 import config from '../common/Config';
 const { PROJECT_PREFIX } = config;
 
-import { browser, getBrowser, openDefaultPort } from '../common/Utils';
+import { getBrowser, openDefaultPort } from '../common/Utils';
 
 export default {
   data() {
@@ -78,7 +78,7 @@ export default {
       });
     },
     capturePage: function() {
-      browser.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
+      chrome.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
         this.captureSetImage(dataUrl);
       });
     },
@@ -103,12 +103,12 @@ export default {
         url: imgUrl,
         filename: `${PROJECT_PREFIX}_report.png`,
       };
-      if (getBrowser().type !== 'gecko') {
-        browser.downloads.download(options);
+      if (getBrowser() !== 'firefox') {
+        chrome.downloads.download(options);
       } else {
         let port = openDefaultPort();
         port.postMessage({
-          type: 'download_gecko',
+          type: 'download_firefox',
           data: options,
         });
       }

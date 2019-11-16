@@ -19,7 +19,7 @@
 
 <script>
 import config from '../common/Config';
-import { browser, openDefaultPort } from '../common/Utils';
+import { openDefaultPort } from '../common/Utils';
 import ToggleSwitch from './ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
@@ -59,7 +59,7 @@ export default {
     },
     getDescription: function(key) {
       let name = this._keyToName(key);
-      return browser.i18n.getMessage(`options_${name}_desc`);
+      return chrome.i18n.getMessage(`options_${name}_desc`);
     },
     updateOption: function(key, event) {
       let port = openDefaultPort();

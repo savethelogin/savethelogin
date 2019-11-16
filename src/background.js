@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from './common/Config';
 import Context from './common/Context';
-import { browser, getStorage, setStorage, dataURItoBlob } from './common/Utils';
+import { getStorage, setStorage, dataURItoBlob } from './common/Utils';
 
 const { PROJECT_PREFIX } = config;
 
@@ -44,17 +44,17 @@ getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items =>
 
 function setIcon(isEnabled) {
   if (isEnabled === true) {
-    browser.browserAction.setIcon({
+    chrome.browserAction.setIcon({
       path: '/icons/icon16.png',
     });
   } else {
-    browser.browserAction.setIcon({
+    chrome.browserAction.setIcon({
       path: '/icons/icon-off16.png',
     });
   }
 }
 
-browser.runtime.onConnect.addListener(onConnect);
+chrome.runtime.onConnect.addListener(onConnect);
 
 export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
@@ -87,10 +87,10 @@ export function onConnect(port) {
         break;
       }
       // browser.downloads.download will not work on content script
-      case 'download_gecko': {
+      case 'download_firefox': {
         let blob = dataURItoBlob(message.data.url);
         message.data.url = URL.createObjectURL(blob);
-        browser.downloads.download(message.data);
+        chrome.downloads.download(message.data);
         break;
       }
       default:

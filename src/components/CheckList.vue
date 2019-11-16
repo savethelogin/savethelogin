@@ -32,7 +32,7 @@
 
 <script>
 import CheckItem from './CheckItem';
-import { browser, queryTab } from '../common/Utils';
+import { queryTab } from '../common/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {
@@ -54,10 +54,10 @@ export default {
   },
   computed: {
     msgNoInformation: function() {
-      return browser.i18n.getMessage('no_information');
+      return chrome.i18n.getMessage('no_information');
     },
     msgRefresh: function() {
-      return browser.i18n.getMessage('refresh');
+      return chrome.i18n.getMessage('refresh');
     },
   },
   props: {
@@ -76,7 +76,7 @@ export default {
     refreshPage: async function() {
       const tabs = await queryTab({ active: true, currentWindow: true });
       const currentTab = tabs[0];
-      browser.tabs.reload(currentTab.id, {}, () => {});
+      chrome.tabs.reload(currentTab.id, {}, () => {});
       window.close();
     },
   },
