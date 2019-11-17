@@ -25,7 +25,7 @@
               v-bind:callback="changeView(view)"
               v-chrome-i18n
             >
-              __MSG_{{ view }}__
+              __MSG_{{ view.slice(0, '-pane'.length * -1) }}__
             </BaseButton>
           </div>
         </div>
@@ -56,7 +56,7 @@ import {
 const requirePanes = require.context(
   '../modules/',
   true,
-  /\/components\/[A-Z][A-Za-z0-9._-]*\.(js|vue)$/
+  /\/components\/[A-Z][A-Za-z0-9._-]*Pane\.(js|vue)$/
 );
 const loadedPanes = requirePanes.keys().map(key => {
   const componentConfig = requirePanes(key);

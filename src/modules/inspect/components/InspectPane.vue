@@ -6,7 +6,7 @@
 <script>
 import config from '@/common/Config';
 import { queryTab, getStorage } from '@/common/Utils';
-import CheckList from '@/components/CheckList';
+import CheckList from './CheckList';
 
 export default {
   components: {
