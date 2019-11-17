@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from './common/Config';
-import Context from './common/Context';
-import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from './common/Utils';
+import config from '@/common/Config';
+import Context from '@/common/Context';
+import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from '@/common/Utils';
 
 const { PROJECT_PREFIX } = config;
 
@@ -23,7 +23,8 @@ console.log('cache', cache);
 const loadedModules = requireModules.keys().map(key => {
   const start = key.lastIndexOf('/');
   const end = key.lastIndexOf('.');
-  return fromPascalToSnakeCase(key.substring(start + 1, end));
+
+  return fromPascalToSnakeCase(key.substring(start + 1, end).slice(0, 'Entry'.length * -1));
 });
 console.log(loadedModules);
 Context.set('loaded_modules', loadedModules);

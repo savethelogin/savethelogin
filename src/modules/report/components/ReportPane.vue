@@ -18,29 +18,28 @@
     </div>
     <div class="mt-3">
       <div class="btn-group float-left">
-        <button type="button" class="btn btn-primary" v-on:click="capturePage" v-chrome-i18n>
+        <BaseButton theme="primary" v-bind:callback="capturePage" v-chrome-i18n>
           __MSG_capture__
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          v-on:click="captureCrop"
+        </BaseButton>
+        <BaseButton
+          theme="primary"
+          v-bind:callback="captureCrop"
           v-bind:disabled="capture === ''"
           v-chrome-i18n
         >
           __MSG_crop__
-        </button>
+        </BaseButton>
       </div>
       <div class="btn-group float-right">
-        <button
-          type="button"
-          class="btn btn-dark float-right"
-          v-on:click="captureDownload"
+        <BaseButton
+          theme="dark"
+          class="float-right"
+          v-bind:callback="captureDownload"
           v-bind:disabled="capture === ''"
           v-chrome-i18n
         >
           __MSG_download__
-        </button>
+        </BaseButton>
       </div>
       <div class="clearfix"></div>
     </div>
@@ -48,10 +47,10 @@
 </template>
 
 <script>
-import config from '../common/Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
 
-import { getBrowser, openDefaultPort } from '../common/Utils';
+import { getBrowser, openDefaultPort } from '@/common/Utils';
 
 export default {
   data() {

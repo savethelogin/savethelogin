@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -11,7 +12,7 @@ const { version, author } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
-  context: __dirname + '/src',
+  context: path.join(__dirname, '/src'),
   entry: {
     // Extension popup
     popup: './popup.js',
@@ -21,7 +22,7 @@ const config = {
     bundle: './bundle.js',
   },
   output: {
-    path: __dirname + '/dist',
+    path: path.join(__dirname, '/dist'),
     filename: '[name].js',
   },
   optimization: {
@@ -33,6 +34,9 @@ const config = {
   },
   resolve: {
     extensions: ['.js', '.vue'],
+    alias: {
+      '@': path.join(__dirname, '/src'),
+    },
   },
   module: {
     rules: [

@@ -1,5 +1,5 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from './Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
 
 export function getBrowser() {
@@ -195,7 +195,17 @@ export function fromSnakeToPascalCase(text) {
   let string = text;
   let chunks = string.split('_');
   let result = chunks[0];
-  for (let i = 1; i < chunks.length; i++) {
+  for (let i = 0; i < chunks.length; i++) {
+    result += chunks[i][0].toUpperCase() + chunks[i].substring(1);
+  }
+  return result;
+}
+
+export function fromKebabToPascalCase(text) {
+  let string = text;
+  let chunks = string.split('-');
+  let result = chunks[0];
+  for (let i = 0; i < chunks.length; i++) {
     result += chunks[i][0].toUpperCase() + chunks[i].substring(1);
   }
   return result;
@@ -203,17 +213,38 @@ export function fromSnakeToPascalCase(text) {
 
 export function fromPascalToSnakeCase(text) {
   let string = text;
-  let index = 0;
-  let result = '';
-  let pos = string.substring(index).search(/[A-Z]/);
-  if (pos === -1) return string.toString();
+
   do {
-    pos = string.substring(index).search(/[A-Z]/);
-    result += (index ? '_' : '') + string.substring(index, pos).toLowerCase();
-    index += pos;
-    string = string.substring(index);
-  } while (pos !== -1);
-  return result;
+    let position = string.search(/[^A-Z][A-Z]/);
+    if (position === -1) break;
+    ++position;
+    string = string
+      .substr(0, position)
+      .concat('_')
+      .concat(string.charAt(position).toLowerCase())
+      .concat(string.substr(position + 1));
+  } while (true);
+  string = string.toLowerCase();
+
+  return string;
+}
+
+export function fromPascalToKebabCase(text) {
+  let string = text;
+
+  do {
+    let position = string.search(/[^A-Z][A-Z]/);
+    if (position === -1) break;
+    ++position;
+    string = string
+      .substr(0, position)
+      .concat('-')
+      .concat(string.charAt(position).toLowerCase())
+      .concat(string.substr(position + 1));
+  } while (true);
+  string = string.toLowerCase();
+
+  return string;
 }
 
 export default {
@@ -236,5 +267,7 @@ export default {
   extractRootDomain,
   unique,
   fromSnakeToPascalCase,
+  fromKebabToPascalCase,
   fromPascalToSnakeCase,
+  fromPascalToKebabCase,
 };

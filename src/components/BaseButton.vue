@@ -1,6 +1,10 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
-  <button v-bind:type="type" v-bind:class="['btn'].concat(bsTheme).join(' ')" v-on:click="clicked">
+  <button
+    v-on:click.prevent="callback"
+    v-bind:type="type"
+    v-bind:class="['btn'].concat(bsTheme).join(' ')"
+  >
     <slot></slot>
   </button>
 </template>
@@ -17,15 +21,14 @@ export default {
       type: String,
       default: 'light',
     },
+    callback: {
+      type: Function,
+      default: () => {},
+    },
   },
   computed: {
     bsTheme: function() {
       return 'btn-' + this.theme;
-    },
-  },
-  methods: {
-    clicked: function() {
-      this.$emit('press');
     },
   },
 };

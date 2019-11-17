@@ -1,6 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-import Context from '../../common/Context';
-import { updateTab, extractRootDomain, unique } from '../../common/Utils';
+import Context from '@/common/Context';
+import { updateTab, extractRootDomain, unique } from '@/common/Utils';
 
 // https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
 const SESS_THRESHOLD = 22;

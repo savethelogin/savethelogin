@@ -1,6 +1,6 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
-import config from './Config';
+import config from '@/common/Config';
 
 class Context {
   constructor() {
