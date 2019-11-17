@@ -17,12 +17,7 @@
         <vue-chrome-i18n>__MSG_no_information__</vue-chrome-i18n>
       </h4>
       <p class="mb-0">
-        <BaseButton
-          theme="link"
-          v-bind:callback="refreshPage"
-          v-bind:classes="['text-danger']"
-          v-chrome-i18n
-        >
+        <BaseButton theme="link" class="text-danger" v-on:click.native="refreshPage" v-chrome-i18n>
           <i class="material-icons">refresh</i> __MSG_refresh__
         </BaseButton>
       </p>
