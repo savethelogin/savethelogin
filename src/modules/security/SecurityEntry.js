@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from '../../common/Config';
-import Context from '../../common/Context';
-import { getBrowser, getStorage, setStorage } from '../../common/Utils';
+import config from '@/common/Config';
+import Context from '@/common/Context';
+import { getBrowser, getStorage, setStorage } from '@/common/Utils';
 import Security from './Security';
 
 const { PROJECT_PREFIX } = config;

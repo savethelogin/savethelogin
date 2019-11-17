@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import config from '../common/Config';
-import { openDefaultPort } from '../common/Utils';
-import ToggleSwitch from './ToggleSwitch';
+import config from '@/common/Config';
+import { openDefaultPort } from '@/common/Utils';
+import ToggleSwitch from '@/components/ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
 

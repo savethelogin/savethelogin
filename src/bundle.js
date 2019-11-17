@@ -1,6 +1,6 @@
 /* Bundle only */
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './components/Globals';
+import '@/components/Globals';
 
 /**
  * Import modules

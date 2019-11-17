@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Whitelist from '../../../components/Whitelist';
+import Whitelist from '@/components/Whitelist';
 
 new Vue({
   el: '#app',

@@ -3,7 +3,7 @@
 /**
  * HTTP Request blocker module
  */
-import config from '../../common/Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
 import {
@@ -13,8 +13,8 @@ import {
   createTab,
   updateTab,
   executeScript,
-} from '../../common/Utils';
-import Context from '../../common/Context';
+} from '@/common/Utils';
+import Context from '@/common/Context';
 
 // Shorten value to improve performance
 const SHORTEN_LENGTH = 0x10;

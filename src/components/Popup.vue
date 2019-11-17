@@ -19,22 +19,13 @@
         <div class="row">
           <div class="btn-group w-100">
             <BaseButton
-              v-bind:class="currentView === 'inspect' ? 'active' : ''"
-              v-bind:callback="changeView('inspect')"
+              v-for="view in views"
+              v-bind:key="view"
+              v-bind:class="currentView === view ? 'active' : ''"
+              v-bind:callback="changeView(view)"
+              v-chrome-i18n
             >
-              <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
-            </BaseButton>
-            <BaseButton
-              v-bind:class="currentView === 'report' ? 'active' : ''"
-              v-bind:callback="changeView('report')"
-            >
-              <vue-chrome-i18n>__MSG_report__</vue-chrome-i18n>
-            </BaseButton>
-            <BaseButton
-              v-bind:class="currentView === 'options' ? 'active' : ''"
-              v-bind:callback="changeView('options')"
-            >
-              <vue-chrome-i18n>__MSG_options__</vue-chrome-i18n>
+              __MSG_{{ view }}__
             </BaseButton>
           </div>
         </div>
@@ -51,20 +42,39 @@
 </template>
 
 <script>
-import config from '../common/Config';
-import { createTab, openDefaultPort, getStorage, setStorage } from '../common/Utils';
+import Vue from 'vue';
+import config from '@/common/Config';
+import {
+  createTab,
+  openDefaultPort,
+  getStorage,
+  setStorage,
+  fromPascalToKebabCase,
+} from '@/common/Utils';
 
-import Inspect from './Inspect';
-import Report from './Report';
-import Options from './Options';
+// Load popup panes
+const requirePanes = require.context(
+  '../modules/',
+  true,
+  /\/components\/[A-Z][A-Za-z0-9._-]*\.(js|vue)$/
+);
+const loadedPanes = requirePanes.keys().map(key => {
+  const componentConfig = requirePanes(key);
+  const componentName = fromPascalToKebabCase(
+    key
+      .split('/')
+      .pop()
+      .replace(/\.\w+$/, '')
+  );
+  Vue.component(componentName, componentConfig.default || componentConfig);
+  return componentName;
+});
+
 import ToggleSwitch from './ToggleSwitch';
 
 export default {
   name: 'Popup',
   components: {
-    inspect: Inspect,
-    report: Report,
-    options: Options,
     ToggleSwitch,
   },
   methods: {
@@ -97,7 +107,8 @@ export default {
   data() {
     return {
       isEnabled: false,
-      currentView: 'inspect',
+      currentView: loadedPanes[0],
+      views: loadedPanes,
     };
   },
   async created() {
@@ -105,6 +116,9 @@ export default {
     const item = items[`${config.PROJECT_PREFIX}_disabled`];
     if (item === undefined) this.isEnabled = true;
     else this.isEnabled = !!!item;
+  },
+  mounted() {
+    console.log(loadedPanes);
   },
 };
 </script>

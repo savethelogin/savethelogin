@@ -48,10 +48,10 @@
 </template>
 
 <script>
-import config from '../common/Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
 
-import { getBrowser, openDefaultPort } from '../common/Utils';
+import { getBrowser, openDefaultPort } from '@/common/Utils';
 
 export default {
   data() {

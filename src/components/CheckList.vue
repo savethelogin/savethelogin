@@ -27,7 +27,7 @@
 
 <script>
 import CheckItem from './CheckItem';
-import { queryTab } from '../common/Utils';
+import { queryTab } from '@/common/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {

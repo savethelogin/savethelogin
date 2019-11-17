@@ -22,7 +22,7 @@ import {
   currentTab,
   openDefaultPort,
   unique,
-} from '../common/Utils';
+} from '@/common/Utils';
 
 export default {
   name: 'Whitelist',

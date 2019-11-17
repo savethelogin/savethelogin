@@ -4,9 +4,9 @@
 </template>
 
 <script>
-import config from '../common/Config';
-import { queryTab, getStorage } from '../common/Utils';
-import CheckList from './CheckList';
+import config from '@/common/Config';
+import { queryTab, getStorage } from '@/common/Utils';
+import CheckList from '@/components/CheckList';
 
 export default {
   components: {

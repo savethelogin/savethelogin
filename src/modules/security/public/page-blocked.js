@@ -1,5 +1,5 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import SimpleTemplate from '../../../plugins/simple-template/index';
+import SimpleTemplate from '@/plugins/simple-template/index';
 
 function blocked() {
   let currentUrl = new URL(location.href);
