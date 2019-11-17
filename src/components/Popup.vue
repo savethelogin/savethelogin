@@ -19,19 +19,19 @@
         <div class="row">
           <div class="btn-group w-100">
             <BaseButton
-              v-bind:classes="currentView === 'inspect' ? ['active'] : []"
+              v-bind:class="currentView === 'inspect' ? 'active' : ''"
               v-bind:callback="changeView('inspect')"
             >
               <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
-              v-bind:classes="currentView === 'report' ? ['active'] : []"
+              v-bind:class="currentView === 'report' ? 'active' : ''"
               v-bind:callback="changeView('report')"
             >
               <vue-chrome-i18n>__MSG_report__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
-              v-bind:classes="currentView === 'options' ? ['active'] : []"
+              v-bind:class="currentView === 'options' ? 'active' : ''"
               v-bind:callback="changeView('options')"
             >
               <vue-chrome-i18n>__MSG_options__</vue-chrome-i18n>
