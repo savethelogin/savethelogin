@@ -23,6 +23,7 @@ export default {
     },
     callback: {
       type: Function,
+      default: () => {},
     },
   },
   computed: {
