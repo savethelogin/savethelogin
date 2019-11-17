@@ -19,20 +19,20 @@
         <div class="row">
           <div class="btn-group w-100">
             <BaseButton
-              v-bind:class="currentView === 'inspect' ? 'active' : ''"
-              v-on="{ press: changeView('inspect') }"
+              v-bind:classes="currentView === 'inspect' ? ['active'] : []"
+              v-bind:callback="changeView('inspect')"
             >
               <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
-              v-bind:class="currentView === 'report' ? 'active' : ''"
-              v-on="{ press: changeView('report') }"
+              v-bind:classes="currentView === 'report' ? ['active'] : []"
+              v-bind:callback="changeView('report')"
             >
               <vue-chrome-i18n>__MSG_report__</vue-chrome-i18n>
             </BaseButton>
             <BaseButton
-              v-bind:class="currentView === 'options' ? 'active' : ''"
-              v-on="{ press: changeView('options') }"
+              v-bind:classes="currentView === 'options' ? ['active'] : []"
+              v-bind:callback="changeView('options')"
             >
               <vue-chrome-i18n>__MSG_options__</vue-chrome-i18n>
             </BaseButton>
@@ -67,15 +67,12 @@ export default {
     options: Options,
     ToggleSwitch,
   },
-  data() {
-    return {
-      isEnabled: false,
-      currentView: 'inspect',
-    };
-  },
   methods: {
     changeView: function(newView) {
-      return newView => (this.currentView = newView);
+      let view = newView;
+      return () => {
+        this.currentView = view;
+      };
     },
     // If toggle button state changed to enabled
     setEnabled: async function(event) {
@@ -96,6 +93,12 @@ export default {
     openWebsite: function() {
       createTab({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
+  },
+  data() {
+    return {
+      isEnabled: false,
+      currentView: 'inspect',
+    };
   },
   async created() {
     const items = await getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] });
