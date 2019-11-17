@@ -11,6 +11,7 @@ import {
   createNotification,
   clearNotification,
   createTab,
+  updateTab,
   executeScript,
 } from '../../common/Utils';
 import Context from '../../common/Context';
@@ -28,9 +29,10 @@ let elementId = 0;
 // Request may be cancelled
 let sensitives = [];
 let cancelled = {};
-
 // Whitelist domains
 let whitelist = [];
+// Previous url
+let previousUrl = {};
 
 /**
  * Prepend inline script to header
@@ -301,6 +303,7 @@ export function onRemoved(tabId, removed) {
   if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   // Remove private data by tab id when tab closed
   del(tabId);
+  delete previousUrl[tabId];
 }
 
 /*
@@ -419,6 +422,9 @@ export function onBeforeSendHeaders(details) {
 }
 
 export function onCompleted(details) {
+  if (details.type.slice(-5) === 'frame') {
+    previousUrl[details.tabId] = details.url;
+  }
   if (sensitives.includes(details.requestId)) {
     let index = sensitives.indexOf(details.requestId);
     sensitives.splice(index, 1);
@@ -427,6 +433,7 @@ export function onCompleted(details) {
 
 export function onErrorOccurred(details) {
   console.log(details);
+
   if (sensitives.includes(details.requestId)) {
     switch (details.error) {
       case 'net::ERR_BLOCKED_BY_CLIENT':
@@ -437,8 +444,26 @@ export function onErrorOccurred(details) {
           message: chrome.i18n.getMessage('request_blocked_message'),
           contextMessage: chrome.i18n.getMessage('request_blocked_context_message'),
         });
+        if (details.type.slice(-5) === 'frame') {
+          updateTab({
+            updateProperties: {
+              url: previousUrl[details.tabId],
+            },
+          });
+        }
+        break;
+      default:
         break;
     }
+    let index = sensitives.indexOf(details.requestId);
+    sensitives.splice(index, 1);
+  }
+}
+
+export function onClosed(notificationId, byUser) {
+  if (notificationId.match(/^notification_request_blocked/)) {
+    let requestId = parseInt(notificationId.split('@').slice(-1));
+    delete cancelled[requestId];
   }
 }
 
@@ -461,5 +486,6 @@ export default {
   onBeforeSendHeaders,
   onCompleted,
   onErrorOccurred,
+  onClosed,
   onClicked,
 };
