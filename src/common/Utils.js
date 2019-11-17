@@ -191,6 +191,31 @@ export function unique(array) {
   return array.filter((value, index) => array.indexOf(value) === index);
 }
 
+export function fromSnakeToPascalCase(text) {
+  let string = text;
+  let chunks = string.split('_');
+  let result = chunks[0];
+  for (let i = 1; i < chunks.length; i++) {
+    result += chunks[i][0].toUpperCase() + chunks[i].substring(1);
+  }
+  return result;
+}
+
+export function fromPascalToSnakeCase(text) {
+  let string = text;
+  let index = 0;
+  let result = '';
+  let pos = string.substring(index).search(/[A-Z]/);
+  if (pos === -1) return string.toString();
+  do {
+    pos = string.substring(index).search(/[A-Z]/);
+    result += (index ? '_' : '') + string.substring(index, pos).toLowerCase();
+    index += pos;
+    string = string.substring(index);
+  } while (pos !== -1);
+  return result;
+}
+
 export default {
   getBrowser,
   createNotification,
@@ -210,4 +235,6 @@ export default {
   dataURItoBlob,
   extractRootDomain,
   unique,
+  fromSnakeToPascalCase,
+  fromPascalToSnakeCase,
 };

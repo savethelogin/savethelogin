@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import config from './common/Config';
 import Context from './common/Context';
-import { getStorage, setStorage, dataURItoBlob } from './common/Utils';
+import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from './common/Utils';
 
 const { PROJECT_PREFIX } = config;
 
@@ -20,13 +20,13 @@ function importAll(r) {
 importAll(requireModules);
 console.log('cache', cache);
 
-const loadedModules = requireModules.keys().map(key =>
-  key
-    .split('/')
-    .slice(-2)[0]
-    .toLowerCase()
-);
+const loadedModules = requireModules.keys().map(key => {
+  const start = key.lastIndexOf('/');
+  const end = key.lastIndexOf('.');
+  return fromPascalToSnakeCase(key.substring(start + 1, end));
+});
 console.log(loadedModules);
+Context.set('loaded_modules', loadedModules);
 
 // Check extension disabled
 getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items => {

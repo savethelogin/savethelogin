@@ -46,6 +46,7 @@ export default {
             obj[optionKeys[i]] = context[optionKeys[i]];
           }
           this.options = obj;
+          console.log(context);
         } catch (e) {
           console.log(e);
         }
