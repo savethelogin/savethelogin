@@ -1,3 +1,5 @@
+.PHONY: all zip xpi dev test clean
+
 
 all: zip xpi
 
@@ -17,6 +19,9 @@ dev:
 	yarn run build:dev:gecko
 	yarn run build-zip
 	yarn run build-xpi
+
+test:
+	yarn run test
 
 clean:
 	yarn run clean
