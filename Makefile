@@ -17,3 +17,6 @@ dev:
 	yarn run build:dev:gecko
 	yarn run build-zip
 	yarn run build-xpi
+
+clean:
+	yarn run clean
