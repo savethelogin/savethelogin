@@ -124,7 +124,6 @@ export default {
 /**
  * Global
  */
-html,
 body {
   width: 550px;
   min-height: 100px;
@@ -134,21 +133,26 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
 }
+
 body::-webkit-scrollbar {
   background-color: #fff;
   width: 16px;
 }
+
 body::-webkit-scrollbar-track {
   background-color: #fff;
 }
+
 body::-webkit-scrollbar-thumb {
   background-color: #babac0;
   border-radius: 16px;
   border: 4px solid #fff;
 }
+
 body::-webkit-scrollbar-button {
   display: none;
 }
+
 /**
  * Layout
  **/
@@ -205,5 +209,18 @@ code {
 .component-fade-enter, .component-fade-leave-to
 /* .component-fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+/**
+ * If screen smaller than fixed width
+ */
+@media (max-width: 550px) {
+  body {
+    width: 100%;
+  }
+
+  #logo {
+    margin-left: calc(50vw - (300px / 2));
+  }
 }
 </style>

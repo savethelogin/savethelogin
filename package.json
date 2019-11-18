@@ -13,14 +13,16 @@
     "prettier:write": "yarn run prettier --write",
     "prettier:dist": "prettier --write dist/**/*.js",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
-    "build:gecko": "cross-env GECKO=true yarn run build-zip",
+    "build:gecko": "cross-env GECKO=true yarn run build",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
-    "build-zip": "yarn run build && node scripts/build-zip.js",
+    "build-zip": "node scripts/build-zip.js",
+    "build-xpi": "bash scripts/build-xpi.sh",
+    "build:dev:gecko": "cross-env GECKO=true yarn run build:dev",
     "watch": "yarn run build --watch",
     "watch:dev": "cross-env HMR=true yarn run build:dev --watch",
     "test": "cross-env NODE_ENV=development karma start",
     "test:watch": "cross-env NODE_ENV=development karma start --auto-watch --no-single-run",
-    "clean": "rm -rf dist* coverage"
+    "clean": "rm -rf dist coverage"
   },
   "husky": {
     "hooks": {

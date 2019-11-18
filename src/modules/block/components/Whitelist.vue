@@ -9,10 +9,10 @@
       </BaseButton>
     </div>
     <div class="btn-group float-right">
-      <BaseButton theme="light" v-bind:callback="resetWhitelist">
+      <BaseButton theme="light" v-bind:callback="resetWhitelist" v-chrome-i18n>
         __MSG_reset__
       </BaseButton>
-      <BaseButton theme="primary" v-bind:callback="saveWhitelist">
+      <BaseButton theme="primary" v-bind:callback="saveWhitelist" v-chrome-i18n>
         __MSG_save__
       </BaseButton>
     </div>

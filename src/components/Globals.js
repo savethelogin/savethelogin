@@ -26,3 +26,9 @@ requireComponent.keys().forEach(fileName => {
   );
   Vue.component(componentName, componentConfig.default || componentConfig);
 });
+
+Vue.directive('focus', {
+  inserted: function(el) {
+    el.focus();
+  },
+});
