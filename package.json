@@ -22,7 +22,7 @@
     "watch:dev": "cross-env HMR=true yarn run build:dev --watch",
     "test": "cross-env NODE_ENV=development karma start",
     "test:watch": "cross-env NODE_ENV=development karma start --auto-watch --no-single-run",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist/"
   },
   "husky": {
     "hooks": {
