@@ -45,6 +45,7 @@
 import Vue from 'vue';
 import config from '@/common/Config';
 import {
+  isMobile,
   createTab,
   openDefaultPort,
   getStorage,
@@ -58,17 +59,27 @@ const requirePanes = require.context(
   true,
   /\/components\/[A-Z][A-Za-z0-9._-]*Pane\.(js|vue)$/
 );
-const loadedPanes = requirePanes.keys().map(key => {
-  const componentConfig = requirePanes(key);
-  const componentName = fromPascalToKebabCase(
-    key
-      .split('/')
-      .pop()
-      .replace(/\.\w+$/, '')
-  );
-  Vue.component(componentName, componentConfig.default || componentConfig);
-  return componentName;
-});
+
+const loadedPanes = requirePanes
+  .keys()
+  .filter(key => {
+    if (!isMobile()) return true;
+
+    const componentConfig = requirePanes(key);
+    return componentConfig.mobileCompatible ? true : false;
+  })
+  .map(key => {
+    const componentConfig = requirePanes(key);
+    const componentName = fromPascalToKebabCase(
+      key
+        .split('/')
+        .pop()
+        .replace(/\.\w+$/, '')
+    );
+    Vue.component(componentName, componentConfig.default || componentConfig);
+
+    return componentName;
+  });
 
 import ToggleSwitch from './ToggleSwitch';
 

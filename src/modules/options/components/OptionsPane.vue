@@ -24,6 +24,7 @@ import ToggleSwitch from '@/components/ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
 
+export const mobileCompatible = true;
 export default {
   name: 'Options',
   components: {
