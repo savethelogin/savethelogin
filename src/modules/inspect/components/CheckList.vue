@@ -47,14 +47,6 @@ export default {
   components: {
     CheckItem,
   },
-  computed: {
-    msgNoInformation: function() {
-      return chrome.i18n.getMessage('no_information');
-    },
-    msgRefresh: function() {
-      return chrome.i18n.getMessage('refresh');
-    },
-  },
   props: {
     scheme: {
       type: String,
