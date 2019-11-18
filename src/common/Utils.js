@@ -14,6 +14,16 @@ export function getBrowser() {
   }
 }
 
+export function isMobile() {
+  if (typeof navigator === 'object') {
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function promiseHandler(
   {
     resolve,
@@ -249,6 +259,7 @@ export function fromPascalToKebabCase(text) {
 
 export default {
   getBrowser,
+  isMobile,
   createNotification,
   clearNotification,
   getStorage,

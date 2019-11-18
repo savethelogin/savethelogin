@@ -1,6 +1,6 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
-  <div class="container w-100">
+  <div id="popup" class="container w-100">
     <div class="row">
       <a href="#" v-on:click.prevent="openWebsite">
         <img id="logo" src="/icons/logo.png" width="300" />
@@ -212,13 +212,9 @@ code {
 }
 
 /**
- * If screen smaller than fixed width
+ * If mobile device
  */
 @media (max-width: 550px) {
-  body {
-    width: 100%;
-  }
-
   #logo {
     margin-left: calc(50vw - (300px / 2));
   }
