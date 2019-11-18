@@ -117,9 +117,6 @@ export default {
     if (item === undefined) this.isEnabled = true;
     else this.isEnabled = !!!item;
   },
-  mounted() {
-    console.log(loadedPanes);
-  },
 };
 </script>
 
