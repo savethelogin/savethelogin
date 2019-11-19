@@ -201,24 +201,37 @@ export function unique(array) {
   return array.filter((value, index) => array.indexOf(value) === index);
 }
 
-export function fromSnakeToPascalCase(text) {
+function escapeRegexp(string) {
+  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+function toPascalCase({ text, separator }) {
+  const prefixPattern = new RegExp(`^([-_$]*)`);
+  const suffixPattern = new RegExp(`([-_$]*)$`);
+
   let string = text;
-  let chunks = string.split('_');
-  let result = chunks[0];
+
+  let prefix = string.match(prefixPattern)[1];
+  let suffix = string.match(suffixPattern)[1];
+
+  string = string.replace(prefixPattern, '').replace(suffixPattern, '');
+
+  let result = prefix;
+  let chunks = string.split(separator).filter(x => x);
   for (let i = 0; i < chunks.length; i++) {
     result += chunks[i][0].toUpperCase() + chunks[i].substring(1);
   }
+  result += suffix;
+
   return result;
 }
 
+export function fromSnakeToPascalCase(text) {
+  return toPascalCase({ text: text, separator: '_' });
+}
+
 export function fromKebabToPascalCase(text) {
-  let string = text;
-  let chunks = string.split('-');
-  let result = chunks[0];
-  for (let i = 0; i < chunks.length; i++) {
-    result += chunks[i][0].toUpperCase() + chunks[i].substring(1);
-  }
-  return result;
+  return toPascalCase({ text: text, separator: '-' });
 }
 
 export function fromPascalToSnakeCase(text) {
