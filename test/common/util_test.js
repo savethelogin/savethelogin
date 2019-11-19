@@ -126,4 +126,36 @@ describe('Util', function() {
       console.log(`result: ${result}`);
     });
   });
+
+  describe('fromPascalToSnakeCase', function() {
+    it('translate pascal case naming to pascal case', function() {
+      let result = fromPascalToSnakeCase('Func');
+      expect(result).to.equal('func');
+      console.log(`result: ${result}`);
+
+      result = fromPascalToSnakeCase('FooBarBaz');
+      expect(result).to.equal('foo_bar_baz');
+      console.log(`result: ${result}`);
+
+      result = fromPascalToSnakeCase('_Test');
+      expect(result).to.equal('_test');
+      console.log(`result: ${result}`);
+
+      result = fromPascalToSnakeCase('__Hi__');
+      expect(result).to.equal('__hi__');
+      console.log(`result: ${result}`);
+
+      result = fromPascalToSnakeCase('HelloWorld');
+      expect(result).to.equal('hello_world');
+      console.log(`result: ${result}`);
+
+      result = fromPascalToSnakeCase('Asdf_');
+      expect(result).to.equal('asdf_');
+      console.log(`result: ${result}`);
+
+      result = fromPascalToSnakeCase('QwertyUiop');
+      expect(result).to.equal('qwerty_uiop');
+      console.log(`result: ${result}`);
+    });
+  });
 });
