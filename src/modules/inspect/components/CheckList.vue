@@ -27,7 +27,7 @@
 
 <script>
 import CheckItem from './CheckItem';
-import { queryTab } from '@/common/Utils';
+import { isMobile, currentTab, removeTab } from '@/common/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {
@@ -61,10 +61,14 @@ export default {
     gradeColor: gradeColor,
     // Refresh tab and close popup
     refreshPage: async function() {
-      const tabs = await queryTab({ active: true, currentWindow: true });
-      const currentTab = tabs[0];
-      chrome.tabs.reload(currentTab.id, {}, () => {});
-      window.close();
+      const tab = await currentTab();
+      if (!isMobile()) {
+        chrome.tabs.reload(tab.id, {}, () => {});
+
+        window.close();
+      } else {
+        await removeTab(tab.id);
+      }
     },
   },
 };
