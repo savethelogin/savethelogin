@@ -171,6 +171,7 @@ export function onConnect(port) {
         let tmp = new Uint8Array(
           message.data
             .toString()
+            .trim()
             .slice(0, SHORTEN_LENGTH)
             .split('')
             .map(c => c.charCodeAt(0))
@@ -278,7 +279,8 @@ export function onUpdated(tabId, changeInfo, tab) {
             try {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
-                if (context.block_enabled && body.indexOf(targets[i].value) !== -1) {
+                if (!context.block_enabled) break;
+                if (targets[i].value.trim() && body.indexOf(targets[i].value) !== -1) {
                   this.setRequestHeader('X-Plaintext-Login', 'DETECTED');
                   break;
                 }
