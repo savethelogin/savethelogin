@@ -92,6 +92,10 @@ const config = {
           emitFile: false,
         },
       },
+      {
+        test: /\.(dat|txt)$/,
+        use: 'raw-loader',
+      },
     ],
   },
   plugins: [

@@ -2,6 +2,11 @@
 import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
 
+import dat from './public_suffix_list.dat';
+const suffixes = dat.split('\n').filter(line => {
+  return !(line.substr(0, 2) === '//' || !line.trim());
+});
+
 export function getBrowser() {
   if (typeof whale === 'object') {
     return 'whale';
@@ -189,12 +194,21 @@ export function dataURItoBlob(dataURI) {
   return blob;
 }
 
-export function extractRootDomain(hostname) {
+export function extractRootDomain(url) {
   // Extract original(top) domain of url
-  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
-    /^www[0-9]*\./i,
-    ''
-  );
+  // return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
+  //   /^www[0-9]*\./i,
+  //   ''
+  // );
+  let domain = url.replace(/^.*?:?\/\//, '').split('/')[0];
+  let tokens = domain.split('.').reverse();
+  let i = tokens.length;
+  let root_domain = '';
+  do {
+    root_domain = tokens[tokens.length - i] + (root_domain ? '.' + root_domain : '');
+    if (!suffixes.includes(root_domain)) break;
+  } while (i--);
+  return root_domain;
 }
 
 export function unique(array) {
