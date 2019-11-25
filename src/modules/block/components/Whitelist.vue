@@ -1,14 +1,20 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div class="container mt-5">
-    <h1>Plaintext login whitelist</h1>
+    <h1 v-chrome-i18n>__MSG_whitelist_heading__</h1>
     <textarea class="form-control mb-3" rows="15" cols="120" v-model="whitelist" v-focus></textarea>
     <div class="btn-group float-left">
-      <button type="button" class="btn btn-secondary" v-on:click="closeWhitelist">Close</button>
+      <BaseButton theme="secondary" v-bind:callback="closeWhitelist" v-chrome-i18n>
+        __MSG_close__
+      </BaseButton>
     </div>
     <div class="btn-group float-right">
-      <button type="button" class="btn btn-light" v-on:click="resetWhitelist">Reset</button>
-      <button type="button" class="btn btn-primary" v-on:click="saveWhitelist">Save</button>
+      <BaseButton theme="light" v-bind:callback="resetWhitelist" v-chrome-i18n>
+        __MSG_reset__
+      </BaseButton>
+      <BaseButton theme="primary" v-bind:callback="saveWhitelist" v-chrome-i18n>
+        __MSG_save__
+      </BaseButton>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -22,7 +28,7 @@ import {
   currentTab,
   openDefaultPort,
   unique,
-} from '../common/Utils';
+} from '@/common/Utils';
 
 export default {
   name: 'Whitelist',

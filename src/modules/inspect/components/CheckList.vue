@@ -17,12 +17,7 @@
         <vue-chrome-i18n>__MSG_no_information__</vue-chrome-i18n>
       </h4>
       <p class="mb-0">
-        <BaseButton
-          theme="link"
-          v-bind:callback="refreshPage"
-          v-bind:classes="['text-danger']"
-          v-chrome-i18n
-        >
+        <BaseButton theme="link" v-bind:callback="refreshPage" class="text-danger" v-chrome-i18n>
           <i class="material-icons">refresh</i> __MSG_refresh__
         </BaseButton>
       </p>
@@ -32,7 +27,7 @@
 
 <script>
 import CheckItem from './CheckItem';
-import { browser, queryTab } from '../common/Utils';
+import { isMobile, currentTab, removeTab } from '@/common/Utils';
 
 function gradeColor(item) {
   switch (item.grade) {
@@ -52,14 +47,6 @@ export default {
   components: {
     CheckItem,
   },
-  computed: {
-    msgNoInformation: function() {
-      return browser.i18n.getMessage('no_information');
-    },
-    msgRefresh: function() {
-      return browser.i18n.getMessage('refresh');
-    },
-  },
   props: {
     scheme: {
       type: String,
@@ -74,10 +61,14 @@ export default {
     gradeColor: gradeColor,
     // Refresh tab and close popup
     refreshPage: async function() {
-      const tabs = await queryTab({ active: true, currentWindow: true });
-      const currentTab = tabs[0];
-      browser.tabs.reload(currentTab.id, {}, () => {});
-      window.close();
+      const tab = await currentTab();
+      if (!isMobile()) {
+        chrome.tabs.reload(tab.id, {}, () => {});
+
+        window.close();
+      } else {
+        await removeTab(tab.id);
+      }
     },
   },
 };

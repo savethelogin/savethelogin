@@ -13,5 +13,17 @@
   },
   "options_block_desc": {
     "message": "Notify about plain text login"
+  },
+  "whitelist_heading": {
+    "message": "Plaintext login whitelist"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "save": {
+    "message": "Save"
   }
 }

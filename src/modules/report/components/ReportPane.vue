@@ -18,29 +18,28 @@
     </div>
     <div class="mt-3">
       <div class="btn-group float-left">
-        <button type="button" class="btn btn-primary" v-on:click="capturePage" v-chrome-i18n>
+        <BaseButton theme="primary" v-bind:callback="capturePage" v-chrome-i18n>
           __MSG_capture__
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          v-on:click="captureCrop"
+        </BaseButton>
+        <BaseButton
+          theme="primary"
+          v-bind:callback="captureCrop"
           v-bind:disabled="capture === ''"
           v-chrome-i18n
         >
           __MSG_crop__
-        </button>
+        </BaseButton>
       </div>
       <div class="btn-group float-right">
-        <button
-          type="button"
-          class="btn btn-dark float-right"
-          v-on:click="captureDownload"
+        <BaseButton
+          theme="dark"
+          class="float-right"
+          v-bind:callback="captureDownload"
           v-bind:disabled="capture === ''"
           v-chrome-i18n
         >
           __MSG_download__
-        </button>
+        </BaseButton>
       </div>
       <div class="clearfix"></div>
     </div>
@@ -48,10 +47,10 @@
 </template>
 
 <script>
-import config from '../common/Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
 
-import { browser, getBrowser, openDefaultPort } from '../common/Utils';
+import { getBrowser, openDefaultPort } from '@/common/Utils';
 
 export default {
   data() {
@@ -78,7 +77,7 @@ export default {
       });
     },
     capturePage: function() {
-      browser.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
+      chrome.tabs.captureVisibleTab(undefined, { format: 'png' }, dataUrl => {
         this.captureSetImage(dataUrl);
       });
     },
@@ -103,12 +102,12 @@ export default {
         url: imgUrl,
         filename: `${PROJECT_PREFIX}_report.png`,
       };
-      if (getBrowser().type !== 'gecko') {
-        browser.downloads.download(options);
+      if (getBrowser() !== 'firefox') {
+        chrome.downloads.download(options);
       } else {
         let port = openDefaultPort();
         port.postMessage({
-          type: 'download_gecko',
+          type: 'download_firefox',
           data: options,
         });
       }

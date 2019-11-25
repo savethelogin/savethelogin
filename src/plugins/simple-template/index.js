@@ -1,5 +1,3 @@
-import { browser } from '../../common/Utils';
-
 function stripTags(string) {
   return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -18,7 +16,7 @@ function map(arr, callback) {
 }
 
 function r1(match, p1, offset, string) {
-  return nl2br(browser.i18n.getMessage(p1.trim()));
+  return nl2br(chrome.i18n.getMessage(p1.trim()));
 }
 
 function r2(match, p1, offset, string) {

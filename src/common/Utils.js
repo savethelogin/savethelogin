@@ -1,34 +1,33 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from './Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
+
+import dat from './public_suffix_list.dat';
+const suffixes = dat.split('\n').filter(line => {
+  return !(line.substr(0, 2) === '//' || !line.trim());
+});
 
 export function getBrowser() {
   if (typeof whale === 'object') {
-    return {
-      name: 'whale',
-      type: 'chromium',
-      scheme: 'whale-extension',
-      browser: whale,
-    };
+    return 'whale';
   } else if (typeof browser === 'object') {
-    return {
-      name: 'browser',
-      type: 'gecko',
-      scheme: 'moz-extension',
-      browser: browser,
-    };
+    return 'firefox';
   } else if (typeof chrome === 'object') {
-    return {
-      name: 'chrome',
-      type: 'chromium',
-      scheme: 'chrome-extension',
-      browser: chrome,
-    };
+    return 'chrome';
   } else {
-    throw new Error('browser is unknown');
+    throw new Error('Unknown browser');
   }
 }
-export const browser = getBrowser().browser;
+
+export function isMobile() {
+  if (typeof navigator === 'object') {
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 function promiseHandler(
   {
@@ -39,7 +38,7 @@ function promiseHandler(
   },
   value
 ) {
-  if (browser.runtime.lastError) {
+  if (chrome.runtime.lastError) {
     return reject(value);
   } else {
     return resolve(value);
@@ -63,7 +62,7 @@ export function createNotification({
     };
     if (contextMessage) options['contextMessage'] = contextMessage;
 
-    browser.notifications.create(notificationId, options, id => {
+    chrome.notifications.create(notificationId, options, id => {
       promiseHandler({ resolve: resolve, reject: reject }, id);
     });
   });
@@ -71,7 +70,7 @@ export function createNotification({
 
 export function clearNotification(notificationId = undefined) {
   return new Promise((resolve, reject) => {
-    browser.notifications.clear(notificationId, wasCleared => {
+    chrome.notifications.clear(notificationId, wasCleared => {
       promiseHandler({ resolve: resolve, reject: reject }, wasCleared);
     });
   });
@@ -79,7 +78,7 @@ export function clearNotification(notificationId = undefined) {
 
 export function getStorage({ area = 'local', keys = null }) {
   return new Promise((resolve, reject) => {
-    browser.storage[area].get(keys, items => {
+    chrome.storage[area].get(keys, items => {
       promiseHandler({ resolve: resolve, reject: reject }, items);
     });
   });
@@ -87,7 +86,7 @@ export function getStorage({ area = 'local', keys = null }) {
 
 export function setStorage({ area = 'local', items }) {
   return new Promise((resolve, reject) => {
-    browser.storage[area].set(items, () => {
+    chrome.storage[area].set(items, () => {
       promiseHandler({ resolve: resolve, reject: reject });
     });
   });
@@ -99,16 +98,16 @@ export function removeStorage({ area = 'local', keys = undefined }) {
       promiseHandler({ resolve: resolve, reject: reject });
     };
     if (keys === undefined) {
-      browser.storage[area].clear(callback);
+      chrome.storage[area].clear(callback);
     } else {
-      browser.storage[area].remove(keys, callback);
+      chrome.storage[area].remove(keys, callback);
     }
   });
 }
 
 export function queryTab(queryInfo) {
   return new Promise((resolve, reject) => {
-    browser.tabs.query(queryInfo, result => {
+    chrome.tabs.query(queryInfo, result => {
       promiseHandler({ resolve: resolve, reject: reject }, result);
     });
   });
@@ -116,7 +115,7 @@ export function queryTab(queryInfo) {
 
 export function currentTab() {
   return new Promise((resolve, reject) => {
-    browser.tabs.getCurrent(tab => {
+    chrome.tabs.getCurrent(tab => {
       promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
@@ -124,7 +123,7 @@ export function currentTab() {
 
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
-    browser.tabs.create(createProperties, tab => {
+    chrome.tabs.create(createProperties, tab => {
       promiseHandler({ resolve: resolve, reject: reject }, tab);
     });
   });
@@ -132,7 +131,7 @@ export function createTab(createProperties) {
 
 export function updateTab({ tabId = undefined, updateProperties }) {
   return new Promise((resolve, reject) => {
-    browser.tabs.update(tabId, updateProperties, tab => {
+    chrome.tabs.update(tabId, updateProperties, tab => {
       promiseHandler({ resolve: resolve }, tab);
     });
   });
@@ -140,27 +139,27 @@ export function updateTab({ tabId = undefined, updateProperties }) {
 
 export function removeTab(tabIds) {
   return new Promise((resolve, reject) => {
-    browser.tabs.remove(tabIds, () => {
+    chrome.tabs.remove(tabIds, () => {
       promiseHandler({ resolve: resolve, reject: reject });
     });
   });
 }
 
 export function openDefaultPort() {
-  return browser.runtime.connect({ name: `${PROJECT_PREFIX}` });
+  return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
 }
 
 export function executeScript({ tabId = undefined, details }) {
   return new Promise((resolve, reject) => {
-    browser.tabs.executeScript(tabId, details, results => {
+    chrome.tabs.executeScript(tabId, details, results => {
       promiseHandler({ resolve: resolve, reject: reject }, results);
     });
   }).catch(logError);
 }
 
 export function logError(e) {
-  if (browser.runtime.lastError) {
-    console.log(e, browser.runtime.lastError);
+  if (chrome.runtime.lastError) {
+    console.log(e, chrome.runtime.lastError);
   } else {
     console.log(e);
   }
@@ -195,21 +194,100 @@ export function dataURItoBlob(dataURI) {
   return blob;
 }
 
-export function extractRootDomain(hostname) {
+export function extractRootDomain(url) {
   // Extract original(top) domain of url
-  return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
-    /^www[0-9]*\./i,
-    ''
-  );
+  // return (hostname.match(/([a-z0-9_-]{3,}((\.[a-z]{2}){1,2}|\.[a-z]{3,}))$/i) || [''])[0].replace(
+  //   /^www[0-9]*\./i,
+  //   ''
+  // );
+  let domain = url.replace(/^.*?:?\/\//, '').split('/')[0];
+  let tokens = domain.split('.').reverse();
+  let i = tokens.length;
+  let root_domain = '';
+  do {
+    root_domain = tokens[tokens.length - i] + (root_domain ? '.' + root_domain : '');
+    if (!suffixes.includes(root_domain)) break;
+  } while (i--);
+  return root_domain;
 }
 
 export function unique(array) {
   return array.filter((value, index) => array.indexOf(value) === index);
 }
 
+function escapeRegexp(string) {
+  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+function toPascalCase({ text, separator }) {
+  const prefixPattern = new RegExp(`^([$_-]*)`);
+  const suffixPattern = new RegExp(`([$_-]*)$`);
+
+  let string = text;
+
+  let prefix = string.match(prefixPattern)[1];
+  let suffix = string.match(suffixPattern)[1];
+
+  string = string.replace(prefixPattern, '').replace(suffixPattern, '');
+
+  let result = prefix;
+  let chunks = string.split(separator).filter(x => x);
+  for (let i = 0; i < chunks.length; i++) {
+    result += chunks[i][0].toUpperCase() + chunks[i].substring(1);
+  }
+  result += suffix;
+
+  return result;
+}
+
+export function fromSnakeToPascalCase(text) {
+  return toPascalCase({ text: text, separator: '_' });
+}
+
+export function fromKebabToPascalCase(text) {
+  return toPascalCase({ text: text, separator: '-' });
+}
+
+function fromPascal({ text, joiner }) {
+  const prefixPattern = new RegExp(`^([$_-]*)`);
+  const suffixPattern = new RegExp(`([$_-]*)$`);
+
+  let string = text;
+  let prefix = string.match(prefixPattern)[1];
+  let suffix = string.match(suffixPattern)[1];
+  let result = prefix;
+
+  string = string.replace(prefixPattern, '').replace(suffixPattern, '');
+
+  do {
+    let position = string.search(/[^A-Z$_-][A-Z]/);
+    if (position === -1) break;
+    ++position;
+    string = string
+      .substr(0, position)
+      .concat(joiner)
+      .concat(string.charAt(position).toLowerCase())
+      .concat(string.substr(position + 1));
+  } while (true);
+  string = string.toLowerCase();
+
+  result += string;
+  result += suffix;
+
+  return result;
+}
+
+export function fromPascalToSnakeCase(text) {
+  return fromPascal({ text: text, joiner: '_' });
+}
+
+export function fromPascalToKebabCase(text) {
+  return fromPascal({ text: text, joiner: '-' });
+}
+
 export default {
   getBrowser,
-  browser,
+  isMobile,
   createNotification,
   clearNotification,
   getStorage,
@@ -227,4 +305,8 @@ export default {
   dataURItoBlob,
   extractRootDomain,
   unique,
+  fromSnakeToPascalCase,
+  fromKebabToPascalCase,
+  fromPascalToSnakeCase,
+  fromPascalToKebabCase,
 };

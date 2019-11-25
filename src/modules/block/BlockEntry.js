@@ -1,7 +1,7 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import config from '../../common/Config';
-import Context from '../../common/Context';
-import { browser, getBrowser, getStorage, setStorage } from '../../common/Utils';
+import config from '@/common/Config';
+import Context from '@/common/Context';
+import { getBrowser, getStorage, setStorage } from '@/common/Utils';
 import Block from './Block';
 
 const { PROJECT_PREFIX } = config;
@@ -29,27 +29,27 @@ getStorage({
 });
 
 // Blocker module
-browser.runtime.onConnect.addListener(Block.onConnect);
+chrome.runtime.onConnect.addListener(Block.onConnect);
 
-browser.notifications.onClicked.addListener(Block.onClicked);
+chrome.notifications.onClicked.addListener(Block.onClicked);
 
-browser.tabs.onUpdated.addListener(Block.onUpdated);
-browser.tabs.onRemoved.addListener(Block.onRemoved);
+chrome.tabs.onUpdated.addListener(Block.onUpdated);
+chrome.tabs.onRemoved.addListener(Block.onRemoved);
 
-browser.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, [
+chrome.webRequest.onBeforeRequest.addListener(Block.onBeforeRequest, { urls: ['http://*/*'] }, [
   'requestBody',
 ]);
-browser.webRequest.onBeforeSendHeaders.addListener(
+chrome.webRequest.onBeforeSendHeaders.addListener(
   Block.onBeforeSendHeaders,
   { urls: ['http://*/*'] },
   Array.prototype.slice.apply(
     ['blocking', 'requestHeaders', 'extraHeaders'],
-    getBrowser().type !== 'gecko' ? [] : [0, -1]
+    getBrowser() !== 'firefox' ? [] : [0, -1]
   )
 );
-browser.webRequest.onCompleted.addListener(Block.onCompleted, {
+chrome.webRequest.onCompleted.addListener(Block.onCompleted, {
   urls: ['https://*/*', 'http://*/*'],
 });
-browser.webRequest.onErrorOccurred.addListener(Block.onErrorOccurred, {
+chrome.webRequest.onErrorOccurred.addListener(Block.onErrorOccurred, {
   urls: ['https://*/*', 'http://*/*'],
 });
