@@ -3,19 +3,18 @@
 /**
  * HTTP Request blocker module
  */
-import config from '../../common/Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
 import {
   getBrowser,
-  browser,
   createNotification,
   clearNotification,
   createTab,
   updateTab,
   executeScript,
-} from '../../common/Utils';
-import Context from '../../common/Context';
+} from '@/common/Utils';
+import Context from '@/common/Context';
 
 // Shorten value to improve performance
 const SHORTEN_LENGTH = 0x10;
@@ -101,7 +100,7 @@ function bind(tabId) {
             }
 
             // Send event to extension
-            var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+            var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
             port.postMessage({
               id: elementId,
               type: 'update_data',
@@ -111,7 +110,7 @@ function bind(tabId) {
           };
         };
 
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         var key = ${tabId};
         // Target elements
         var target = 'input[type=password]';
@@ -154,7 +153,7 @@ function bind(tabId) {
 
 function enforceUpdate() {
   onUpdated();
-  browser.tabs.reload(undefined, { bypassCache: true });
+  chrome.tabs.reload(undefined, { bypassCache: true });
 }
 
 export function onConnect(port) {
@@ -172,6 +171,7 @@ export function onConnect(port) {
         let tmp = new Uint8Array(
           message.data
             .toString()
+            .trim()
             .slice(0, SHORTEN_LENGTH)
             .split('')
             .map(c => c.charCodeAt(0))
@@ -233,7 +233,7 @@ export function onUpdated(tabId, changeInfo, tab) {
     details: {
       code: `
       (function() {
-        var port = ${getBrowser().name}.runtime.connect({name: "${PROJECT_PREFIX}"});
+        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
         port.onMessage.addListener(function(message) {
           if (message.type === 'update_context') {
             window.postMessage(message.data, "*");
@@ -279,7 +279,8 @@ export function onUpdated(tabId, changeInfo, tab) {
             try {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
-                if (context.block_enabled && body.indexOf(targets[i].value) !== -1) {
+                if (!context.block_enabled) break;
+                if (targets[i].value.trim() && body.indexOf(targets[i].value) !== -1) {
                   this.setRequestHeader('X-Plaintext-Login', 'DETECTED');
                   break;
                 }
@@ -441,9 +442,9 @@ export function onErrorOccurred(details) {
       case 'NS_ERROR_ABORT':
         createNotification({
           notificationId: `notification_request_blocked@${details.requestId}`,
-          title: browser.i18n.getMessage('request_blocked_title'),
-          message: browser.i18n.getMessage('request_blocked_message'),
-          contextMessage: browser.i18n.getMessage('request_blocked_context_message'),
+          title: chrome.i18n.getMessage('request_blocked_title'),
+          message: chrome.i18n.getMessage('request_blocked_message'),
+          contextMessage: chrome.i18n.getMessage('request_blocked_context_message'),
         });
         if (details.type.slice(-5) === 'frame') {
           updateTab({

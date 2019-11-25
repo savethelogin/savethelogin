@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -11,7 +12,7 @@ const { version, author } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
-  context: __dirname + '/src',
+  context: path.join(__dirname, '/src'),
   entry: {
     // Extension popup
     popup: './popup.js',
@@ -21,7 +22,7 @@ const config = {
     bundle: './bundle.js',
   },
   output: {
-    path: __dirname + '/dist',
+    path: path.join(__dirname, '/dist'),
     filename: '[name].js',
   },
   optimization: {
@@ -33,6 +34,9 @@ const config = {
   },
   resolve: {
     extensions: ['.js', '.vue'],
+    alias: {
+      '@': path.join(__dirname, '/src'),
+    },
   },
   module: {
     rules: [
@@ -42,7 +46,7 @@ const config = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules|_test\.js$/,
+        exclude: /node_modules|plugins|_test\.js$/,
         use: Array.prototype.slice.apply(
           [
             {
@@ -87,6 +91,10 @@ const config = {
           outputPath: '/fonts/',
           emitFile: false,
         },
+      },
+      {
+        test: /\.(dat|txt)$/,
+        use: 'raw-loader',
       },
     ],
   },
@@ -160,7 +168,7 @@ if (config.mode === 'production') {
     new TerserPlugin({
       terserOptions: {
         compress: {
-          drop_console: false,
+          drop_console: true,
         },
       },
     }),

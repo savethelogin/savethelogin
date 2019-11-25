@@ -1,6 +1,5 @@
 /* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import SimpleTemplate from '../../../plugins/simple-template/index';
-import { browser } from '../../../common/Utils';
+import SimpleTemplate from '@/plugins/simple-template/index';
 
 function blocked() {
   let currentUrl = new URL(location.href);
@@ -24,7 +23,7 @@ function blocked() {
     return string.replace(
       highlight,
       '<span class="highlight" title="' +
-        browser.i18n.getMessage('malicious') +
+        chrome.i18n.getMessage('malicious') +
         '!">' +
         highlight +
         '</span>'
@@ -47,7 +46,7 @@ function blocked() {
   };
 
   document.getElementById('disable').onclick = function() {
-    let port = browser.runtime.connect({ name: 'stl' });
+    let port = chrome.runtime.connect({ name: 'stl' });
     port.postMessage({
       type: 'update_options',
       name: 'security_enabled',

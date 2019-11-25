@@ -10,10 +10,10 @@ import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
-import '../../src/components/Globals';
-import Options from '../../src/components/Options';
+import '@/components/Globals';
+import OptionsPane from '@/modules/options/components/OptionsPane';
 
-describe('Options', function() {
+describe('OptionsPane', function() {
   before(function() {
     chrome.registerPlugin(new CookiePlugin());
     chrome.registerPlugin(new I18nPlugin());
@@ -32,10 +32,10 @@ describe('Options', function() {
   });
 
   it('has data', function() {
-    expect(Options.data).to.be.a('function');
+    expect(OptionsPane.data).to.be.a('function');
   });
 
   it('has create hook', function() {
-    expect(Options.created).to.be.a('function');
+    expect(OptionsPane.created).to.be.a('function');
   });
 });

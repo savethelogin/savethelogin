@@ -3,12 +3,7 @@
   <button
     v-on:click.prevent="callback"
     v-bind:type="type"
-    v-bind:class="
-      ['btn']
-        .concat(classes)
-        .concat(bsTheme)
-        .join(' ')
-    "
+    v-bind:class="['btn'].concat(bsTheme).join(' ')"
   >
     <slot></slot>
   </button>
@@ -26,12 +21,9 @@ export default {
       type: String,
       default: 'light',
     },
-    classes: {
-      type: Array,
-      default: [],
-    },
     callback: {
       type: Function,
+      default: () => {},
     },
   },
   computed: {

@@ -7,7 +7,7 @@ import camelCase from 'lodash/camelCase';
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 
-import VueChromeI18n from '../plugins/vue-chrome-i18n/src/index';
+import VueChromeI18n from '@/plugins/vue-chrome-i18n/src/index';
 
 Vue.use(VueChromeI18n);
 Vue.component('vue-cropper', VueCropper);
@@ -25,4 +25,10 @@ requireComponent.keys().forEach(fileName => {
     )
   );
   Vue.component(componentName, componentConfig.default || componentConfig);
+});
+
+Vue.directive('focus', {
+  inserted: function(el) {
+    el.focus();
+  },
 });
