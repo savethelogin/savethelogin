@@ -20,6 +20,9 @@ dev:
 	yarn run build-zip
 	yarn run build-xpi
 
+doc:
+	doxygen doxygen/Doxyfile
+
 test:
 	yarn run test
 
