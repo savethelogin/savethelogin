@@ -5,9 +5,7 @@ import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from '@/
 
 const { PROJECT_PREFIX } = config;
 
-/**
- * Import modules
- */
+// Import modules
 const cache = {};
 const requireModules = require.context('./modules/', true, /[A-Za-z]*Entry\.js$/);
 

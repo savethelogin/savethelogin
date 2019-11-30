@@ -12,6 +12,7 @@ new Vue({
   render: h => h(Popup),
 });
 
+// Set body width 100% when mobile
 if (isMobile()) {
   document.body.style.width = '100%';
 }
