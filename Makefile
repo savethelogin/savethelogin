@@ -20,8 +20,8 @@ dev:
 	yarn run build-zip
 	yarn run build-xpi
 
-doc:
-	yarn run doc
+docs:
+	yarn run docs
 
 test:
 	yarn run test
