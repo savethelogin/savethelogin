@@ -166,6 +166,7 @@ if (config.mode === 'production') {
   if (!config.optimization) config.optimization = {};
   config.optimization.minimizer = (config.optimization.minimizer || []).concat([
     new TerserPlugin({
+      extractComments: false,
       terserOptions: {
         compress: {
           drop_console: true,
