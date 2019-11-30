@@ -83,10 +83,22 @@ const loadedPanes = requirePanes
 
 import ToggleSwitch from './ToggleSwitch';
 
+/**
+ * @vue-data {Boolean} isEnabled - Current state of extension.
+ * @vue-data {String}  currentView - Current popup view component.
+ * @vue-data {Array}   views - List of loaded view components.
+ */
 export default {
   name: 'Popup',
   components: {
     ToggleSwitch,
+  },
+  data() {
+    return {
+      isEnabled: false,
+      currentView: loadedPanes[0],
+      views: loadedPanes,
+    };
   },
   methods: {
     changeView: function(newView) {
@@ -111,16 +123,10 @@ export default {
       });
       this.isEnabled = checked;
     },
+    /** Open website on new tab */
     openWebsite: function() {
       createTab({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
-  },
-  data() {
-    return {
-      isEnabled: false,
-      currentView: loadedPanes[0],
-      views: loadedPanes,
-    };
   },
   async created() {
     const items = await getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] });

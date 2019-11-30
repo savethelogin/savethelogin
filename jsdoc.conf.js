@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  plugins: ['node_modules/jsdoc-vuejs', 'plugins/markdown', 'plugins/summarize'],
+  plugins: ['node_modules/jsdoc-vuejs'],
   recurseDepth: 10,
   source: {
     exclude: ['src/plugins'],
