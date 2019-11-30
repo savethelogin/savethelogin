@@ -1,4 +1,8 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+
+/**
+ * @file Entry of background scripts
+ */
 import config from '@/common/Config';
 import Context from '@/common/Context';
 import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from '@/common/Utils';
@@ -41,6 +45,10 @@ getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items =>
   setIcon(Context.get('enabled'));
 });
 
+/**
+ * Set shortcut icon active/disabled by state.
+ * @param {Boolean} isEnabled - State of extension.
+ */
 function setIcon(isEnabled) {
   if (isEnabled === true) {
     chrome.browserAction.setIcon({
@@ -55,6 +63,7 @@ function setIcon(isEnabled) {
 
 chrome.runtime.onConnect.addListener(onConnect);
 
+/** Common runtime connection handler */
 export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
   port.onMessage.addListener(message => {

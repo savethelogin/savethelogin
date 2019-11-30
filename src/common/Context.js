@@ -1,7 +1,10 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
 
 import config from '@/common/Config';
 
+/**
+ * Singleton for store states to indicate context
+ */
 class Context {
   constructor() {
     this.names = [];

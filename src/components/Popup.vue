@@ -84,9 +84,9 @@ const loadedPanes = requirePanes
 import ToggleSwitch from './ToggleSwitch';
 
 /**
- * @vue-data {Boolean} isEnabled - Current state of extension.
- * @vue-data {String}  currentView - Current popup view component.
- * @vue-data {Array}   views - List of loaded view components.
+ * @vue-data {Boolean}  [isEnabled=true] - Current state of extension.
+ * @vue-data {String}   currentView      - Current popup view component.
+ * @vue-data {String[]} views            - List of loaded view components.
  */
 export default {
   name: 'Popup',

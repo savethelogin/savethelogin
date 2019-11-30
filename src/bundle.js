@@ -1,4 +1,7 @@
-/* Bundle only */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+/**
+ * @file Entry of extension scheme pages
+ */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/components/Globals';
 
