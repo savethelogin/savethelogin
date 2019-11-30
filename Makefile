@@ -1,4 +1,4 @@
-.PHONY: all zip xpi dev test clean
+.PHONY: all zip xpi dev test clean docs
 
 
 all: zip xpi
