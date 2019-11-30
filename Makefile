@@ -21,7 +21,7 @@ dev:
 	yarn run build-xpi
 
 doc:
-	doxygen doxygen/Doxyfile
+	yarn run doc
 
 test:
 	yarn run test
