@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Xvezda <https://xvezda.com/> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 var path = require('path');
 var webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');

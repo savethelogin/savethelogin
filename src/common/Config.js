@@ -1,6 +1,9 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+/**
+ * @file Project configurations
+ */
 
-/** Configurations */
+/** Configurations class */
 class Config {
   constructor() {
     this.PROJECT_PREFIX = 'stl';

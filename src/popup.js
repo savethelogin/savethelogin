@@ -1,5 +1,4 @@
 /** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-
 /**
  * @file Entry of popup scripts
  */

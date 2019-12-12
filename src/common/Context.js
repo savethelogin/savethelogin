@@ -1,5 +1,7 @@
 /** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
-
+/**
+ * @file Context manager
+ */
 import config from '@/common/Config';
 
 /**

@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import Context from '@/common/Context';
 import { updateTab, extractRootDomain, unique } from '@/common/Utils';
 

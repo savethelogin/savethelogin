@@ -1,3 +1,5 @@
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+
 function stripTags(string) {
   return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
