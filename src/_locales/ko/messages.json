@@ -1,12 +1,18 @@
 {
+  "agree": {
+    "message": "동의"
+  },
   "deny": {
     "message": "거부"
   },
-  "basics": {
-    "message": "일반"
-  },
   "safe": {
     "message": "안전"
+  },
+  "moderate": {
+    "message": "보통"
+  },
+  "vulnerable": {
+    "message": "취약"
   },
   "malicious": {
     "message": "악성"
@@ -14,16 +20,13 @@
   "refresh": {
     "message": "새로 고침"
   },
+  "options": {
+    "message": "옵션"
+  },
+  "basics": {
+    "message": "일반"
+  },
   "experimental": {
     "message": "실험적"
-  },
-  "moderate": {
-    "message": "보통"
-  },
-  "agree": {
-    "message": "동의"
-  },
-  "vulnerable": {
-    "message": "취약"
   }
 }
