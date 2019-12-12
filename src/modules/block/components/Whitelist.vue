@@ -30,6 +30,10 @@ import {
   unique,
 } from '@/common/Utils';
 
+/**
+ * @vue-data     {String[]} whitelistBackup
+ * @vue-data     {String}   whitelist
+ */
 export default {
   name: 'Whitelist',
   data() {

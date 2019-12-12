@@ -10,6 +10,13 @@
 </template>
 
 <script>
+/**
+ * @vue-prop     {String}   [type=button] - Set type of button.
+ * @vue-prop     {String}   [theme=light] - Set bootstrap theme.
+ * @vue-prop     {Function} [callback=() => {}] - Set callback when
+ *                                                click event triggered.
+ * @vue-computed {String}   bsTheme - Return bootstrap button class by theme.
+ */
 export default {
   name: 'BaseButton',
   props: {

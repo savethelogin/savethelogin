@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 
 import Vue from 'vue';
 import upperFirst from 'lodash/upperFirst';

@@ -1,14 +1,29 @@
 {
-  "options": {
-    "message": "Les options"
+  "request_blocked_title": {
+    "message": "La demande de connexion a été bloquée"
   },
-  "confirm_request_block": {
-    "message": "Nous avons détecté et bloqué temporairement la transmission de texte en clair.\nDes informations personnelles non cryptées peuvent être exposées lors de la transmission.\nVoulez-vous continuer?"
+  "request_blocked_message": {
+    "message": "Nous avons détecté et bloqué la transmission de texte en clair.\n"
+  },
+  "request_blocked_context_message": {
+    "message": "Cliquez ici pour débloquer la demande"
+  },
+  "request_blocked_warning": {
+    "message": "Des informations personnelles non chiffrées peuvent être exposées pendant la transmission."
   },
   "options_block_desc": {
     "message": "Avertir de la connexion en texte brut"
   },
-  "request_blocked": {
-    "message": "La demande de connexion a été bloquée."
+  "whitelist_heading": {
+    "message": "Liste blanche de connexion au texte en clair"
+  },
+  "close": {
+    "message": "proche"
+  },
+  "reset": {
+    "message": "Réinitialiser"
+  },
+  "save": {
+    "message": "sauver"
   }
 }

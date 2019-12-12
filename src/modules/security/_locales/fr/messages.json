@@ -1,17 +1,17 @@
 {
-  "options_security_desc": {
-    "message": "Détournement de session de base, protection contre les attaques par injection"
-  },
-  "security_page_blocked_description": {
-    "message": "Extension de la demande bloquée en détectant les charges utiles malveillantes.\nVoulez-vous continuer?"
-  },
   "security_page_blocked_title": {
     "message": "Page bloquée"
+  },
+  "security_page_blocked_description": {
+    "message": "Extension bloquée en détectant les charges utiles malveillantes.\nVoulez-vous continuer?"
+  },
+  "back": {
+    "message": "Retour"
   },
   "disable": {
     "message": "Désactiver"
   },
-  "back": {
-    "message": "Retour"
+  "options_security_desc": {
+    "message": "Détournement de session de base, protection contre les attaques par injection"
   }
 }

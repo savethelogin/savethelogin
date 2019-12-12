@@ -1,14 +1,29 @@
 {
-  "options": {
-    "message": "Optionen"
+  "request_blocked_title": {
+    "message": "Login-Anfrage wurde gesperrt"
   },
-  "confirm_request_block": {
-    "message": "Wir haben die Übertragung von Klartext erkannt und vorübergehend blockiert.\nWährend der Übertragung können unverschlüsselte persönliche Informationen angezeigt werden.\nMöchtest du weiter machen?"
+  "request_blocked_message": {
+    "message": "Wir haben die Übertragung von Klartext erkannt und blockiert.\n"
+  },
+  "request_blocked_context_message": {
+    "message": "Klicken Sie hier, um die Anfrage zu entsperren"
+  },
+  "request_blocked_warning": {
+    "message": "Während der Übertragung können unverschlüsselte persönliche Informationen angezeigt werden."
   },
   "options_block_desc": {
     "message": "Benachrichtigen Sie über Klartext-Login"
   },
-  "request_blocked": {
-    "message": "Login-Anfrage wurde gesperrt."
+  "whitelist_heading": {
+    "message": "Klartext Login Whitelist"
+  },
+  "close": {
+    "message": "Schließen"
+  },
+  "reset": {
+    "message": "Zurücksetzen"
+  },
+  "save": {
+    "message": "speichern"
   }
 }
