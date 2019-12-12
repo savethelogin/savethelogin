@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "Страница заблокирована"
+  "options_security_desc": {
+    "message": "Базовый захват сеанса, защита от инъекций"
   },
   "security_page_blocked_description": {
     "message": "Расширение заблокированного запроса путем обнаружения вредоносных полезных нагрузок.\nЖелаете ли вы продолжить?"
   },
-  "back": {
-    "message": "назад"
+  "security_page_blocked_title": {
+    "message": "Страница заблокирована"
   },
   "disable": {
     "message": "Отключить"
   },
-  "options_security_desc": {
-    "message": "Базовый захват сеанса, защита от инъекций"
+  "back": {
+    "message": "назад"
   }
 }

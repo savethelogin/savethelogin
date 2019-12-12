@@ -1,4 +1,4 @@
-/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+/* Copyright (C) 2019 Xvezda <https://xvezda.com/> */
 export const pattern = /__MSG_([A-Za-z0-9_-]+)__/g;
 
 export function replacer(match, p1, offset, string) {

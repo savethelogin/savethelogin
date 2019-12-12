@@ -1,38 +1,35 @@
 {
-  "inspect": {
-    "message": "Осмотреть"
-  },
-  "scheme": {
-    "message": "Схема"
-  },
   "hsts_policy": {
     "message": "Политика HSTS"
-  },
-  "clickjacking_prevention": {
-    "message": "Предотвращение кликов"
   },
   "xss_protection_policy": {
     "message": "Политика защиты XSS"
   },
-  "server_version_disclosure": {
-    "message": "Раскрытие версии сервера"
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">рекомендую</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
   },
   "servlet_spec_disclosure": {
     "message": "Раскрытие информации о конфигурации сервера"
   },
+  "no_information": {
+    "message": "Нет информации!"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">рекомендую</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "xss_protection_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">рекомендую</span> <code>X-XSS-Protection: 1; mode=block</code> включите в заголовок HTTP-ответа сервера."
+  },
+  "server_version_disclosure": {
+    "message": "Раскрытие версии сервера"
+  },
+  "scheme": {
+    "message": "Схема"
+  },
   "session_cookie_xss": {
     "message": "Уязвимость файла cookie сеанса"
   },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">рекомендовать</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">рекомендовать</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
-  },
-  "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">рекомендовать</span> <code>X-XSS-Protection: 1; mode=block</code> включите в заголовок HTTP-ответа сервера."
-  },
-  "no_information": {
-    "message": "Нет информации!"
+  "clickjacking_prevention": {
+    "message": "Предотвращение кликджекинга"
   }
 }

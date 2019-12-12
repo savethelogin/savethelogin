@@ -1,25 +1,71 @@
-/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-import SimpleTemplate from '@/plugins/simple-template/index';
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+(function(window, document) {
+  function stripTags(string) {
+    return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
-function blocked() {
-  let currentUrl = new URL(location.href);
-  if (currentUrl.pathname !== '/page-blocked.html') return;
+  function nl2br(string) {
+    return string.replace(/\r?\n/g, '<br>');
+  }
 
-  let params = currentUrl.searchParams;
-  let details;
+  function map(arr, callback) {
+    var i;
+    var ret = [];
+    for (i = 0; i < arr.length; ++i) {
+      ret.push(callback(arr[i]));
+    }
+    return ret;
+  }
+
+  function r1(match, p1, offset, string) {
+    return nl2br(chrome.i18n.getMessage(p1.trim()));
+  }
+
+  function r2(match, p1, offset, string) {
+    return stripTags(this.data[p1.trim()]);
+  }
+
+  // Constructor
+  function SimpleTemplate(obj) {
+    if (!obj || !obj.target) return;
+
+    this.data = obj.data;
+
+    var i;
+    var p1 = /\{\{\s([^\{\}]+?)\s\}\}/g;
+    var p2 = /\$\{\s([^\}]+?)\s\}/g;
+    var target = document.querySelector(obj.target);
+    var innerHTML = target.innerHTML;
+    if (!innerHTML.match(p1) && !innerHTML.match(p2)) return;
+
+    innerHTML = innerHTML.replace(p1, r1);
+    target.innerHTML = innerHTML.replace(p2, r2.bind(this));
+  }
+
+  window.SimpleTemplate = SimpleTemplate;
+})(window, document);
+
+(function(window, document) {
+  var details;
+  var detailsArg;
   try {
-    details = JSON.parse(atob(params.get('details')));
+    detailsArg = location.href.match(
+      /^[a-z-]+:\/\/[a-z]+\/page\-blocked\.html\?.*&?details=([a-z0-9\/\+=]+)/i
+    )[1];
+    details = JSON.parse(atob(detailsArg));
   } catch (e) {}
 
-  let highlight;
+  var highlight;
   try {
-    let highlightMatch = params.get('highlight');
+    var highlightMatch = location.href.match(
+      /^[a-z-]+:\/\/[a-z]+\/page\-blocked\.html\?.*&?highlight=([a-z0-9\/\+=]+)/i
+    );
     if (highlightMatch) {
-      highlight = atob(highlightMatch);
+      highlight = atob(highlightMatch[1]);
     }
   } catch (e) {}
 
-  let highlighter = function(string) {
+  var highlighter = function(string) {
     return string.replace(
       highlight,
       '<span class="highlight" title="' +
@@ -29,12 +75,12 @@ function blocked() {
         '</span>'
     );
   };
-  let url = details ? details.url : '';
+  var url = details ? details.url : '';
 
   // Only accept http scheme
   url = url.match(/^https?:\/\//) ? url : 'about:blank';
 
-  let st = new SimpleTemplate({
+  var st = new SimpleTemplate({
     target: '#root',
     data: {
       detail: url,
@@ -46,7 +92,7 @@ function blocked() {
   };
 
   document.getElementById('disable').onclick = function() {
-    let port = chrome.runtime.connect({ name: 'stl' });
+    var port = chrome.runtime.connect({ name: 'stl' });
     port.postMessage({
       type: 'update_options',
       name: 'security_enabled',
@@ -59,10 +105,8 @@ function blocked() {
 
   window.onload = function() {
     // Highlight payload
-    let code = document.getElementsByTagName('code')[0];
-    let innerHTML = code.innerHTML;
+    var code = document.getElementsByTagName('code')[0];
+    var innerHTML = code.innerHTML;
     code.innerHTML = highlighter(innerHTML);
   };
-}
-
-blocked();
+})(window, document);

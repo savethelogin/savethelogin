@@ -1,15 +1,13 @@
-/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
-
-/**
- * @file Entry of background scripts
- */
-import config from '@/common/Config';
-import Context from '@/common/Context';
-import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from '@/common/Utils';
+/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+import config from './common/Config';
+import Context from './common/Context';
+import { getStorage, setStorage } from './common/Utils';
 
 const { PROJECT_PREFIX } = config;
 
-// Import modules
+/**
+ * Import modules
+ */
 const cache = {};
 const requireModules = require.context('./modules/', true, /[A-Za-z]*Entry\.js$/);
 
@@ -22,14 +20,13 @@ function importAll(r) {
 importAll(requireModules);
 console.log('cache', cache);
 
-const loadedModules = requireModules.keys().map(key => {
-  const start = key.lastIndexOf('/');
-  const end = key.lastIndexOf('.');
-
-  return fromPascalToSnakeCase(key.substring(start + 1, end).slice(0, 'Entry'.length * -1));
-});
+const loadedModules = requireModules.keys().map(key =>
+  key
+    .split('/')
+    .slice(-2)[0]
+    .toLowerCase()
+);
 console.log(loadedModules);
-Context.set('loaded_modules', loadedModules);
 
 // Check extension disabled
 getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items => {
@@ -45,10 +42,6 @@ getStorage({ area: 'sync', keys: [`${PROJECT_PREFIX}_disabled`] }).then(items =>
   setIcon(Context.get('enabled'));
 });
 
-/**
- * Set shortcut icon active/disabled by state.
- * @param {Boolean} isEnabled - State of extension.
- */
 function setIcon(isEnabled) {
   if (isEnabled === true) {
     chrome.browserAction.setIcon({
@@ -63,7 +56,6 @@ function setIcon(isEnabled) {
 
 chrome.runtime.onConnect.addListener(onConnect);
 
-/** Common runtime connection handler */
 export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
   port.onMessage.addListener(message => {
@@ -92,13 +84,6 @@ export function onConnect(port) {
           type: 'update_context',
           data: Context.serialize(),
         });
-        break;
-      }
-      // browser.downloads.download will not work on content script
-      case 'download_firefox': {
-        let blob = dataURItoBlob(message.data.url);
-        message.data.url = URL.createObjectURL(blob);
-        chrome.downloads.download(message.data);
         break;
       }
       default:
