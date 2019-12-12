@@ -2,13 +2,13 @@
   "report": {
     "message": "отчет"
   },
+  "crop": {
+    "message": "урожай"
+  },
   "capture": {
     "message": "Захватить"
   },
   "download": {
     "message": "Скачать"
-  },
-  "crop": {
-    "message": "урожай"
   }
 }

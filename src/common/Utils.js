@@ -1,4 +1,7 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
+/**
+ * @file Group of common utility functions
+ */
 import config from '@/common/Config';
 const { PROJECT_PREFIX } = config;
 
@@ -7,6 +10,12 @@ const suffixes = dat.split('\n').filter(line => {
   return !(line.substr(0, 2) === '//' || !line.trim());
 });
 
+/**
+ * Return current browser name
+ *
+ * @return {String}
+ * @throws {Error} Unknown browser
+ */
 export function getBrowser() {
   if (typeof whale === 'object') {
     return 'whale';
@@ -19,6 +28,11 @@ export function getBrowser() {
   }
 }
 
+/**
+ * Check mobile device
+ *
+ * @return {Boolean}
+ */
 export function isMobile() {
   if (typeof navigator === 'object') {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
@@ -29,6 +43,9 @@ export function isMobile() {
   return false;
 }
 
+/**
+ * Common promise handler
+ */
 function promiseHandler(
   {
     resolve,
@@ -45,6 +62,11 @@ function promiseHandler(
   }
 }
 
+/**
+ * Create notification which shows on system tray
+ *
+ * @return {Promise}
+ */
 export function createNotification({
   notificationId = undefined,
   type = 'basic',
@@ -68,6 +90,12 @@ export function createNotification({
   });
 }
 
+/**
+ * Remove notification by notification id
+ *
+ * @param  {String}  notificationId - ID of notification
+ * @return {Promise}
+ */
 export function clearNotification(notificationId = undefined) {
   return new Promise((resolve, reject) => {
     chrome.notifications.clear(notificationId, wasCleared => {
@@ -76,6 +104,13 @@ export function clearNotification(notificationId = undefined) {
   });
 }
 
+/**
+ * Get items from storage API
+ *
+ * @param  {String}            [area=local]
+ * @param  {(String|String[])} keys
+ * @return {Promise}
+ */
 export function getStorage({ area = 'local', keys = null }) {
   return new Promise((resolve, reject) => {
     chrome.storage[area].get(keys, items => {
@@ -84,6 +119,13 @@ export function getStorage({ area = 'local', keys = null }) {
   });
 }
 
+/**
+ * Set items to storage
+ *
+ * @param  {String} [area=local]
+ * @param  {Object} items
+ * @return {Promise}
+ */
 export function setStorage({ area = 'local', items }) {
   return new Promise((resolve, reject) => {
     chrome.storage[area].set(items, () => {
@@ -92,6 +134,13 @@ export function setStorage({ area = 'local', items }) {
   });
 }
 
+/**
+ * Remove items from storage
+ *
+ * @param  {String}            [area=local]
+ * @param  {(String|String[])} keys
+ * @return {Promise}
+ */
 export function removeStorage({ area = 'local', keys = undefined }) {
   return new Promise((resolve, reject) => {
     let callback = () => {
@@ -105,6 +154,13 @@ export function removeStorage({ area = 'local', keys = undefined }) {
   });
 }
 
+/**
+ * Get tabs by options
+ *
+ * @param  {String}            [area=local]
+ * @param  {(String|String[])} keys
+ * @return {Promise}
+ */
 export function queryTab(queryInfo) {
   return new Promise((resolve, reject) => {
     chrome.tabs.query(queryInfo, result => {
@@ -113,6 +169,11 @@ export function queryTab(queryInfo) {
   });
 }
 
+/**
+ * Get current tab object
+ *
+ * @return {Promise}
+ */
 export function currentTab() {
   return new Promise((resolve, reject) => {
     chrome.tabs.getCurrent(tab => {
@@ -121,6 +182,12 @@ export function currentTab() {
   });
 }
 
+/**
+ * Create new tab by using properties
+ *
+ * @param  {Object}  createProperties
+ * @return {Promise}
+ */
 export function createTab(createProperties) {
   return new Promise((resolve, reject) => {
     chrome.tabs.create(createProperties, tab => {
@@ -129,6 +196,13 @@ export function createTab(createProperties) {
   });
 }
 
+/**
+ * Update tab by id using update properties
+ *
+ * @param  {Number} [tabId=undefined]
+ * @param  {Object} updateProperties
+ * @return {Promise}
+ */
 export function updateTab({ tabId = undefined, updateProperties }) {
   return new Promise((resolve, reject) => {
     chrome.tabs.update(tabId, updateProperties, tab => {
@@ -137,6 +211,12 @@ export function updateTab({ tabId = undefined, updateProperties }) {
   });
 }
 
+/**
+ * Remove tabs by tab ids
+ *
+ * @param  {(Number|Number[])} tabIds
+ * @return {Promise}
+ */
 export function removeTab(tabIds) {
   return new Promise((resolve, reject) => {
     chrome.tabs.remove(tabIds, () => {
@@ -145,10 +225,16 @@ export function removeTab(tabIds) {
   });
 }
 
+/**
+ * Create runtime connection by using project prefix
+ */
 export function openDefaultPort() {
   return chrome.runtime.connect({ name: `${PROJECT_PREFIX}` });
 }
 
+/**
+ * Execute script on tab
+ */
 export function executeScript({ tabId = undefined, details }) {
   return new Promise((resolve, reject) => {
     chrome.tabs.executeScript(tabId, details, results => {
@@ -157,6 +243,9 @@ export function executeScript({ tabId = undefined, details }) {
   }).catch(logError);
 }
 
+/**
+ * Handling error
+ */
 export function logError(e) {
   if (chrome.runtime.lastError) {
     console.log(e, chrome.runtime.lastError);
@@ -165,13 +254,20 @@ export function logError(e) {
   }
 }
 
+/**
+ * Return source code of function
+ *
+ * @param  {Function} func
+ * @return {String}
+ */
 export function funcToStr(func) {
   if (typeof func !== 'function') throw new Error('func is not a function');
   return func.toString().replace(/^function\s\w*\(.*?\)\s\{(.*)\}$/s, '$1');
 }
 
-// https://stackoverflow.com/a/12300351
 export function dataURItoBlob(dataURI) {
+  // https://stackoverflow.com/a/12300351
+
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
   let byteString = atob(dataURI.split(',')[1]);
@@ -211,10 +307,19 @@ export function extractRootDomain(url) {
   return root_domain;
 }
 
+/**
+ * Filter out duplicate items in array
+ *
+ * @param  {Array} array
+ * @return {Array}
+ */
 export function unique(array) {
   return array.filter((value, index) => array.indexOf(value) === index);
 }
 
+/**
+ * Escape regex predefined characters
+ */
 function escapeRegexp(string) {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }

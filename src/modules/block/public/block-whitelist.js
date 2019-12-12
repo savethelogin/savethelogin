@@ -1,3 +1,4 @@
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import Vue from 'vue';
 import Whitelist from '../components/Whitelist';
 

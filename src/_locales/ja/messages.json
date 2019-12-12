@@ -1,12 +1,18 @@
 {
+  "agree": {
+    "message": "同意する"
+  },
   "deny": {
     "message": "反対"
   },
-  "basics": {
-    "message": "基礎"
-  },
   "safe": {
     "message": "安全"
+  },
+  "moderate": {
+    "message": "適度な"
+  },
+  "vulnerable": {
+    "message": "傷つきやすい"
   },
   "malicious": {
     "message": "悪意のある"
@@ -14,16 +20,13 @@
   "refresh": {
     "message": "リフレッシュ"
   },
+  "options": {
+    "message": "オプション"
+  },
+  "basics": {
+    "message": "基礎"
+  },
   "experimental": {
     "message": "実験的"
-  },
-  "moderate": {
-    "message": "適度な"
-  },
-  "agree": {
-    "message": "同意する"
-  },
-  "vulnerable": {
-    "message": "傷つきやすい"
   }
 }

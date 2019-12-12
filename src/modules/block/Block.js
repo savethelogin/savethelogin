@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 
 /**
  * HTTP Request blocker module
@@ -16,22 +16,25 @@ import {
 } from '@/common/Utils';
 import Context from '@/common/Context';
 
-// Shorten value to improve performance
+/** Shorten value to improve performance */
 const SHORTEN_LENGTH = 0x10;
 
-// Store private datas
+/** Store private datas */
 let privateData = {};
-// Re-use buffer
-// Stack pop() is faster than shift()
+/**
+ * @brief Re-use buffer
+ *
+ * Stack pop() is faster than shift()
+ */
 let recycleStack = [];
-// Unique element id
+/** Unique element id */
 let elementId = 0;
-// Request may be cancelled
+/** Request may be cancelled */
 let sensitives = [];
 let cancelled = {};
-// Whitelist domains
+/** Whitelist domains */
 let whitelist = [];
-// Previous url
+/** Previous url */
 let previousUrl = {};
 
 /**
@@ -56,7 +59,7 @@ function patch({ tabId, id, code }) {
   });
 }
 
-// Unset and zero-fill to erase sensitive datas
+/** Unset and zero-fill to erase sensitive datas */
 function del(tabId) {
   if (privateData[tabId] === undefined) return;
   Object.keys(privateData[tabId]).forEach(key => {
@@ -70,7 +73,7 @@ function del(tabId) {
   privateData[tabId] = undefined;
 }
 
-// Bind event handler to webpage
+/** Bind event handler to webpage */
 function bind(tabId) {
   if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   executeScript({
@@ -151,6 +154,7 @@ function bind(tabId) {
   });
 }
 
+/** Refresh tab to re-apply options */
 function enforceUpdate() {
   onUpdated();
   chrome.tabs.reload(undefined, { bypassCache: true });
