@@ -7,6 +7,11 @@
 </template>
 
 <script>
+/**
+ * @vue-prop  {Boolean} [checked=true] - Set default value of toggle button.
+ * @vue-prop  {String}  [type=round]   - Set shape of toggle button.
+ * @vue-event {Event}   toggle         - Emit checkbox's event.
+ */
 export default {
   name: 'ToggleSwitch',
   props: {
@@ -20,6 +25,7 @@ export default {
     },
   },
   methods: {
+    /** Emit event when checkbox state changed */
     onToggle: function(event) {
       this.$emit('toggle', event);
     },

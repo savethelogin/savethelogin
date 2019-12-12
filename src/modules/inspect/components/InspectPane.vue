@@ -4,10 +4,11 @@
 </template>
 
 <script>
-import config from '../common/Config';
-import { queryTab, getStorage } from '../common/Utils';
+import config from '@/common/Config';
+import { queryTab, getStorage } from '@/common/Utils';
 import CheckList from './CheckList';
 
+export const mobileCompatible = true;
 export default {
   components: {
     CheckList,

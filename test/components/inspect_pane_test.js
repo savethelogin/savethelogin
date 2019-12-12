@@ -10,11 +10,11 @@ import { CookiePlugin, I18nPlugin } from 'sinon-chrome/plugins';
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 
-import '../../src/components/Globals';
-import config from '../../src/common/Config';
-import Inspect from '../../src/components/Inspect';
+import '@/components/Globals';
+import config from '@/common/Config';
+import InspectPane from '@/modules/inspect/components/InspectPane';
 
-describe('Inspect', function() {
+describe('InspectPane', function() {
   before(function() {
     chrome.registerPlugin(new CookiePlugin());
     chrome.registerPlugin(new I18nPlugin());
@@ -50,7 +50,7 @@ describe('Inspect', function() {
     chrome.storage.local.get.yields({
       [`${config.PROJECT_PREFIX}_tab_${tabId}`]: mockDetails,
     });
-    global.wrapper = mount(Inspect);
+    global.wrapper = mount(InspectPane);
     await flushPromises();
   });
 

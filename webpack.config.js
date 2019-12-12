@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -7,17 +8,21 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
-const { version } = require('./package.json');
+const { version, author } = require('./package.json');
 
 const config = {
   mode: process.env.NODE_ENV,
-  context: __dirname + '/src',
+  context: path.join(__dirname, '/src'),
   entry: {
+    // Extension popup
     popup: './popup.js',
+    // Extension background
     background: './background.js',
+    // Extension access page
+    bundle: './bundle.js',
   },
   output: {
-    path: __dirname + '/dist',
+    path: path.join(__dirname, '/dist'),
     filename: '[name].js',
   },
   optimization: {
@@ -29,6 +34,9 @@ const config = {
   },
   resolve: {
     extensions: ['.js', '.vue'],
+    alias: {
+      '@': path.join(__dirname, '/src'),
+    },
   },
   module: {
     rules: [
@@ -38,7 +46,7 @@ const config = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules|_test\.js$/,
+        exclude: /node_modules|plugins|_test\.js$/,
         use: Array.prototype.slice.apply(
           [
             {
@@ -84,6 +92,10 @@ const config = {
           emitFile: false,
         },
       },
+      {
+        test: /\.(dat|txt)$/,
+        use: 'raw-loader',
+      },
     ],
   },
   plugins: [
@@ -96,7 +108,6 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: '_locales', to: '_locales' },
       { from: 'popup.html', to: 'popup.html', transform: transformHtml },
       {
         from: 'manifest.json',
@@ -155,6 +166,7 @@ if (config.mode === 'production') {
   if (!config.optimization) config.optimization = {};
   config.optimization.minimizer = (config.optimization.minimizer || []).concat([
     new TerserPlugin({
+      extractComments: false,
       terserOptions: {
         compress: {
           drop_console: true,
@@ -188,6 +200,14 @@ function transformHtml(content) {
 function transformJson(content) {
   const jsonContent = JSON.parse(content);
   jsonContent.version = version;
+
+  if (process.env.GECKO === 'true') {
+    jsonContent.applications = {
+      gecko: {
+        id: author.email,
+      },
+    };
+  }
 
   if (process.env.NODE_ENV === 'development') {
     jsonContent.content_security_policy =

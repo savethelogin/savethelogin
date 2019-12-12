@@ -20,9 +20,6 @@
   "refresh": {
     "message": "refresh"
   },
-  "inspect": {
-    "message": "Inspect"
-  },
   "options": {
     "message": "Options"
   },
