@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "ブロックされたページ"
+  "options_security_desc": {
+    "message": "基本的なセッションハイジャック、インジェクション攻撃からの保護"
   },
   "security_page_blocked_description": {
-    "message": "悪意のあるペイロードを検出して、拡張機能が要求をブロックしました。\n続行しますか？"
+    "message": "悪意のあるペイロードを検出することにより、拡張機能が要求をブロックしました。\n続行しますか？"
   },
-  "back": {
-    "message": "バック"
+  "security_page_blocked_title": {
+    "message": "ブロックされたページ"
   },
   "disable": {
     "message": "無効にする"
   },
-  "options_security_desc": {
-    "message": "基本的なセッションハイジャック、インジェクション攻撃からの保護"
+  "back": {
+    "message": "バック"
   }
 }

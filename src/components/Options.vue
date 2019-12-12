@@ -18,13 +18,12 @@
 </template>
 
 <script>
-import config from '@/common/Config';
-import { openDefaultPort } from '@/common/Utils';
-import ToggleSwitch from '@/components/ToggleSwitch';
+import config from '../common/Config';
+import { openDefaultPort } from '../common/Utils';
+import ToggleSwitch from './ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
 
-export const mobileCompatible = true;
 export default {
   name: 'Options',
   components: {
@@ -47,7 +46,6 @@ export default {
             obj[optionKeys[i]] = context[optionKeys[i]];
           }
           this.options = obj;
-          console.log(context);
         } catch (e) {
           console.log(e);
         }
@@ -77,8 +75,4 @@ export default {
 
 <style scoped>
 /**/
-#image {
-  max-width: 100%;
-  height: auto;
-}
 </style>

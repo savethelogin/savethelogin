@@ -2,28 +2,20 @@
   "name": "savethelogin",
   "version": "1.0.5",
   "description": "Save the login",
-  "author": {
-    "name": "Team STL",
-    "email": "savethelogin@gmail.com"
-  },
+  "author": "team stl",
   "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "prettier": "prettier \"src/**/*.{js,vue}\"",
     "prettier:write": "yarn run prettier --write",
-    "prettier:dist": "prettier --write dist/**/*.js",
-    "docs": "jsdoc -c jsdoc.conf.js src/",
-    "build": "cross-env NODE_ENV=production webpack --hide-modules",
-    "build:gecko": "cross-env GECKO=true yarn run build",
+    "build": "cross-env NODE_ENV=production webpack --hide-modules && prettier --write dist/**/*.js",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
-    "build-zip": "node scripts/build-zip.js",
-    "build-xpi": "bash scripts/build-xpi.sh",
-    "build:dev:gecko": "cross-env GECKO=true yarn run build:dev",
+    "build-zip": "yarn run build && node scripts/build-zip.js",
     "watch": "yarn run build --watch",
     "watch:dev": "cross-env HMR=true yarn run build:dev --watch",
     "test": "cross-env NODE_ENV=development karma start",
     "test:watch": "cross-env NODE_ENV=development karma start --auto-watch --no-single-run",
-    "clean": "rm -rf dist/"
+    "clean": "rm -rf dist* coverage"
   },
   "husky": {
     "hooks": {
@@ -33,9 +25,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "bootstrap": "4.3.1",
-    "cropperjs": "^1.5.6",
     "vue": "^2.6.10",
-    "vue-cropperjs": "^4.0.1",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "webextension-polyfill": "^0.3.1"
@@ -73,8 +63,6 @@
     "flush-promises": "^1.0.2",
     "husky": "^2.7.0",
     "istanbul-instrumenter-loader": "^3.0.1",
-    "jsdoc": "^3.6.3",
-    "jsdoc-vuejs": "^3.0.4",
     "karma": "^4.3.0",
     "karma-browserify": "^6.1.0",
     "karma-chrome-launcher": "^3.1.0",
@@ -90,7 +78,6 @@
     "prettier": "^1.17.1",
     "pretty-quick": "^1.8.0",
     "puppeteer": "^1.20.0",
-    "raw-loader": "^3.1.0",
     "sass-loader": "^7.1.0",
     "sinon-chrome": "^3.0.1",
     "terser-webpack-plugin": "^2.2.1",

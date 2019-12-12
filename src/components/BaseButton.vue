@@ -3,20 +3,18 @@
   <button
     v-on:click.prevent="callback"
     v-bind:type="type"
-    v-bind:class="['btn'].concat(bsTheme).join(' ')"
+    v-bind:class="
+      ['btn']
+        .concat(classes)
+        .concat(bsTheme)
+        .join(' ')
+    "
   >
     <slot></slot>
   </button>
 </template>
 
 <script>
-/**
- * @vue-prop     {String}   [type=button] - Set type of button.
- * @vue-prop     {String}   [theme=light] - Set bootstrap theme.
- * @vue-prop     {Function} [callback=() => {}] - Set callback when
- *                                                click event triggered.
- * @vue-computed {String}   bsTheme - Return bootstrap button class by theme.
- */
 export default {
   name: 'BaseButton',
   props: {
@@ -28,9 +26,12 @@ export default {
       type: String,
       default: 'light',
     },
+    classes: {
+      type: Array,
+      default: [],
+    },
     callback: {
       type: Function,
-      default: () => {},
     },
   },
   computed: {

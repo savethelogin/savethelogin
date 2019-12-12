@@ -107,7 +107,7 @@ describe('Popup', function() {
     });
 
     it('has currentView', function() {
-      expect(wrapper.vm.currentView).to.be.a('string');
+      expect(wrapper.vm.currentView).to.be.equal('inspect');
     });
 
     after(function() {

@@ -1,29 +1,11 @@
 {
-  "request_blocked_title": {
-    "message": "ログイン要求がブロックされました"
-  },
-  "request_blocked_message": {
-    "message": "平文の送信を検出してブロックしました。\n"
-  },
-  "request_blocked_context_message": {
-    "message": "ここをクリックしてリクエストのブロックを解除してください"
-  },
-  "request_blocked_warning": {
-    "message": "暗号化されていない個人情報が送信中に公開される場合があります。"
+  "confirm_request_block": {
+    "message": "平文の送信を検出し、一時的にブロックしました。\n暗号化されていない個人情報が送信中に公開される場合があります。\n続けたいですか？"
   },
   "options_block_desc": {
     "message": "プレーンテキストログインについて通知する"
   },
-  "whitelist_heading": {
-    "message": "プレーンテキストのログインホワイトリスト"
-  },
-  "close": {
-    "message": "閉じる"
-  },
-  "reset": {
-    "message": "リセットする"
-  },
-  "save": {
-    "message": "セーブ"
+  "request_blocked": {
+    "message": "ログイン要求がブロックされました。"
   }
 }

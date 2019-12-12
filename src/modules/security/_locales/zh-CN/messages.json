@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "页面被阻止"
+  "options_security_desc": {
+    "message": "基本会话劫持，注入攻击防护"
   },
   "security_page_blocked_description": {
     "message": "扩展程序通过检测恶意负载阻止了请求。\n你想继续吗？"
   },
-  "back": {
-    "message": "背部"
+  "security_page_blocked_title": {
+    "message": "页面被阻止"
   },
   "disable": {
     "message": "禁用"
   },
-  "options_security_desc": {
-    "message": "基本会话劫持，注入攻击防护"
+  "back": {
+    "message": "背部"
   }
 }

@@ -1,6 +1,6 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
-  <div id="popup" class="container w-100">
+  <div class="container w-100">
     <div class="row">
       <a href="#" v-on:click.prevent="openWebsite">
         <img id="logo" src="/icons/logo.png" width="300" />
@@ -19,21 +19,22 @@
         <div class="row">
           <div class="btn-group w-100">
             <BaseButton
-              v-for="view in views"
-              v-bind:key="view"
-              v-bind:class="currentView === view ? 'active' : ''"
-              v-bind:callback="changeView(view)"
-              v-chrome-i18n
+              v-bind:classes="currentView === 'inspect' ? ['active'] : []"
+              v-bind:callback="changeView('inspect')"
             >
-              __MSG_{{ view.slice(0, '-pane'.length * -1) }}__
+              <vue-chrome-i18n>__MSG_inspect__</vue-chrome-i18n>
+            </BaseButton>
+            <BaseButton
+              v-bind:classes="currentView === 'options' ? ['active'] : []"
+              v-bind:callback="changeView('options')"
+            >
+              <vue-chrome-i18n>__MSG_options__</vue-chrome-i18n>
             </BaseButton>
           </div>
         </div>
         <div class="row">
           <transition name="component-fade" mode="out-in">
-            <keep-alive>
-              <component v-bind:is="currentView" />
-            </keep-alive>
+            <component v-bind:is="currentView" />
           </transition>
         </div>
       </div>
@@ -42,63 +43,19 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import config from '@/common/Config';
-import {
-  isMobile,
-  createTab,
-  openDefaultPort,
-  getStorage,
-  setStorage,
-  fromPascalToKebabCase,
-} from '@/common/Utils';
+import config from '../common/Config';
+import { createTab, openDefaultPort, getStorage, setStorage } from '../common/Utils';
 
-// Load popup panes
-const requirePanes = require.context(
-  '../modules/',
-  true,
-  /\/components\/[A-Z][A-Za-z0-9._-]*Pane\.(js|vue)$/
-);
-
-const loadedPanes = requirePanes
-  .keys()
-  .filter(key => {
-    if (!isMobile()) return true;
-
-    const componentConfig = requirePanes(key);
-    return componentConfig.mobileCompatible ? true : false;
-  })
-  .map(key => {
-    const componentConfig = requirePanes(key);
-    const componentName = fromPascalToKebabCase(
-      key
-        .split('/')
-        .pop()
-        .replace(/\.\w+$/, '')
-    );
-    Vue.component(componentName, componentConfig.default || componentConfig);
-
-    return componentName;
-  });
-
+import Inspect from './Inspect';
+import Options from './Options';
 import ToggleSwitch from './ToggleSwitch';
 
-/**
- * @vue-data {Boolean}  [isEnabled=true] - Current state of extension.
- * @vue-data {String}   currentView      - Current popup view component.
- * @vue-data {String[]} views            - List of loaded view components.
- */
 export default {
   name: 'Popup',
   components: {
+    inspect: Inspect,
+    options: Options,
     ToggleSwitch,
-  },
-  data() {
-    return {
-      isEnabled: false,
-      currentView: loadedPanes[0],
-      views: loadedPanes,
-    };
   },
   methods: {
     changeView: function(newView) {
@@ -123,10 +80,15 @@ export default {
       });
       this.isEnabled = checked;
     },
-    /** Open website on new tab */
     openWebsite: function() {
       createTab({ url: `https://${config.PROJECT_DOMAIN}/` });
     },
+  },
+  data() {
+    return {
+      isEnabled: false,
+      currentView: 'inspect',
+    };
   },
   async created() {
     const items = await getStorage({ area: 'sync', keys: [`${config.PROJECT_PREFIX}_disabled`] });
@@ -138,38 +100,6 @@ export default {
 </script>
 
 <style>
-/**
- * Global
- */
-body {
-  width: 550px;
-  min-height: 100px;
-  max-height: 700px;
-  position: relative;
-  vertical-align: middle;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-body::-webkit-scrollbar {
-  background-color: #fff;
-  width: 16px;
-}
-
-body::-webkit-scrollbar-track {
-  background-color: #fff;
-}
-
-body::-webkit-scrollbar-thumb {
-  background-color: #babac0;
-  border-radius: 16px;
-  border: 4px solid #fff;
-}
-
-body::-webkit-scrollbar-button {
-  display: none;
-}
-
 /**
  * Layout
  **/
@@ -226,14 +156,5 @@ code {
 .component-fade-enter, .component-fade-leave-to
 /* .component-fade-leave-active below version 2.1.8 */ {
   opacity: 0;
-}
-
-/**
- * If mobile device
- */
-@media (max-width: 550px) {
-  #logo {
-    margin-left: calc(50vw - (300px / 2));
-  }
 }
 </style>

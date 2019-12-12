@@ -1,32 +1,35 @@
 {
-  "agree": {
-    "message": "дать согласие"
-  },
   "deny": {
     "message": "не соглашаться"
   },
-  "safe": {
-    "message": "сейф"
-  },
-  "moderate": {
-    "message": "умеренной"
-  },
-  "vulnerable": {
-    "message": "уязвимый"
-  },
   "malicious": {
     "message": "злонамеренный"
+  },
+  "inspect": {
+    "message": "Осмотреть"
+  },
+  "safe": {
+    "message": "безопасный"
   },
   "refresh": {
     "message": "обновление"
   },
   "options": {
-    "message": "Опции"
+    "message": "Параметры"
   },
   "basics": {
     "message": "основы"
   },
   "experimental": {
     "message": "экспериментальный"
+  },
+  "moderate": {
+    "message": "умеренной"
+  },
+  "agree": {
+    "message": "согласны"
+  },
+  "vulnerable": {
+    "message": "уязвимый"
   }
 }

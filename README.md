@@ -21,10 +21,6 @@
     - Download installer from http://www.nodejs.org/
     - <kbd>window</kbd> + <kbd>R</kbd> > cmd > npm, `npm install -g yarn`
 
-## Documentation
-
-`make docs`
-
 ## Install without build
 
 Download plugin from releases.

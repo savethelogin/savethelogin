@@ -1,38 +1,35 @@
 {
-  "inspect": {
-    "message": "검사"
-  },
-  "scheme": {
-    "message": "스키마"
-  },
   "hsts_policy": {
     "message": "HSTS 정책"
-  },
-  "clickjacking_prevention": {
-    "message": "클릭 재킹 방지"
   },
   "xss_protection_policy": {
     "message": "XSS 보호 정책"
   },
-  "server_version_disclosure": {
-    "message": "서버 버전 노출"
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">추천</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
   },
   "servlet_spec_disclosure": {
     "message": "서버 구성 정보 노출"
   },
+  "no_information": {
+    "message": "정보 없음!"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">추천</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "xss_protection_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">추천</span> <code>X-XSS-Protection: 1; mode=block</code> 서버의 HTTP 응답 헤더에 포함하십시오."
+  },
+  "server_version_disclosure": {
+    "message": "서버 버전 노출"
+  },
+  "scheme": {
+    "message": "스키마"
+  },
   "session_cookie_xss": {
     "message": "세션 쿠키 취약점"
   },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">권장</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">권장</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
-  },
-  "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">권장</span> <code>X-XSS-Protection: 1; mode=block</code> 서버의 HTTP 응답 헤더에 포함하십시오."
-  },
-  "no_information": {
-    "message": "정보 없음!"
+  "clickjacking_prevention": {
+    "message": "클릭 재킹 방지"
   }
 }
