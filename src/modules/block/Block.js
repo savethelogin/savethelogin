@@ -298,7 +298,7 @@ export function onUpdated(tabId, changeInfo, tab) {
             }
           };
         }
-        open.apply(this, [method, action]);
+        open.apply(this, arguments);
       };
     })();
   `,
