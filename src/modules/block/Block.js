@@ -36,6 +36,8 @@ let cancelled = {};
 let whitelist = [];
 /** Previous url */
 let previousUrl = {};
+/** Counter */
+let counter = {};
 
 /**
  * Prepend inline script to header
@@ -407,6 +409,11 @@ export function onBeforeRequest(details) {
 export function onBeforeSendHeaders(details) {
   if (!Context.get('enabled') || !Context.get('block_enabled')) return;
 
+  if (counter[details.tabId]) {
+    counter[details.tabId] = undefined;
+    return;
+  }
+
   const url = new URL(details.url);
   if (whitelist.includes(url.hostname)) return;
 
@@ -457,6 +464,10 @@ export function onErrorOccurred(details) {
             },
           });
         }
+        counter[details.tabId] = true;
+        chrome.notifications.getAll(notifications => {
+          console.log('notifications: ', notifications);
+        });
         break;
       default:
         break;
