@@ -1,0 +1,11 @@
+{
+  "phishing": {
+    "message": "Фишинг"
+  },
+  "phishing_notification_title": {
+    "message": "Обнаружен фишинг!"
+  },
+  "phishing_notification_content": {
+    "message": "Сайт, который вы смотрите, может быть фишинговым"
+  }
+}

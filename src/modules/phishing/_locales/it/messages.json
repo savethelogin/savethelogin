@@ -1,0 +1,11 @@
+{
+  "phishing": {
+    "message": "Phishing"
+  },
+  "phishing_notification_title": {
+    "message": "Phishing rilevato!"
+  },
+  "phishing_notification_content": {
+    "message": "Il sito Web che stai guardando potrebbe essere phishing"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "security_page_blocked_title": {
+    "message": "Trang bị chặn"
+  },
+  "security_page_blocked_description": {
+    "message": "Gia hạn yêu cầu bị chặn bằng cách phát hiện tải trọng độc hại.\nBạn có muốn tiếp tục không?"
+  },
+  "back": {
+    "message": "Trở lại"
+  },
+  "disable": {
+    "message": "Vô hiệu hóa"
+  },
+  "options_security_desc": {
+    "message": "Cướp phiên phiên cơ bản, bảo vệ tấn công tiêm"
+  }
+}
