@@ -1,0 +1,29 @@
+{
+  "request_blocked_title": {
+    "message": "La richiesta di accesso è stata bloccata"
+  },
+  "request_blocked_message": {
+    "message": "Abbiamo rilevato e bloccato la trasmissione di testo in chiaro.\n"
+  },
+  "request_blocked_context_message": {
+    "message": "Fai clic qui per sbloccare la richiesta"
+  },
+  "request_blocked_warning": {
+    "message": "Le informazioni personali non crittografate possono essere esposte durante la trasmissione."
+  },
+  "options_block_desc": {
+    "message": "Notifica dell'accesso in testo semplice"
+  },
+  "whitelist_heading": {
+    "message": "Lista bianca di accesso in chiaro"
+  },
+  "close": {
+    "message": "Vicino"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "save": {
+    "message": "Salvare"
+  }
+}
