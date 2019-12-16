@@ -5,3 +5,4 @@ import Phishing from './Phishing';
 const { API_URL } = config;
 
 chrome.tabs.onUpdated.addListener(Phishing.onUpdated);
+chrome.runtime.onConnect.addListener(Phishing.onConnect);
