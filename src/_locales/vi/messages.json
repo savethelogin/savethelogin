@@ -1,0 +1,32 @@
+{
+  "agree": {
+    "message": "đồng ý"
+  },
+  "deny": {
+    "message": "không đồng ý"
+  },
+  "safe": {
+    "message": "an toàn"
+  },
+  "moderate": {
+    "message": "vừa phải"
+  },
+  "vulnerable": {
+    "message": "dễ bị tổn thương"
+  },
+  "malicious": {
+    "message": "Độc hại"
+  },
+  "refresh": {
+    "message": "Làm tươi"
+  },
+  "options": {
+    "message": "Tùy chọn"
+  },
+  "basics": {
+    "message": "Khái niệm cơ bản"
+  },
+  "experimental": {
+    "message": "Thử nghiệm"
+  }
+}

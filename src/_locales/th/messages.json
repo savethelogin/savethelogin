@@ -1,0 +1,32 @@
+{
+  "agree": {
+    "message": "ตกลง"
+  },
+  "deny": {
+    "message": "ไม่เห็นด้วย"
+  },
+  "safe": {
+    "message": "ปลอดภัย"
+  },
+  "moderate": {
+    "message": "ปานกลาง"
+  },
+  "vulnerable": {
+    "message": "อ่อนแอ"
+  },
+  "malicious": {
+    "message": "ร้าย"
+  },
+  "refresh": {
+    "message": "รีเฟรช"
+  },
+  "options": {
+    "message": "ตัวเลือก"
+  },
+  "basics": {
+    "message": "ข้อมูลพื้นฐานเกี่ยวกับ"
+  },
+  "experimental": {
+    "message": "การทดลอง"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "phishing": {
+    "message": "Lừa đảo"
+  },
+  "phishing_notification_title": {
+    "message": "Phát hiện lừa đảo!"
+  },
+  "phishing_notification_content": {
+    "message": "Trang web bạn đang xem có thể là lừa đảo"
+  }
+}

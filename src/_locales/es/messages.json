@@ -1,0 +1,32 @@
+{
+  "agree": {
+    "message": "de acuerdo"
+  },
+  "deny": {
+    "message": "discrepar"
+  },
+  "safe": {
+    "message": "seguro"
+  },
+  "moderate": {
+    "message": "moderar"
+  },
+  "vulnerable": {
+    "message": "vulnerable"
+  },
+  "malicious": {
+    "message": "Malicioso"
+  },
+  "refresh": {
+    "message": "refrescar"
+  },
+  "options": {
+    "message": "Opciones"
+  },
+  "basics": {
+    "message": "Lo esencial"
+  },
+  "experimental": {
+    "message": "Experimental"
+  }
+}
