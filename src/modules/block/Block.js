@@ -465,6 +465,9 @@ export function onErrorOccurred(details) {
           });
         }
         counter[details.tabId] = true;
+        chrome.notifications.getAll(notifications => {
+          console.log('notifications: ', notifications);
+        });
         break;
       default:
         break;
