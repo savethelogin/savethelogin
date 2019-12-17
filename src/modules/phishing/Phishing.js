@@ -67,7 +67,8 @@ export const DAY = 24 * HOUR;
 export const DEFAULT_EXPIRE = 7 * DAY;
 
 const classificationPhishing = 0;
-const probabilityThreshold = 0.5;
+const probabilityThreshold = 0.7;
+const probabilityDefiniteThreshold = 0.9;
 
 const SAFE = 0;
 const SUSPECT = -1;
@@ -170,9 +171,12 @@ function createPhishingNotify(probability) {
 function isPhishing({ classification, probability }) {
   if (classification !== classificationPhishing.toString()) return SAFE;
   if (probabilityThreshold <= parseFloat(probability)) {
-    return DEFINITE;
+    if (probabilityDefiniteThreshold <= parseFloat(probability)) {
+      return DEFINITE;
+    }
+    return SUSPECT;
   }
-  return SUSPECT;
+  return SAFE;
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
