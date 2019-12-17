@@ -1,8 +1,8 @@
 {
-  "basics": {
-    "message": "Grundlagen"
-  },
   "options": {
     "message": "Optionen"
+  },
+  "basics": {
+    "message": "Grundlagen"
   }
 }

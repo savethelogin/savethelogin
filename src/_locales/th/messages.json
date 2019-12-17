@@ -1,24 +1,24 @@
 {
+  "agree": {
+    "message": "ตกลง"
+  },
   "deny": {
     "message": "ไม่เห็นด้วย"
   },
   "safe": {
     "message": "ปลอดภัย"
   },
+  "moderate": {
+    "message": "ปานกลาง"
+  },
+  "vulnerable": {
+    "message": "อ่อนแอ"
+  },
   "malicious": {
     "message": "ร้าย"
   },
   "refresh": {
     "message": "รีเฟรช"
-  },
-  "vulnerable": {
-    "message": "อ่อนแอ"
-  },
-  "moderate": {
-    "message": "ปานกลาง"
-  },
-  "agree": {
-    "message": "ตกลง"
   },
   "experimental": {
     "message": "การทดลอง"

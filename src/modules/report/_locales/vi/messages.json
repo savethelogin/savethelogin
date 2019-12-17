@@ -2,13 +2,13 @@
   "report": {
     "message": "Bài báo cáo"
   },
+  "crop": {
+    "message": "Mùa vụ"
+  },
   "capture": {
     "message": "Chụp"
   },
   "download": {
     "message": "Tải về"
-  },
-  "crop": {
-    "message": "Mùa vụ"
   }
 }

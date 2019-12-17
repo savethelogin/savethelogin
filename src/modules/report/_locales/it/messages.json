@@ -2,13 +2,13 @@
   "report": {
     "message": "rapporto"
   },
+  "crop": {
+    "message": "raccolto"
+  },
   "capture": {
     "message": "Catturare"
   },
   "download": {
     "message": "Scaricare"
-  },
-  "crop": {
-    "message": "raccolto"
   }
 }

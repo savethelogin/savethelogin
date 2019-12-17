@@ -2,13 +2,13 @@
   "report": {
     "message": "報告する"
   },
+  "crop": {
+    "message": "切り抜き"
+  },
   "capture": {
     "message": "キャプチャー"
   },
   "download": {
     "message": "ダウンロード"
-  },
-  "crop": {
-    "message": "切り抜き"
   }
 }

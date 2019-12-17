@@ -1,38 +1,38 @@
 {
-  "hsts_policy": {
-    "message": "Politique HSTS"
-  },
-  "xss_protection_policy": {
-    "message": "Politique de protection XSS"
-  },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">recommander</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
   "inspect": {
     "message": "Inspecter"
-  },
-  "servlet_spec_disclosure": {
-    "message": "Divulgation des informations de configuration du serveur"
-  },
-  "no_information": {
-    "message": "Aucune information!"
-  },
-  "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">recommander</span> <code>X-XSS-Protection: 1; mode=block</code> inclure dans l'en-tête de réponse HTTP du serveur."
-  },
-  "server_version_disclosure": {
-    "message": "Divulgation de la version du serveur"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">recommander</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
   },
   "scheme": {
     "message": "Schème"
   },
-  "session_cookie_xss": {
-    "message": "Vulnérabilité liée aux cookies de session"
+  "hsts_policy": {
+    "message": "Politique HSTS"
   },
   "clickjacking_prevention": {
     "message": "Prévention du détournement de clics"
+  },
+  "xss_protection_policy": {
+    "message": "Politique de protection XSS"
+  },
+  "server_version_disclosure": {
+    "message": "Divulgation de la version du serveur"
+  },
+  "servlet_spec_disclosure": {
+    "message": "Divulgation des informations de configuration du serveur"
+  },
+  "session_cookie_xss": {
+    "message": "Vulnérabilité liée aux cookies de session"
+  },
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">recommander</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">recommander</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "xss_protection_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">recommander</span> <code>X-XSS-Protection: 1; mode=block</code> inclure dans l'en-tête de réponse HTTP du serveur."
+  },
+  "no_information": {
+    "message": "Aucune information!"
   }
 }

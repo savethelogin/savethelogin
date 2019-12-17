@@ -1,17 +1,17 @@
 {
-  "options_security_desc": {
-    "message": "Dirottamento della sessione di base, protezione dagli attacchi di iniezione"
+  "security_page_blocked_title": {
+    "message": "Pagina bloccata"
   },
   "security_page_blocked_description": {
     "message": "Richiesta di estensione bloccata rilevando payload dannosi.\nVuoi continuare?"
   },
-  "security_page_blocked_title": {
-    "message": "Pagina bloccata"
+  "back": {
+    "message": "Indietro"
   },
   "disable": {
     "message": "disattivare"
   },
-  "back": {
-    "message": "Indietro"
+  "options_security_desc": {
+    "message": "Dirottamento della sessione di base, protezione dagli attacchi di iniezione"
   }
 }

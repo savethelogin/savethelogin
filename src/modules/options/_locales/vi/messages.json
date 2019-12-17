@@ -1,8 +1,8 @@
 {
-  "basics": {
-    "message": "Khái niệm cơ bản"
-  },
   "options": {
     "message": "Tùy chọn"
+  },
+  "basics": {
+    "message": "Khái niệm cơ bản"
   }
 }

@@ -1,24 +1,24 @@
 {
+  "agree": {
+    "message": "дать согласие"
+  },
   "deny": {
     "message": "не соглашаться"
   },
   "safe": {
     "message": "сейф"
   },
+  "moderate": {
+    "message": "умеренной"
+  },
+  "vulnerable": {
+    "message": "уязвимый"
+  },
   "malicious": {
     "message": "злонамеренный"
   },
   "refresh": {
     "message": "обновление"
-  },
-  "vulnerable": {
-    "message": "уязвимый"
-  },
-  "moderate": {
-    "message": "умеренной"
-  },
-  "agree": {
-    "message": "дать согласие"
   },
   "experimental": {
     "message": "экспериментальный"

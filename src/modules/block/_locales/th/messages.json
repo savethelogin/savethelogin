@@ -1,27 +1,27 @@
 {
-  "request_blocked_warning": {
-    "message": "ข้อมูลส่วนบุคคลที่ไม่ได้เข้ารหัสอาจถูกเปิดเผยระหว่างการส่ง"
-  },
-  "reset": {
-    "message": "ตั้งค่าใหม่"
-  },
   "request_blocked_title": {
     "message": "คำขอเข้าสู่ระบบถูกปิดกั้น"
-  },
-  "whitelist_heading": {
-    "message": "รายการที่อนุญาตให้ลงชื่อเข้าใช้แบบธรรมดา"
   },
   "request_blocked_message": {
     "message": "เราตรวจพบและบล็อกการส่งข้อความธรรมดา\n"
   },
-  "options_block_desc": {
-    "message": "แจ้งเตือนเกี่ยวกับการเข้าสู่ระบบข้อความธรรมดา"
-  },
   "request_blocked_context_message": {
     "message": "คลิกที่นี่เพื่อปลดล็อคคำขอ"
   },
+  "request_blocked_warning": {
+    "message": "ข้อมูลส่วนบุคคลที่ไม่ได้เข้ารหัสอาจถูกเปิดเผยระหว่างการส่ง"
+  },
+  "options_block_desc": {
+    "message": "แจ้งเตือนเกี่ยวกับการเข้าสู่ระบบข้อความธรรมดา"
+  },
+  "whitelist_heading": {
+    "message": "รายการที่อนุญาตให้ลงชื่อเข้าใช้แบบธรรมดา"
+  },
   "close": {
     "message": "ปิด"
+  },
+  "reset": {
+    "message": "ตั้งค่าใหม่"
   },
   "save": {
     "message": "บันทึก"

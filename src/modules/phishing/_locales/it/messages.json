@@ -2,10 +2,16 @@
   "phishing": {
     "message": "Phishing"
   },
+  "phishing_notification_title": {
+    "message": "Phishing rilevato!"
+  },
   "phishing_notification_content": {
     "message": "Il sito Web che stai guardando potrebbe essere phishing"
   },
-  "phishing_notification_title": {
-    "message": "Phishing rilevato!"
+  "phishing_notification_suspect_title": {
+    "message": "Rilevato sito Web sospetto!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "Il sito Web a cui hai effettuato l'accesso sembra anormale. Attenzione al phishing o alla truffa!"
   }
 }

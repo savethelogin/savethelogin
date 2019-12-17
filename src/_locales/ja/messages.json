@@ -1,24 +1,24 @@
 {
+  "agree": {
+    "message": "同意する"
+  },
   "deny": {
     "message": "反対"
   },
   "safe": {
     "message": "安全"
   },
+  "moderate": {
+    "message": "適度な"
+  },
+  "vulnerable": {
+    "message": "傷つきやすい"
+  },
   "malicious": {
     "message": "悪意のある"
   },
   "refresh": {
     "message": "リフレッシュ"
-  },
-  "vulnerable": {
-    "message": "傷つきやすい"
-  },
-  "moderate": {
-    "message": "適度な"
-  },
-  "agree": {
-    "message": "同意する"
   },
   "experimental": {
     "message": "実験的"

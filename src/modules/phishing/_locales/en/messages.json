@@ -7,5 +7,11 @@
   },
   "phishing_notification_content": {
     "message": "The website you are watching might be phishing"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "Suspicious website detected!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "The website you accessed seems abnormal. Beware of phishing or scamming!"
   }
 }

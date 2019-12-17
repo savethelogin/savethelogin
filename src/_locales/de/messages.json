@@ -1,24 +1,24 @@
 {
+  "agree": {
+    "message": "zustimmen"
+  },
   "deny": {
     "message": "nicht zustimmen"
   },
   "safe": {
     "message": "sicher"
   },
+  "moderate": {
+    "message": "mäßig"
+  },
+  "vulnerable": {
+    "message": "verletzlich"
+  },
   "malicious": {
     "message": "Bösartig"
   },
   "refresh": {
     "message": "Aktualisierung"
-  },
-  "vulnerable": {
-    "message": "verletzlich"
-  },
-  "moderate": {
-    "message": "mäßig"
-  },
-  "agree": {
-    "message": "zustimmen"
   },
   "experimental": {
     "message": "Experimental"

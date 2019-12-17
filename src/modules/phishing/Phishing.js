@@ -7,7 +7,49 @@ const { PROJECT_PREFIX, API_URL, API_SCHEME } = config;
 
 const moduleName = 'phishing';
 /** Well known domains */
-const whiteDomains = [/.google.com$/, /.facebook.com$/];
+const whiteDomains = [
+  /\.savethelogin\.world$/,
+  /\.google\.com$/,
+  /\.youtube\.com$/,
+  /\.reddit\.com$/,
+  /\.netflix\.com$/,
+  /\.office\.com$/,
+  /\.microsoft\.com$/,
+  /\.live\.com$/,
+  /\.facebook\.com$/,
+  /\.twitter\.com$/,
+  /\.instagram\.com$/,
+  /\.ebay\.com$/,
+  /\.bbc\.com$/,
+  /\.pinterest\.com$/,
+  /\.fedex\.com$/,
+  /\.dhl\.com$/,
+  /\.aol\.com$/,
+  /\.bankofamerica\.com$/,
+  /\.cnet\.com$/,
+  /\.stack(overflow|exchange)\.com$/,
+  /\.(drop)?box\.com$/,
+  /\.imdb\.com$/,
+  /\.paypal\.com$/,
+  /\.taobao\.com$/,
+  /\.imgur\.com$/,
+  /\.wordpress\.com$/,
+  /\.tumblr\.com$/,
+  /\.pastebin\.com$/,
+  /\.twitch\.tv$/,
+  /\.spotify\.com$/,
+  /\.steam(powered)?\.com$/,
+  /\.yahoo\.com$/,
+  /\.git(lab|hub)\.com$/,
+  /\.apple\.com$/,
+  /\.baidu\.com$/,
+  /\.qq\.com$/,
+  /\.cnn\.com$/,
+  /\.linkedin\.com$/,
+  /\.adobe\.com$/,
+  /\.wikipedia\.org$/,
+  /\.bing\.org$/,
+];
 const apiReponsekeys = ['classification', 'probability'];
 /**
  * Time units
@@ -23,7 +65,11 @@ export const DAY = 24 * HOUR;
 export const DEFAULT_EXPIRE = 7 * DAY;
 
 const classificationPhishing = 0;
-const probabilityThreshold = 0.8;
+const probabilityThreshold = 0.5;
+
+const SAFE = 0;
+const SUSPECT = -1;
+const DEFINITE = 1;
 
 const phishingHostsKey = `${PROJECT_PREFIX}_${moduleName}_hosts`;
 const phishingExpireKey = `${PROJECT_PREFIX}_${moduleName}_expire`;
@@ -32,19 +78,14 @@ let hostnames = {};
 let expire = DEFAULT_EXPIRE;
 
 function filterHosts() {
-  for (var hostname in hostnames) {
-    let time;
-    let current;
-    let classification;
-    let probability;
-    try {
-      time = new Date(hostnames[hostname].time);
-      current = new Date().getTime();
-    } catch (e) {
-      // Remove invalid entries
-      delete hostnames[hostname];
-      continue;
-    }
+  console.log('before filtered: ', hostnames);
+  for (let hostname in hostnames) {
+    let time = new Date(hostnames[hostname].time);
+    let current = new Date().getTime();
+
+    console.log('before filtered: ', Object.keys(hostnames[hostname]));
+
+    // Validate all caches
     if (!apiReponsekeys.every(key => Object.keys(hostnames[hostname]).includes(key))) {
       delete hostnames[hostname];
       continue;
@@ -54,6 +95,7 @@ function filterHosts() {
       delete hostnames[hostname];
     }
   }
+  console.log('after filtered: ', hostnames);
 }
 
 getStorage({ keys: [phishingHostsKey, phishingExpireKey] }).then(items => {
@@ -92,18 +134,32 @@ export function onConnect(port) {
   });
 }
 
-function createPhishingNofity() {
-  createNotification({
-    title: chrome.i18n.getMessage('phishing_notification_title'),
-    message: chrome.i18n.getMessage('phishing_notification_content'),
-  });
+function createPhishingNotify(probability) {
+  switch (probability) {
+    case DEFINITE:
+      createNotification({
+        title: chrome.i18n.getMessage('phishing_notification_title'),
+        message: chrome.i18n.getMessage('phishing_notification_content'),
+      });
+      break;
+    case SUSPECT:
+      createNotification({
+        title: chrome.i18n.getMessage('phishing_notification_suspect_title'),
+        message: chrome.i18n.getMessage('phishing_notification_suspect_content'),
+      });
+      break;
+    case SAFE:
+    default:
+      break;
+  }
 }
 
 function isPhishing({ classification, probability }) {
-  return (
-    classification === classificationPhishing.toString() &&
-    probabilityThreshold <= parseFloat(probability)
-  );
+  if (classification !== classificationPhishing.toString()) return SAFE;
+  if (probabilityThreshold <= parseFloat(probability)) {
+    return DEFINITE;
+  }
+  return SUSPECT;
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
@@ -117,7 +173,7 @@ export function onUpdated(tabId, changeInfo, tab) {
       // Explicitly exclude white domains
       if (whiteDomains.some(domain => hostname.match(domain))) return;
 
-      // Pass if requestes before
+      // Pass if requested before
       if (Object.keys(hostnames).includes(hostname)) return;
 
       // Create new entry
@@ -133,15 +189,15 @@ export function onUpdated(tabId, changeInfo, tab) {
           // TODO: Server API Implementation
           const data = response.data;
           if (data) {
-            if (
-              isPhishing({
-                classification: data.classification,
-                probability: data.probability,
-              })
-            ) {
-              createPhishingNofity();
+            let phishingFlag = isPhishing({
+              classification: data.classification,
+              probability: data.probability,
+            });
+            if (phishingFlag !== SAFE) {
+              createPhishingNotify(phishingFlag);
             }
-            for (var key in apiReponsekeys) {
+            // Cache api result
+            for (let key of apiReponsekeys) {
               hostnames[hostname][key] = data[key];
             }
           }
@@ -156,24 +212,32 @@ export function onUpdated(tabId, changeInfo, tab) {
         })
         .finally(() => {
           console.log('done');
+          filterHosts();
         });
       break;
     }
     case 'complete':
-      filterHosts();
-      if (!Object.keys(hostnames).includes(hostname)) return;
-      if (
-        isPhishing({
-          classification: hostnames[hostname].classification,
-          probability: hostnames[hostname].probability,
-        })
-      ) {
-        createPhishingNofity();
-        return;
-      }
       break;
     default:
       break;
+  }
+}
+
+export function onBeforeSendHeaders(details) {
+  if (details.type !== 'main_frame') return;
+  console.log('phishing:', details);
+
+  let url = new URL(details.url);
+  let hostname = url.hostname;
+
+  if (!Object.keys(hostnames).includes(hostname)) return;
+  let phishingFlag = isPhishing({
+    classification: hostnames[hostname].classification,
+    probability: hostnames[hostname].probability,
+  });
+  if (phishingFlag !== SAFE) {
+    createPhishingNotify(phishingFlag);
+    return;
   }
 }
 
@@ -185,4 +249,5 @@ export default {
   DEFAULT_EXPIRE,
   onConnect,
   onUpdated,
+  onBeforeSendHeaders,
 };

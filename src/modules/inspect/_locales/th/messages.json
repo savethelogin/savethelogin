@@ -1,38 +1,38 @@
 {
-  "hsts_policy": {
-    "message": "นโยบาย HSTS"
-  },
-  "xss_protection_policy": {
-    "message": "นโยบายการป้องกัน XSS"
-  },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">แนะนำ</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
   "inspect": {
     "message": "ตรวจ"
-  },
-  "servlet_spec_disclosure": {
-    "message": "การเปิดเผยข้อมูลการกำหนดค่าเซิร์ฟเวอร์"
-  },
-  "no_information": {
-    "message": "ไม่มีข้อมูล!"
-  },
-  "xss_protection_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">แนะนำ</span> <code>X-XSS-Protection: 1; mode=block</code> รวมไว้ในส่วนหัวการตอบกลับ HTTP ของเซิร์ฟเวอร์"
-  },
-  "server_version_disclosure": {
-    "message": "การเปิดเผยเวอร์ชั่นของเซิร์ฟเวอร์"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">แนะนำ</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
   },
   "scheme": {
     "message": "โครงการ"
   },
-  "session_cookie_xss": {
-    "message": "ช่องโหว่ของคุกกี้เซสชัน"
+  "hsts_policy": {
+    "message": "นโยบาย HSTS"
   },
   "clickjacking_prevention": {
     "message": "การป้องกัน Clickjacking"
+  },
+  "xss_protection_policy": {
+    "message": "นโยบายการป้องกัน XSS"
+  },
+  "server_version_disclosure": {
+    "message": "การเปิดเผยเวอร์ชั่นของเซิร์ฟเวอร์"
+  },
+  "servlet_spec_disclosure": {
+    "message": "การเปิดเผยข้อมูลการกำหนดค่าเซิร์ฟเวอร์"
+  },
+  "session_cookie_xss": {
+    "message": "ช่องโหว่ของคุกกี้เซสชัน"
+  },
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">แนะนำ</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">แนะนำ</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "xss_protection_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">แนะนำ</span> <code>X-XSS-Protection: 1; mode=block</code> รวมไว้ในส่วนหัวการตอบกลับ HTTP ของเซิร์ฟเวอร์"
+  },
+  "no_information": {
+    "message": "ไม่มีข้อมูล!"
   }
 }

@@ -2,10 +2,16 @@
   "phishing": {
     "message": "フィッシング"
   },
+  "phishing_notification_title": {
+    "message": "フィッシングが検出されました！"
+  },
   "phishing_notification_content": {
     "message": "あなたが見ているウェブサイトはフィッシングの可能性があります"
   },
-  "phishing_notification_title": {
-    "message": "フィッシングが検出されました！"
+  "phishing_notification_suspect_title": {
+    "message": "疑わしいWebサイトが検出されました！"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "アクセスしたWebサイトが異常なようです。フィッシングや詐欺に注意してください！"
   }
 }
