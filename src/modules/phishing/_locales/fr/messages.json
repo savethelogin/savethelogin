@@ -7,5 +7,11 @@
   },
   "phishing_notification_content": {
     "message": "Le site Web que vous consultez peut être du phishing"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "Site Web suspect détecté!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "Le site Web auquel vous avez accédé semble anormal. Méfiez-vous du phishing ou de l'arnaque!"
   }
 }

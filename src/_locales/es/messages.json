@@ -20,12 +20,6 @@
   "refresh": {
     "message": "refrescar"
   },
-  "options": {
-    "message": "Opciones"
-  },
-  "basics": {
-    "message": "Lo esencial"
-  },
   "experimental": {
     "message": "Experimental"
   }

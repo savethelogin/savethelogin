@@ -7,5 +7,11 @@
   },
   "phishing_notification_content": {
     "message": "Die Website, die Sie gerade ansehen, ist möglicherweise Phishing"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "Verdächtige Website erkannt!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "Die Website, auf die Sie zugegriffen haben, scheint nicht normal zu sein. Vorsicht vor Phishing oder Betrug!"
   }
 }

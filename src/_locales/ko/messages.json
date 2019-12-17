@@ -20,12 +20,6 @@
   "refresh": {
     "message": "새로 고침"
   },
-  "options": {
-    "message": "옵션"
-  },
-  "basics": {
-    "message": "일반"
-  },
   "experimental": {
     "message": "실험적"
   }

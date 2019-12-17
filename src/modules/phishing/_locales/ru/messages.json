@@ -7,5 +7,11 @@
   },
   "phishing_notification_content": {
     "message": "Сайт, который вы смотрите, может быть фишинговым"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "Подозрительный сайт обнаружен!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "Сайт, на который вы зашли, кажется ненормальным. Остерегайтесь фишинга или мошенничества!"
   }
 }

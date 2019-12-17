@@ -20,12 +20,6 @@
   "refresh": {
     "message": "Làm tươi"
   },
-  "options": {
-    "message": "Tùy chọn"
-  },
-  "basics": {
-    "message": "Khái niệm cơ bản"
-  },
   "experimental": {
     "message": "Thử nghiệm"
   }

@@ -7,5 +7,11 @@
   },
   "phishing_notification_content": {
     "message": "보고있는 웹 사이트가 피싱 일 수 있습니다."
+  },
+  "phishing_notification_suspect_title": {
+    "message": "의심스러운 웹 사이트가 감지되었습니다!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "접속하신 사이트가 정상적이지 않은 것 같습니다. 피싱, 사기에 주의 하세요!"
   }
 }

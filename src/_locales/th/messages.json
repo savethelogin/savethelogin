@@ -20,12 +20,6 @@
   "refresh": {
     "message": "รีเฟรช"
   },
-  "options": {
-    "message": "ตัวเลือก"
-  },
-  "basics": {
-    "message": "ข้อมูลพื้นฐานเกี่ยวกับ"
-  },
   "experimental": {
     "message": "การทดลอง"
   }
