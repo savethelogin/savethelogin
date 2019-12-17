@@ -25,6 +25,7 @@ import { DAY, DEFAULT_EXPIRE } from '@/modules/phishing/Phishing';
 const { PROJECT_PREFIX } = config;
 const expireKey = `${PROJECT_PREFIX}_phishing_expire`;
 
+export const mobileCompatible = true;
 export default {
   data() {
     return {
