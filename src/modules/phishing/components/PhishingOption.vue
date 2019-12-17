@@ -3,7 +3,8 @@
   <div>
     <h4 class="mb-2 mt-3" v-chrome-i18n>__MSG_phishing__</h4>
     <hr class="mt-0" />
-    <div class="input-group input-group-sm">
+    <ToggleSwitch class="float-right" v-bind:checked="isEnabled" v-on:toggle="changeEnabled" />
+    <div class="input-group input-group-sm" v-if="isEnabled">
       <div class="input-group-prepend">
         <span class="input-group-text">Expire</span>
       </div>
@@ -24,40 +25,73 @@
 <script>
 import config from '@/common/Config';
 import { getStorage, setStorage, openDefaultPort } from '@/common/Utils';
-import { DAY, DEFAULT_EXPIRE } from '@/modules/phishing/Phishing';
+import {
+  DAY,
+  DEFAULT_EXPIRE,
+  phishingExpireKey,
+  phishingEnabledKey,
+} from '@/modules/phishing/Phishing';
+
+import ToggleSwitch from '@/components/ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
-const expireKey = `${PROJECT_PREFIX}_phishing_expire`;
+const moduleName = `phishing`;
 
 export const mobileCompatible = true;
 export default {
+  components: {
+    ToggleSwitch,
+  },
   data() {
     return {
-      expire: 0,
+      expire: 30,
+      isEnabled: true,
     };
   },
   async created() {
-    const items = await getStorage({ keys: [expireKey] });
-    if (!items[expireKey]) return;
-    this.expire = Math.floor(items[expireKey] / DAY);
+    const items = await getStorage({
+      keys: [phishingExpireKey, phishingEnabledKey],
+    });
+    if (items[phishingExpireKey]) {
+      this.expire = Math.floor(items[phishingExpireKey] / DAY);
+    }
+    if (typeof items[phishingEnabledKey] === 'undefined') {
+      this.isEnabled = false;
+    } else {
+      this.isEnabled = items[phishingEnabledKey];
+    }
   },
   methods: {
-    expireChanged: function(evt) {
-      if (!evt.target.value || !evt.target.value.match(/^[0-9]+$/)) return;
+    expireChanged: function(event) {
+      if (!event.target.value || !event.target.value.match(/^[0-9]+$/)) return;
 
-      this.expire = parseInt(evt.target.value);
+      this.expire = parseInt(event.target.value);
 
       let newExpire = this.expire * DAY;
       const port = openDefaultPort();
       port.postMessage({
-        type: 'update_expire',
+        type: 'update_phishing_expire',
         data: newExpire,
       });
       setStorage({
         items: {
-          [expireKey]: newExpire,
+          [phishingExpireKey]: newExpire,
         },
       });
+    },
+    changeEnabled: function(event) {
+      const checked = event.target.checked;
+      setStorage({
+        items: {
+          [phishingEnabledKey]: checked,
+        },
+      });
+      const port = openDefaultPort();
+      port.postMessage({
+        type: 'update_phishing_enabled',
+        data: checked,
+      });
+      this.isEnabled = event.target.checked;
     },
   },
 };

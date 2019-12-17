@@ -6,6 +6,8 @@ import { unique, setStorage, getStorage, createNotification } from '@/common/Uti
 const { PROJECT_PREFIX, API_URL, API_SCHEME } = config;
 
 const moduleName = 'phishing';
+let isEnabled = true;
+
 /** Well known domains */
 const whiteDomains = [
   /\.savethelogin\.world$/,
@@ -71,8 +73,9 @@ const SAFE = 0;
 const SUSPECT = -1;
 const DEFINITE = 1;
 
-const phishingHostsKey = `${PROJECT_PREFIX}_${moduleName}_hosts`;
-const phishingExpireKey = `${PROJECT_PREFIX}_${moduleName}_expire`;
+export const phishingHostsKey = `${PROJECT_PREFIX}_${moduleName}_hosts`;
+export const phishingExpireKey = `${PROJECT_PREFIX}_${moduleName}_expire`;
+export const phishingEnabledKey = `${PROJECT_PREFIX}_${moduleName}_enabled`;
 
 let hostnames = {};
 let expire = DEFAULT_EXPIRE;
@@ -120,10 +123,19 @@ export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
   port.onMessage.addListener(message => {
     switch (message.type) {
-      case 'update_expire': {
+      case 'update_phishing_expire': {
         setStorage({
           items: {
             [phishingExpireKey]: message.data,
+          },
+        });
+        break;
+      }
+      case 'update_phishing_enabled': {
+        isEnabled = message.data;
+        setStorage({
+          items: {
+            [phishingEnabledKey]: message.data,
           },
         });
         break;
@@ -135,6 +147,7 @@ export function onConnect(port) {
 }
 
 function createPhishingNotify(probability) {
+  if (!isEnabled) return;
   switch (probability) {
     case DEFINITE:
       createNotification({
@@ -163,6 +176,8 @@ function isPhishing({ classification, probability }) {
 }
 
 export function onUpdated(tabId, changeInfo, tab) {
+  if (!isEnabled) return;
+
   const url = new URL(tab.url);
   const hostname = url.hostname;
 
@@ -224,6 +239,8 @@ export function onUpdated(tabId, changeInfo, tab) {
 }
 
 export function onBeforeSendHeaders(details) {
+  if (!isEnabled) return;
+
   if (details.type !== 'main_frame') return;
   console.log('phishing:', details);
 
@@ -247,6 +264,9 @@ export default {
   HOUR,
   DAY,
   DEFAULT_EXPIRE,
+  phishingHostsKey,
+  phishingEnabledKey,
+  phishingExpireKey,
   onConnect,
   onUpdated,
   onBeforeSendHeaders,

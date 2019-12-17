@@ -69,7 +69,7 @@ export default {
       optionFragments: loadedFragments,
     };
   },
-  created() {
+  async created() {
     let port = openDefaultPort();
     port.onMessage.addListener(message => {
       if (message.type === 'update_context') {
