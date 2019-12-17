@@ -60,11 +60,13 @@ export const SECOND = 1;
 export const MINUTE = 60 * SECOND;
 export const HOUR = 60 * MINUTE;
 export const DAY = 24 * HOUR;
+export const WEEK = 7 * DAY;
+export const MONTH = 30 * DAY;
 
 /**
  * Default expire value
  */
-export const DEFAULT_EXPIRE = 7 * DAY;
+export const DEFAULT_EXPIRE = MONTH;
 
 const classificationPhishing = 0;
 const probabilityThreshold = 0.7;
