@@ -14,12 +14,16 @@
         <div class="clearfix"></div>
       </div>
     </div>
+    <div v-for="fragment in optionFragments">
+      <component v-bind:is="fragment"></component>
+    </div>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import config from '@/common/Config';
-import { openDefaultPort } from '@/common/Utils';
+import { isMobile, openDefaultPort, fromPascalToKebabCase } from '@/common/Utils';
 import ToggleSwitch from '@/components/ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
@@ -36,11 +40,11 @@ const loadedFragments = requireFragments
   .filter(key => {
     if (!isMobile()) return true;
 
-    const componentConfig = requirePanes(key);
+    const componentConfig = requireFragments(key);
     return componentConfig.mobileCompatible ? true : false;
   })
   .map(key => {
-    const componentConfig = requirePanes(key);
+    const componentConfig = requireFragments(key);
     const componentName = fromPascalToKebabCase(
       key
         .split('/')
@@ -51,6 +55,7 @@ const loadedFragments = requireFragments
 
     return componentName;
   });
+console.log(loadedFragments);
 
 export const mobileCompatible = true;
 export default {
@@ -61,6 +66,7 @@ export default {
   data() {
     return {
       options: [],
+      optionFragments: loadedFragments,
     };
   },
   created() {
