@@ -28,10 +28,6 @@ getStorage({
   }
 });
 
-chrome.notifications.getPermissionLevel(level => {
-  console.log('notification level: ' + level);
-});
-
 // Blocker module
 chrome.runtime.onConnect.addListener(Block.onConnect);
 
