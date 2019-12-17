@@ -1,27 +1,27 @@
 {
-  "request_blocked_title": {
-    "message": "로그인 요청이 차단되었습니다"
-  },
-  "request_blocked_message": {
-    "message": "암호화 되지 않은 평문 텍스트의 전송을 감지하고 차단했습니다.\n"
-  },
-  "request_blocked_context_message": {
-    "message": "요청을 차단 해제하려면 여기를 클릭하십시오"
-  },
   "request_blocked_warning": {
     "message": "전송 중에 암호화되지 않은 개인 정보가 노출 될 수 있습니다."
   },
-  "options_block_desc": {
-    "message": "평문 텍스트 로그인에 대해 알림"
+  "reset": {
+    "message": "초기화"
+  },
+  "request_blocked_title": {
+    "message": "로그인 요청이 차단되었습니다"
   },
   "whitelist_heading": {
     "message": "평문 텍스트 로그인 허용 목록"
   },
+  "request_blocked_message": {
+    "message": "암호화 되지 않은 평문 텍스트의 전송을 감지하고 차단했습니다.\n"
+  },
+  "options_block_desc": {
+    "message": "평문 텍스트 로그인에 대해 알림"
+  },
+  "request_blocked_context_message": {
+    "message": "요청을 차단 해제하려면 여기를 클릭하십시오"
+  },
   "close": {
     "message": "닫기"
-  },
-  "reset": {
-    "message": "초기화"
   },
   "save": {
     "message": "저장"

@@ -1,18 +1,9 @@
 {
-  "agree": {
-    "message": "đồng ý"
-  },
   "deny": {
     "message": "không đồng ý"
   },
   "safe": {
     "message": "an toàn"
-  },
-  "moderate": {
-    "message": "vừa phải"
-  },
-  "vulnerable": {
-    "message": "dễ bị tổn thương"
   },
   "malicious": {
     "message": "Độc hại"
@@ -20,11 +11,14 @@
   "refresh": {
     "message": "Làm tươi"
   },
-  "options": {
-    "message": "Tùy chọn"
+  "vulnerable": {
+    "message": "dễ bị tổn thương"
   },
-  "basics": {
-    "message": "Khái niệm cơ bản"
+  "moderate": {
+    "message": "vừa phải"
+  },
+  "agree": {
+    "message": "đồng ý"
   },
   "experimental": {
     "message": "Thử nghiệm"

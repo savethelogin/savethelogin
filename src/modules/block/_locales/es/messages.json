@@ -1,27 +1,27 @@
 {
-  "request_blocked_title": {
-    "message": "La solicitud de inicio de sesión ha sido bloqueada"
-  },
-  "request_blocked_message": {
-    "message": "Hemos detectado y bloqueado la transmisión de texto sin formato.\n"
-  },
-  "request_blocked_context_message": {
-    "message": "Haga clic aquí para desbloquear la solicitud."
-  },
   "request_blocked_warning": {
     "message": "La información personal no cifrada puede quedar expuesta durante la transmisión."
   },
-  "options_block_desc": {
-    "message": "Notificar sobre el inicio de sesión de texto sin formato"
+  "reset": {
+    "message": "Reiniciar"
+  },
+  "request_blocked_title": {
+    "message": "La solicitud de inicio de sesión ha sido bloqueada"
   },
   "whitelist_heading": {
     "message": "Lista blanca de inicio de sesión de texto sin formato"
   },
+  "request_blocked_message": {
+    "message": "Hemos detectado y bloqueado la transmisión de texto sin formato.\n"
+  },
+  "options_block_desc": {
+    "message": "Notificar sobre el inicio de sesión de texto sin formato"
+  },
+  "request_blocked_context_message": {
+    "message": "Haga clic aquí para desbloquear la solicitud."
+  },
   "close": {
     "message": "Cerca"
-  },
-  "reset": {
-    "message": "Reiniciar"
   },
   "save": {
     "message": "Salvar"

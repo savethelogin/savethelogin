@@ -1,7 +1,7 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div class="col-12 mb-3">
-    <h4 class="mt-3">Basics</h4>
+    <h4 class="mt-3" v-chrome-i18n>__MSG_basics__</h4>
     <hr class="mt-0" />
     <div class="row">
       <div class="col-12" v-for="(val, key) in options">

@@ -1,7 +1,7 @@
 <!-- Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> -->
 <template>
   <div>
-    <h4 class="mb-2 mt-3">Phishing</h4>
+    <h4 class="mb-2 mt-3" v-chrome-i18n>__MSG_phishing__</h4>
     <hr class="mt-0" />
     <div class="input-group input-group-sm">
       <div class="input-group-prepend">

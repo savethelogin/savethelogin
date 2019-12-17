@@ -1,38 +1,38 @@
 {
-  "inspect": {
-    "message": "Ispezionare"
-  },
-  "scheme": {
-    "message": "schema"
-  },
   "hsts_policy": {
     "message": "Politica HSTS"
-  },
-  "clickjacking_prevention": {
-    "message": "Prevenzione del clickjacking"
   },
   "xss_protection_policy": {
     "message": "Politica di protezione XSS"
   },
-  "server_version_disclosure": {
-    "message": "Divulgazione della versione del server"
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">raccomandare</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "inspect": {
+    "message": "Ispezionare"
   },
   "servlet_spec_disclosure": {
     "message": "Divulgazione delle informazioni di configurazione del server"
   },
-  "session_cookie_xss": {
-    "message": "Vulnerabilità legata ai cookie di sessione"
-  },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">raccomandare</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">raccomandare</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  "no_information": {
+    "message": "Nessuna informazione!"
   },
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">raccomandare</span> <code>X-XSS-Protection: 1; mode=block</code> includere nell'intestazione della risposta HTTP del server."
   },
-  "no_information": {
-    "message": "Nessuna informazione!"
+  "server_version_disclosure": {
+    "message": "Divulgazione della versione del server"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">raccomandare</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "scheme": {
+    "message": "schema"
+  },
+  "session_cookie_xss": {
+    "message": "Vulnerabilità legata ai cookie di sessione"
+  },
+  "clickjacking_prevention": {
+    "message": "Prevenzione del clickjacking"
   }
 }

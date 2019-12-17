@@ -1,38 +1,38 @@
 {
-  "inspect": {
-    "message": "調べる"
-  },
-  "scheme": {
-    "message": "スキーム"
-  },
   "hsts_policy": {
     "message": "HSTSポリシー"
-  },
-  "clickjacking_prevention": {
-    "message": "クリックジャッキング防止"
   },
   "xss_protection_policy": {
     "message": "XSS保護ポリシー"
   },
-  "server_version_disclosure": {
-    "message": "サーバーバージョンの開示"
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">お勧め</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "inspect": {
+    "message": "調べる"
   },
   "servlet_spec_disclosure": {
     "message": "サーバー構成情報の開示"
   },
-  "session_cookie_xss": {
-    "message": "セッションCookieの脆弱性"
-  },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">お勧め</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">お勧め</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  "no_information": {
+    "message": "情報なし！"
   },
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">お勧め</span> <code>X-XSS-Protection: 1; mode=block</code> サーバーのHTTP応答ヘッダーに含めます。"
   },
-  "no_information": {
-    "message": "情報なし！"
+  "server_version_disclosure": {
+    "message": "サーバーバージョンの開示"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">お勧め</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "scheme": {
+    "message": "スキーム"
+  },
+  "session_cookie_xss": {
+    "message": "セッションCookieの脆弱性"
+  },
+  "clickjacking_prevention": {
+    "message": "クリックジャッキング防止"
   }
 }

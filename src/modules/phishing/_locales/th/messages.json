@@ -2,10 +2,10 @@
   "phishing": {
     "message": "ฟิชชิ่ง"
   },
-  "phishing_notification_title": {
-    "message": "ตรวจพบฟิชชิง!"
-  },
   "phishing_notification_content": {
     "message": "เว็บไซต์ที่คุณกำลังดูอาจฟิชชิ่ง"
+  },
+  "phishing_notification_title": {
+    "message": "ตรวจพบฟิชชิง!"
   }
 }

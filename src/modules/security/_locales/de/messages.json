@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "Seite blockiert"
+  "options_security_desc": {
+    "message": "Hijacking der Basissitzung, Schutz vor Injektionsangriffen"
   },
   "security_page_blocked_description": {
     "message": "Blockierte Erweiterungsanforderung durch Erkennen böswilliger Nutzdaten.\nWürdest du gerne weitermachen?"
   },
-  "back": {
-    "message": "Zurück"
+  "security_page_blocked_title": {
+    "message": "Seite blockiert"
   },
   "disable": {
     "message": "Deaktivieren"
   },
-  "options_security_desc": {
-    "message": "Hijacking der Basissitzung, Schutz vor Injektionsangriffen"
+  "back": {
+    "message": "Zurück"
   }
 }

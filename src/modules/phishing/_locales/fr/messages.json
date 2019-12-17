@@ -2,10 +2,10 @@
   "phishing": {
     "message": "Phishing"
   },
-  "phishing_notification_title": {
-    "message": "Phishing détecté!"
-  },
   "phishing_notification_content": {
     "message": "Le site Web que vous consultez peut être du phishing"
+  },
+  "phishing_notification_title": {
+    "message": "Phishing détecté!"
   }
 }

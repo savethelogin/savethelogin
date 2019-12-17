@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "หน้าถูกบล็อก"
+  "options_security_desc": {
+    "message": "เซสชั่นพื้นฐานการหักหลังการป้องกันการฉีด"
   },
   "security_page_blocked_description": {
     "message": "ขยายคำขอที่ถูกบล็อกโดยตรวจพบเพย์โหลดที่เป็นอันตราย\nคุณต้องการที่จะดำเนินการต่อไป?"
   },
-  "back": {
-    "message": "กลับ"
+  "security_page_blocked_title": {
+    "message": "หน้าถูกบล็อก"
   },
   "disable": {
     "message": "ปิดการใช้งาน"
   },
-  "options_security_desc": {
-    "message": "เซสชั่นพื้นฐานการหักหลังการป้องกันการฉีด"
+  "back": {
+    "message": "กลับ"
   }
 }

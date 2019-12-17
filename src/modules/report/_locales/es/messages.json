@@ -2,13 +2,13 @@
   "report": {
     "message": "Informe"
   },
-  "crop": {
-    "message": "Cultivo"
-  },
   "capture": {
     "message": "Capturar"
   },
   "download": {
     "message": "Descargar"
+  },
+  "crop": {
+    "message": "Cultivo"
   }
 }

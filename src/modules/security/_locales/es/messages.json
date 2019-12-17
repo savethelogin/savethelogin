@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "Página bloqueada"
+  "options_security_desc": {
+    "message": "Secuestro básico de sesión, protección contra ataques de inyección"
   },
   "security_page_blocked_description": {
     "message": "La extensión bloqueó la solicitud al detectar cargas maliciosas.\n¿Te gustaria continuar?"
   },
-  "back": {
-    "message": "atrás"
+  "security_page_blocked_title": {
+    "message": "Página bloqueada"
   },
   "disable": {
     "message": "Inhabilitar"
   },
-  "options_security_desc": {
-    "message": "Secuestro básico de sesión, protección contra ataques de inyección"
+  "back": {
+    "message": "atrás"
   }
 }

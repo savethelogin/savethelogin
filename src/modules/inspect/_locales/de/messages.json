@@ -1,38 +1,38 @@
 {
-  "inspect": {
-    "message": "Prüfen"
-  },
-  "scheme": {
-    "message": "Planen"
-  },
   "hsts_policy": {
     "message": "HSTS-Richtlinie"
-  },
-  "clickjacking_prevention": {
-    "message": "Verhinderung von Clickjacking"
   },
   "xss_protection_policy": {
     "message": "XSS-Schutzrichtlinie"
   },
-  "server_version_disclosure": {
-    "message": "Offenlegung der Serverversion"
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">empfehlen</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "inspect": {
+    "message": "Prüfen"
   },
   "servlet_spec_disclosure": {
     "message": "Offenlegung von Serverkonfigurationsinformationen"
   },
-  "session_cookie_xss": {
-    "message": "Sicherheitsanfälligkeit bezüglich Sitzungscookies"
-  },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">empfehlen</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
-  },
-  "clickjacking_prevention_recommend": {
-    "message": "<span class=\"badge badge-info\">empfehlen</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  "no_information": {
+    "message": "Keine Information!"
   },
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">empfehlen</span> <code>X-XSS-Protection: 1; mode=block</code> in den HTTP-Antwortheader des Servers aufnehmen."
   },
-  "no_information": {
-    "message": "Keine Information!"
+  "server_version_disclosure": {
+    "message": "Offenlegung der Serverversion"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">empfehlen</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "scheme": {
+    "message": "Planen"
+  },
+  "session_cookie_xss": {
+    "message": "Sicherheitsanfälligkeit bezüglich Sitzungscookies"
+  },
+  "clickjacking_prevention": {
+    "message": "Verhinderung von Clickjacking"
   }
 }

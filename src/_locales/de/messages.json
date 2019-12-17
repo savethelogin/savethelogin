@@ -1,18 +1,9 @@
 {
-  "agree": {
-    "message": "zustimmen"
-  },
   "deny": {
     "message": "nicht zustimmen"
   },
   "safe": {
     "message": "sicher"
-  },
-  "moderate": {
-    "message": "mäßig"
-  },
-  "vulnerable": {
-    "message": "verletzlich"
   },
   "malicious": {
     "message": "Bösartig"
@@ -20,11 +11,14 @@
   "refresh": {
     "message": "Aktualisierung"
   },
-  "options": {
-    "message": "Optionen"
+  "vulnerable": {
+    "message": "verletzlich"
   },
-  "basics": {
-    "message": "Grundlagen"
+  "moderate": {
+    "message": "mäßig"
+  },
+  "agree": {
+    "message": "zustimmen"
   },
   "experimental": {
     "message": "Experimental"

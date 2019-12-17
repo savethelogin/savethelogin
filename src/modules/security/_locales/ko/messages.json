@@ -1,17 +1,17 @@
 {
-  "security_page_blocked_title": {
-    "message": "페이지가 차단 되었습니다."
+  "options_security_desc": {
+    "message": "기본 세션 하이재킹, 인젝션 공격 보호"
   },
   "security_page_blocked_description": {
-    "message": "확장 프로그램이 악성 페이로드를 감지하여 요청을 차단했습니다.\n계속 하시겠습니까?"
+    "message": "확장 프로그램이 악성 페이로드를 감지하여 요청을 차단했습니다.\n계속 하시��습니까?"
   },
-  "back": {
-    "message": "뒤로"
+  "security_page_blocked_title": {
+    "message": "페이지가 차단 되었습니다."
   },
   "disable": {
     "message": "비활성화"
   },
-  "options_security_desc": {
-    "message": "기본 세션 하이재킹, 인젝션 공격 보호"
+  "back": {
+    "message": "뒤로"
   }
 }
