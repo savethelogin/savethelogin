@@ -24,6 +24,34 @@ import ToggleSwitch from '@/components/ToggleSwitch';
 
 const { PROJECT_PREFIX } = config;
 
+// Load option fragments
+const requireFragments = require.context(
+  '../../', // modules path
+  true,
+  /\/components\/[A-Z][A-Za-z0-9._-]+Option\.(js|vue)$/
+);
+
+const loadedFragments = requireFragments
+  .keys()
+  .filter(key => {
+    if (!isMobile()) return true;
+
+    const componentConfig = requirePanes(key);
+    return componentConfig.mobileCompatible ? true : false;
+  })
+  .map(key => {
+    const componentConfig = requirePanes(key);
+    const componentName = fromPascalToKebabCase(
+      key
+        .split('/')
+        .pop()
+        .replace(/\.\w+$/, '')
+    );
+    Vue.component(componentName, componentConfig.default || componentConfig);
+
+    return componentName;
+  });
+
 export const mobileCompatible = true;
 export default {
   name: 'Options',

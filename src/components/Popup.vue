@@ -57,7 +57,7 @@ import {
 const requirePanes = require.context(
   '../modules/',
   true,
-  /\/components\/[A-Z][A-Za-z0-9._-]*Pane\.(js|vue)$/
+  /\/components\/[A-Z][A-Za-z0-9._-]+Pane\.(js|vue)$/
 );
 
 const loadedPanes = requirePanes
