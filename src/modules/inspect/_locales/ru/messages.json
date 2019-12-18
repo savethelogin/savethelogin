@@ -2,6 +2,9 @@
   "hsts_policy": {
     "message": "Политика HSTS"
   },
+  "clickjacking_prevention": {
+    "message": "Предотвращение кликджекинга"
+  },
   "xss_protection_policy": {
     "message": "Политика защиты XSS"
   },

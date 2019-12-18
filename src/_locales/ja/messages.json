@@ -14,12 +14,6 @@
   "refresh": {
     "message": "リフレッシュ"
   },
-  "options": {
-    "message": "オプション"
-  },
-  "basics": {
-    "message": "基礎"
-  },
   "experimental": {
     "message": "実験的"
   },

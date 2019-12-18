@@ -1,0 +1,26 @@
+{
+  "agree": {
+    "message": "essere d'accordo"
+  },
+  "deny": {
+    "message": "disaccordo"
+  },
+  "safe": {
+    "message": "sicuro"
+  },
+  "moderate": {
+    "message": "moderare"
+  },
+  "vulnerable": {
+    "message": "vulnerabile"
+  },
+  "malicious": {
+    "message": "maligno"
+  },
+  "refresh": {
+    "message": "ricaricare"
+  },
+  "experimental": {
+    "message": "Sperimentale"
+  }
+}

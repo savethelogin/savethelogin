@@ -14,12 +14,6 @@
   "refresh": {
     "message": "обновление"
   },
-  "options": {
-    "message": "Параметры"
-  },
-  "basics": {
-    "message": "основы"
-  },
   "experimental": {
     "message": "экспериментальный"
   },

@@ -14,12 +14,6 @@
   "refresh": {
     "message": "刷新"
   },
-  "options": {
-    "message": "选件"
-  },
-  "basics": {
-    "message": "基本"
-  },
   "experimental": {
     "message": "实验性"
   },

@@ -1,0 +1,38 @@
+{
+  "inspect": {
+    "message": "Thanh tra"
+  },
+  "scheme": {
+    "message": "Kế hoạch"
+  },
+  "hsts_policy": {
+    "message": "Chính sách của HSTS"
+  },
+  "clickjacking_prevention": {
+    "message": "Ngăn chặn clickjacking"
+  },
+  "xss_protection_policy": {
+    "message": "Chính sách bảo vệ XSS"
+  },
+  "server_version_disclosure": {
+    "message": "Tiết lộ phiên bản máy chủ"
+  },
+  "servlet_spec_disclosure": {
+    "message": "Tiết lộ thông tin cấu hình máy chủ"
+  },
+  "session_cookie_xss": {
+    "message": "Lỗ hổng Cookie phiên"
+  },
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">giới thiệu</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  },
+  "clickjacking_prevention_recommend": {
+    "message": "<span class=\"badge badge-info\">giới thiệu</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
+  },
+  "xss_protection_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">giới thiệu</span> <code>X-XSS-Protection: 1; mode=block</code> bao gồm trong tiêu đề phản hồi HTTP HTTP máy chủ."
+  },
+  "no_information": {
+    "message": "Không có thông tin!"
+  }
+}

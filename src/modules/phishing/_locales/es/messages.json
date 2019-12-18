@@ -1,0 +1,17 @@
+{
+  "phishing": {
+    "message": "Suplantación de identidad"
+  },
+  "phishing_notification_title": {
+    "message": "¡Phishing detectado!"
+  },
+  "phishing_notification_content": {
+    "message": "El sitio web que está viendo puede ser phishing"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "¡Sitio web sospechoso detectado!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "El sitio web al que accedió parece anormal. ¡Cuidado con el phishing o estafa!"
+  }
+}

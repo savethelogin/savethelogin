@@ -14,12 +14,6 @@
   "refresh": {
     "message": "rafraîchir"
   },
-  "options": {
-    "message": "Les options"
-  },
-  "basics": {
-    "message": "Les bases"
-  },
   "experimental": {
     "message": "Expérimental"
   },

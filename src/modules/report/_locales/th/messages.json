@@ -1,0 +1,14 @@
+{
+  "report": {
+    "message": "รายงาน"
+  },
+  "crop": {
+    "message": "พืชผล"
+  },
+  "capture": {
+    "message": "การจับกุม"
+  },
+  "download": {
+    "message": "ดาวน์โหลด"
+  }
+}

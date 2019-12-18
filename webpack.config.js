@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -29,6 +30,9 @@ const config = {
   },
   resolve: {
     extensions: ['.js', '.vue'],
+    alias: {
+      '@': path.resolve(path.join(__dirname, '/src')),
+    },
   },
   module: {
     rules: [
@@ -140,6 +144,22 @@ const config = {
           {
             pattern: '{./modules/**/_locales/zh-CN/messages.json,./_locales/zh-CN/messages.json}',
             fileName: './_locales/zh-CN/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/es/messages.json,./_locales/es/messages.json}',
+            fileName: './_locales/es/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/th/messages.json,./_locales/th/messages.json}',
+            fileName: './_locales/th/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/vi/messages.json,./_locales/vi/messages.json}',
+            fileName: './_locales/vi/messages.json',
+          },
+          {
+            pattern: '{./modules/**/_locales/it/messages.json,./_locales/it/messages.json}',
+            fileName: './_locales/it/messages.json',
           },
         ],
       },

@@ -1,0 +1,17 @@
+{
+  "phishing": {
+    "message": "网络钓鱼"
+  },
+  "phishing_notification_title": {
+    "message": "检测到网络钓鱼！"
+  },
+  "phishing_notification_content": {
+    "message": "您正在观看的网站可能是网络钓鱼"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "检测到可疑网站！"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "您访问的网站似乎异常。当心网络钓鱼或诈骗！"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "phishing": {
+    "message": "ฟิชชิ่ง"
+  },
+  "phishing_notification_title": {
+    "message": "ตรวจพบฟิชชิง!"
+  },
+  "phishing_notification_content": {
+    "message": "เว็บไซต์ที่คุณกำลังดูอาจฟิชชิ่ง"
+  },
+  "phishing_notification_suspect_title": {
+    "message": "ตรวจพบเว็บไซต์ที่น่าสงสัย!"
+  },
+  "phishing_notification_suspect_content": {
+    "message": "เว็บไซต์ที่คุณเข้าถึงดูเหมือนผิดปกติ ระวังฟิชชิ่งหรือหลอกลวง!"
+  }
+}

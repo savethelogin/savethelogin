@@ -43,8 +43,44 @@
 </template>
 
 <script>
-import config from '../common/Config';
-import { createTab, openDefaultPort, getStorage, setStorage } from '../common/Utils';
+import Vue from 'vue';
+import config from '@/common/Config';
+import {
+  isMobile,
+  createTab,
+  openDefaultPort,
+  getStorage,
+  setStorage,
+  fromPascalToKebabCase,
+} from '@/common/Utils';
+
+// Load popup panes
+const requirePanes = require.context(
+  '../modules/',
+  true,
+  /\/components\/[A-Z][A-Za-z0-9._-]+Pane\.(js|vue)$/
+);
+
+const loadedPanes = requirePanes
+  .keys()
+  .filter(key => {
+    if (!isMobile()) return true;
+
+    const componentConfig = requirePanes(key);
+    return componentConfig.mobileCompatible ? true : false;
+  })
+  .map(key => {
+    const componentConfig = requirePanes(key);
+    const componentName = fromPascalToKebabCase(
+      key
+        .split('/')
+        .pop()
+        .replace(/\.\w+$/, '')
+    );
+    Vue.component(componentName, componentConfig.default || componentConfig);
+
+    return componentName;
+  });
 
 import Inspect from './Inspect';
 import Options from './Options';

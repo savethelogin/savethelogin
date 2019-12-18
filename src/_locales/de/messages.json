@@ -14,12 +14,6 @@
   "refresh": {
     "message": "Aktualisierung"
   },
-  "options": {
-    "message": "Optionen"
-  },
-  "basics": {
-    "message": "Grundlagen"
-  },
   "experimental": {
     "message": "Experimental"
   },

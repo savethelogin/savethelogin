@@ -1,0 +1,29 @@
+{
+  "request_blocked_title": {
+    "message": "Yêu cầu đăng nhập đã bị chặn"
+  },
+  "request_blocked_message": {
+    "message": "Chúng tôi đã phát hiện và chặn việc truyền tải bản rõ.\n"
+  },
+  "request_blocked_context_message": {
+    "message": "Nhấn vào đây để bỏ chặn yêu cầu"
+  },
+  "request_blocked_warning": {
+    "message": "Thông tin cá nhân không được mã hóa có thể bị lộ trong quá trình truyền tải."
+  },
+  "options_block_desc": {
+    "message": "Thông báo về đăng nhập văn bản đơn giản"
+  },
+  "whitelist_heading": {
+    "message": "Danh sách trắng đăng nhập Plaintext"
+  },
+  "close": {
+    "message": "Gần"
+  },
+  "reset": {
+    "message": "Cài lại"
+  },
+  "save": {
+    "message": "Tiết kiệm"
+  }
+}

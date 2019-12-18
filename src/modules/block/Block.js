@@ -21,6 +21,13 @@ let recycleStack = [];
 let elementId = 0;
 // Request may be cancelled
 let sensitives = [];
+let cancelled = {};
+/** Whitelist domains */
+let whitelist = [];
+/** Previous url */
+let previousUrl = {};
+/** Counter */
+let counter = {};
 
 /**
  * Prepend inline script to header
@@ -350,7 +357,7 @@ export function onUpdated(tabId, changeInfo, tab) {
             }
           };
         }
-        open.apply(this, [method, action]);
+        open.apply(this, arguments);
       };
     })();
   `,
@@ -455,12 +462,23 @@ export function onBeforeRequest(details) {
  * Block request before send headers
  */
 export function onBeforeSendHeaders(details) {
-  if (sensitives.includes(details.requestId)) {
-    if (details.requestHeaders) {
-      const headers = details.requestHeaders;
-      for (let i = 0; i < headers.length; ++i) {
-        if (headers[i].name === 'X-Plaintext-Login') {
-          if (headers[i].value === 'GRANTED') return;
+  if (!Context.get('enabled') || !Context.get('block_enabled')) return;
+
+  if (counter[details.tabId]) {
+    counter[details.tabId] = undefined;
+    return;
+  }
+
+  const url = new URL(details.url);
+  if (whitelist.includes(url.hostname)) return;
+
+  if (details.requestHeaders) {
+    const headers = details.requestHeaders;
+    for (let i = 0; i < headers.length; ++i) {
+      if (headers[i].name === 'X-Plaintext-Login') {
+        if (headers[i].value === 'DETECTED') {
+          sensitives.push(details.requestId);
+          break;
         }
       }
     }
@@ -485,9 +503,31 @@ export function onCompleted(details) {
 
 export function onErrorOccurred(details) {
   console.log(details);
-  if (details.error === 'net::ERR_BLOCKED_BY_CLIENT' && details.type.slice(-5) === 'frame') {
-    if (sensitives.includes(details.requestId)) {
-      chrome.tabs.reload(details.tabId, { bypassCache: true });
+
+  if (sensitives.includes(details.requestId)) {
+    switch (details.error) {
+      case 'net::ERR_BLOCKED_BY_CLIENT':
+      case 'NS_ERROR_ABORT':
+        createNotification({
+          notificationId: `notification_request_blocked@${details.requestId}`,
+          title: chrome.i18n.getMessage('request_blocked_title'),
+          message: chrome.i18n.getMessage('request_blocked_message'),
+          contextMessage: chrome.i18n.getMessage('request_blocked_context_message'),
+        });
+        if (details.type.slice(-5) === 'frame') {
+          updateTab({
+            updateProperties: {
+              url: previousUrl[details.tabId],
+            },
+          });
+        }
+        counter[details.tabId] = true;
+        chrome.notifications.getAll(notifications => {
+          console.log('notifications: ', notifications);
+        });
+        break;
+      default:
+        break;
     }
   }
 }
