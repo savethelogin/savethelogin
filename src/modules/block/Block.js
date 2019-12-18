@@ -1,25 +1,35 @@
-/* Copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 
 /**
  * HTTP Request blocker module
  */
-import config from '../../common/Config';
+import config from '@/common/Config';
 const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
-import { executeScript } from '../../common/Utils';
-import Context from '../../common/Context';
+import {
+  getBrowser,
+  createNotification,
+  clearNotification,
+  createTab,
+  updateTab,
+  executeScript,
+} from '@/common/Utils';
+import Context from '@/common/Context';
 
-// Shorten value to improve performance
+/** Shorten value to improve performance */
 const SHORTEN_LENGTH = 0x10;
 
-// Store private datas
+/** Store private datas */
 let privateData = {};
-// Re-use buffer
-// Stack pop() is faster than shift()
+/**
+ * @brief Re-use buffer
+ *
+ * Stack pop() is faster than shift()
+ */
 let recycleStack = [];
-// Unique element id
+/** Unique element id */
 let elementId = 0;
-// Request may be cancelled
+/** Request may be cancelled */
 let sensitives = [];
 let cancelled = {};
 /** Whitelist domains */
@@ -51,7 +61,7 @@ function patch({ tabId, id, code }) {
   });
 }
 
-// Unset and zero-fill to erase sensitive datas
+/** Unset and zero-fill to erase sensitive datas */
 function del(tabId) {
   if (privateData[tabId] === undefined) return;
   Object.keys(privateData[tabId]).forEach(key => {
@@ -65,7 +75,7 @@ function del(tabId) {
   privateData[tabId] = undefined;
 }
 
-// Bind event handler to webpage
+/** Bind event handler to webpage */
 function bind(tabId) {
   if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   executeScript({
@@ -146,41 +156,7 @@ function bind(tabId) {
   });
 }
 
-// Create translucent black background when alert appears
-function createBg() {
-  executeScript({
-    details: {
-      code: `
-      (function() {
-        var bg = document.createElement('div');
-        bg.style.background = '#000';
-        bg.style.opacity = '0.8';
-        bg.style.width = '100%';
-        bg.style.height = '100%';
-        bg.style.position = 'absolute';
-        bg.style.zIndex = '2147483647';
-        bg.style.top = '0';
-        bg.style.left = '0';
-        bg.id = '${ID_PREFIX}bg';
-        document.body.appendChild(bg);
-      })()`,
-    },
-  });
-}
-
-// Remove background which created by createBg()
-function removeBg() {
-  executeScript({
-    details: {
-      code: `
-      (function() {
-        var bg = document.getElementById('${ID_PREFIX}bg');
-        bg.parentElement.removeChild(bg);
-      })()`,
-    },
-  });
-}
-
+/** Refresh tab to re-apply options */
 function enforceUpdate() {
   onUpdated();
   chrome.tabs.reload(undefined, { bypassCache: true });
@@ -201,6 +177,7 @@ export function onConnect(port) {
         let tmp = new Uint8Array(
           message.data
             .toString()
+            .trim()
             .slice(0, SHORTEN_LENGTH)
             .split('')
             .map(c => c.charCodeAt(0))
@@ -236,13 +213,8 @@ export function onConnect(port) {
         }
         break;
       }
-      // Ask background to create translucent background
-      case 'create_background': {
-        createBg();
-        break;
-      }
-      case 'remove_background': {
-        removeBg();
+      case 'update_whitelist': {
+        whitelist = message.data;
         break;
       }
       default:
@@ -257,7 +229,7 @@ export function onUpdated(tabId, changeInfo, tab) {
   console.log(tabId, changeInfo, tab);
 
   // Delete previous page informations
-  del(tabId);
+  if (changeInfo && changeInfo.status === 'complete') del(tabId);
 
   // Bind once per tab
   bind(tabId);
@@ -295,20 +267,6 @@ export function onUpdated(tabId, changeInfo, tab) {
         }
       }, false);
 
-      var createBg = function() {
-        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-        port.postMessage({
-          type: 'create_background'
-        });
-      };
-      var removeBg = function() {
-        var port = chrome.runtime.connect({name: "${PROJECT_PREFIX}"});
-        port.postMessage({
-          type: 'remove_background'
-        });
-      };
-
-
       var open = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function() {
         var method = arguments[0];
@@ -324,31 +282,16 @@ export function onUpdated(tabId, changeInfo, tab) {
         if (method.match(/^POST$/i) && action.match(/^http:/i)) {
           var send = this.send;
           this.send = function(body) {
-            var isSensitive = false;
             try {
               var targets = document.querySelectorAll('input[type=password]');
               for (var i = 0; i < targets.length; ++i) {
-                if (context.plainText && body.indexOf(targets[i].value) !== -1) {
-                  createBg();
-                  if (confirm("${chrome.i18n
-                    .getMessage('confirm_request_block')
-                    .replace(/\n/g, '\\\\n')}")) {;
-                    isSensitive = true;
-                    removeBg();
-                    break;
-                  } else {
-                    alert("${chrome.i18n.getMessage('request_blocked').replace(/\n/g, '\\\\n')}")
-                    removeBg();
-                    // Cancel request
-                    return;
-                  }
+                if (!context.block_enabled) break;
+                if (targets[i].value.trim() && body.indexOf(targets[i].value) !== -1) {
+                  this.setRequestHeader('X-Plaintext-Login', 'DETECTED');
+                  break;
                 }
               }
             } catch (e) {}
-            // Inject header
-            if (isSensitive) {
-              this.setRequestHeader("X-Plaintext-Login", "GRANTED");
-            }
             // Call original send method
             try {
               send.call(this, body);
@@ -368,6 +311,7 @@ export function onRemoved(tabId, removed) {
   if (!Context.get('enabled') || !Context.get('block_enabled')) return;
   // Remove private data by tab id when tab closed
   del(tabId);
+  delete previousUrl[tabId];
 }
 
 /*
@@ -453,6 +397,7 @@ export function onBeforeRequest(details) {
     // If formData or rawData contains plain private data
     if (isSensitive) {
       sensitives.push(details.requestId);
+      cancelled[details.requestId] = hostname;
     }
     del(details.tabId);
   }
@@ -482,19 +427,17 @@ export function onBeforeSendHeaders(details) {
         }
       }
     }
+  }
 
-    createBg();
-    if (!confirm(chrome.i18n.getMessage('confirm_request_block'))) {
-      alert(chrome.i18n.getMessage('request_blocked'));
-      removeBg();
-
-      return { cancel: true };
-    }
-    removeBg();
+  if (sensitives.includes(details.requestId)) {
+    return { cancel: true };
   }
 }
 
 export function onCompleted(details) {
+  if (details.type.slice(-5) === 'frame') {
+    previousUrl[details.tabId] = details.url;
+  }
   if (sensitives.includes(details.requestId)) {
     let index = sensitives.indexOf(details.requestId);
     sensitives.splice(index, 1);
@@ -529,6 +472,26 @@ export function onErrorOccurred(details) {
       default:
         break;
     }
+    let index = sensitives.indexOf(details.requestId);
+    sensitives.splice(index, 1);
+  }
+}
+
+export function onClosed(notificationId, byUser) {
+  if (notificationId.match(/^notification_request_blocked/)) {
+    let requestId = parseInt(notificationId.split('@').slice(-1));
+    delete cancelled[requestId];
+  }
+}
+
+export function onClicked(notificationId) {
+  if (notificationId.match(/^notification_request_blocked/)) {
+    let requestId = parseInt(notificationId.split('@').slice(-1));
+    createTab({
+      url: `/block-whitelist.html?domain=${cancelled[requestId]}`,
+    });
+    clearNotification(notificationId);
+    delete cancelled[requestId];
   }
 }
 
@@ -540,4 +503,6 @@ export default {
   onBeforeSendHeaders,
   onCompleted,
   onErrorOccurred,
+  onClosed,
+  onClicked,
 };

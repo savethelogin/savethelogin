@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Xvezda <https://xvezda.com/> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import VueChromeI18n from './components/VueChromeI18n';
 import { bind } from './directive';
 

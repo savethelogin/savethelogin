@@ -1,29 +1,26 @@
 {
+  "agree": {
+    "message": "同意"
+  },
   "deny": {
     "message": "不同意"
   },
-  "malicious": {
-    "message": "恶意的"
-  },
-  "inspect": {
-    "message": "检查"
-  },
   "safe": {
     "message": "安全"
+  },
+  "moderate": {
+    "message": "中等"
+  },
+  "vulnerable": {
+    "message": "脆弱的"
+  },
+  "malicious": {
+    "message": "恶意的"
   },
   "refresh": {
     "message": "刷新"
   },
   "experimental": {
     "message": "实验性"
-  },
-  "moderate": {
-    "message": "中等"
-  },
-  "agree": {
-    "message": "同意"
-  },
-  "vulnerable": {
-    "message": "脆弱的"
   }
 }

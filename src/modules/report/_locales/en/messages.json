@@ -1,0 +1,14 @@
+{
+  "report": {
+    "message": "Report"
+  },
+  "crop": {
+    "message": "Crop"
+  },
+  "capture": {
+    "message": "Capture"
+  },
+  "download": {
+    "message": "Download"
+  }
+}

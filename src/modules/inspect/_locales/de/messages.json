@@ -1,18 +1,30 @@
 {
+  "inspect": {
+    "message": "Prüfen"
+  },
+  "scheme": {
+    "message": "Planen"
+  },
   "hsts_policy": {
     "message": "HSTS-Richtlinie"
+  },
+  "clickjacking_prevention": {
+    "message": "Verhinderung von Clickjacking"
   },
   "xss_protection_policy": {
     "message": "XSS-Schutzrichtlinie"
   },
-  "hsts_policy_recommend": {
-    "message": "<span class=\"badge badge-info\">empfehlen</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
+  "server_version_disclosure": {
+    "message": "Offenlegung der Serverversion"
   },
   "servlet_spec_disclosure": {
     "message": "Offenlegung von Serverkonfigurationsinformationen"
   },
-  "no_information": {
-    "message": "Keine Information!"
+  "session_cookie_xss": {
+    "message": "Sicherheitsanfälligkeit bezüglich Sitzungscookies"
+  },
+  "hsts_policy_recommend": {
+    "message": "<span class=\"badge badge-info\">empfehlen</span> <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code>"
   },
   "clickjacking_prevention_recommend": {
     "message": "<span class=\"badge badge-info\">empfehlen</span> <code>X-Frame-Options: deny\nX-Frame-Options: sameorigin\nX-Frame-Options: allow-from https://example.com/</code>"
@@ -20,16 +32,7 @@
   "xss_protection_policy_recommend": {
     "message": "<span class=\"badge badge-info\">empfehlen</span> <code>X-XSS-Protection: 1; mode=block</code> in den HTTP-Antwortheader des Servers aufnehmen."
   },
-  "server_version_disclosure": {
-    "message": "Offenlegung der Serverversion"
-  },
-  "scheme": {
-    "message": "Planen"
-  },
-  "session_cookie_xss": {
-    "message": "Sicherheitsanfälligkeit bezüglich Sitzungscookies"
-  },
-  "clickjacking_prevention": {
-    "message": "Verhinderung von Clickjacking"
+  "no_information": {
+    "message": "Keine Information!"
   }
 }

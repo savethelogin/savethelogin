@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Xvezda <https://xvezda.com/> */
+/** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import { replacer, pattern } from './utils';
 
 export function bind(el, binding, vnode) {

@@ -1,0 +1,14 @@
+{
+  "report": {
+    "message": "보고서"
+  },
+  "crop": {
+    "message": "자르기"
+  },
+  "capture": {
+    "message": "캡쳐"
+  },
+  "download": {
+    "message": "다운로드"
+  }
+}

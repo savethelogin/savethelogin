@@ -1,11 +1,29 @@
 {
-  "confirm_request_block": {
-    "message": "我们已经检测到并暂时阻止了明文的传输。\n在传输过程中可能会暴露未加密的个人信息。\n你想继续吗？"
+  "request_blocked_title": {
+    "message": "登录请求已被阻止"
+  },
+  "request_blocked_message": {
+    "message": "我们已经检测到并阻止了明文的传输。\n"
+  },
+  "request_blocked_context_message": {
+    "message": "点击此处取消阻止请求"
+  },
+  "request_blocked_warning": {
+    "message": "在传输过程中可能会暴露未加密的个人信息。"
   },
   "options_block_desc": {
     "message": "通知有关纯文本登录"
   },
-  "request_blocked": {
-    "message": "登录请求已被阻止。"
+  "whitelist_heading": {
+    "message": "纯文本登录白名单"
+  },
+  "close": {
+    "message": "关"
+  },
+  "reset": {
+    "message": "重启"
+  },
+  "save": {
+    "message": "保存"
   }
 }
