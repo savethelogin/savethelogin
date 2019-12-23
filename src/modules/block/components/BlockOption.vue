@@ -11,6 +11,7 @@
 <script>
 import { createTab } from '@/common/Utils';
 
+export const mobileCompatible = true;
 export default {
   methods: {
     openWhitelist: function() {
