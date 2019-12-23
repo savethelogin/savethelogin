@@ -65,7 +65,6 @@ function promiseHandler(
 /**
  * Increase badge number
  */
-let tabCounter = {};
 export function increaseBadgeCount(tabId) {
   getBadgeText(tabId).then(result => {
     console.log('badge:', result);

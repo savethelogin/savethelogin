@@ -89,6 +89,28 @@ export const phishingEnabledKey = `${PROJECT_PREFIX}_${moduleName}_enabled`;
 let hostnames = {};
 let expire = DEFAULT_EXPIRE;
 
+getStorage({ keys: [phishingHostsKey, phishingExpireKey, phishingEnabledKey] }).then(items => {
+  const hosts = items[phishingHostsKey];
+  if (typeof hosts !== 'undefined') {
+    hostnames = hosts;
+    filterHosts();
+    console.log(hostnames);
+  }
+  const savedExpire = items[phishingExpireKey];
+  if (typeof savedExpire !== 'undefined') {
+    expire = savedExpire;
+  }
+  const savedEnabled = items[phishingEnabledKey];
+  if (typeof savedEnabled !== 'undefined') {
+    isEnabled = savedEnabled;
+  }
+  setStorage({
+    items: {
+      [phishingExpireKey]: expire,
+    },
+  });
+});
+
 function filterHosts() {
   console.log('before filtered: ', hostnames);
   for (let hostname in hostnames) {
@@ -109,24 +131,6 @@ function filterHosts() {
   }
   console.log('after filtered: ', hostnames);
 }
-
-getStorage({ keys: [phishingHostsKey, phishingExpireKey] }).then(items => {
-  const hosts = items[phishingHostsKey];
-  if (hosts) {
-    hostnames = hosts;
-    filterHosts();
-    console.log(hostnames);
-  }
-  const savedExpire = items[phishingExpireKey];
-  if (savedExpire) {
-    expire = savedExpire;
-  }
-  setStorage({
-    items: {
-      [phishingExpireKey]: expire,
-    },
-  });
-});
 
 export function onConnect(port) {
   console.assert(port.name == `${PROJECT_PREFIX}`);
@@ -159,14 +163,12 @@ function createPhishingNotify({ tabId, probability }) {
   if (!isEnabled) return;
   switch (probability) {
     case DEFINITE:
-      increaseBadgeCount(tabId);
       createNotification({
         title: chrome.i18n.getMessage('phishing_notification_title'),
         message: chrome.i18n.getMessage('phishing_notification_content'),
       });
       break;
     case SUSPECT:
-      increaseBadgeCount(tabId);
       createNotification({
         title: chrome.i18n.getMessage('phishing_notification_suspect_title'),
         message: chrome.i18n.getMessage('phishing_notification_suspect_content'),
@@ -215,7 +217,6 @@ export function onUpdated(tabId, changeInfo, tab) {
         .then(response => {
           console.log(response);
 
-          // TODO: Server API Implementation
           const data = response.data;
           if (data) {
             let phishingFlag = isPhishing({
@@ -246,6 +247,14 @@ export function onUpdated(tabId, changeInfo, tab) {
       break;
     }
     case 'complete':
+      let phishingFlag = isPhishing({
+        classification: hostnames[hostname].classification,
+        probability: hostnames[hostname].probability,
+      });
+      if (phishingFlag !== SAFE) {
+        increaseBadgeCount(tabId);
+        return;
+      }
       break;
     default:
       break;

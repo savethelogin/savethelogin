@@ -67,17 +67,6 @@ function setIcon(isEnabled) {
   }
 }
 
-chrome.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, {
-  urls: ['http://*/*', 'https://*/*'],
-});
-
-export function onBeforeSendHeaders(details) {
-  if (details.type === 'main_frame') {
-    // Reset previous count
-    clearBadgeCount(details.tabId);
-  }
-}
-
 chrome.runtime.onConnect.addListener(onConnect);
 
 /** Common runtime connection handler */
