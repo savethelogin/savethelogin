@@ -63,6 +63,59 @@ function promiseHandler(
 }
 
 /**
+ * Increase badge number
+ */
+let tabCounter = {};
+export function increaseBadgeCount(tabId) {
+  getBadgeText(tabId).then(result => {
+    console.log('badge:', result);
+    let count;
+    if (!result) count = 0;
+    else count = parseInt(result);
+    ++count;
+    setBadgeText({ text: count.toString(), tabId: tabId });
+  });
+}
+
+export function clearBadgeCount(tabId) {
+  setBadgeText({ text: '', tabId: tabId });
+}
+
+/**
+ * Set extension icon badge text
+ *
+ * @return {Promise}
+ */
+export function setBadgeText({ text, tabId = undefined }) {
+  return new Promise((resolve, reject) => {
+    chrome.browserAction.setBadgeText(
+      {
+        text: text,
+        tabId: tabId,
+      },
+      () => {
+        promiseHandler({ resolve: resolve, reject: reject });
+      }
+    );
+  });
+}
+
+/**
+ * Get extension icon badge text
+ *
+ * @return {Promise}
+ */
+export function getBadgeText(tabId = undefined) {
+  return new Promise((resolve, reject) => {
+    let options = {};
+    if (tabId) options['tabId'] = tabId;
+    chrome.browserAction.getBadgeText(options, result => {
+      promiseHandler({ resolve: resolve, reject: reject }, result);
+    });
+  });
+}
+
+/**
  * Create notification which shows on system tray
  *
  * @return {Promise}
@@ -393,6 +446,9 @@ export function fromPascalToKebabCase(text) {
 export default {
   getBrowser,
   isMobile,
+  increaseBadgeCount,
+  setBadgeText,
+  getBadgeText,
   createNotification,
   clearNotification,
   getStorage,

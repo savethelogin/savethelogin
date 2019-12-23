@@ -1,12 +1,18 @@
 /** @copyright (C) 2019 Team SaveTheLogin <https://savethelogin.world/> */
 import axios from 'axios';
 import config from '@/common/Config';
-import { unique, setStorage, getStorage, createNotification } from '@/common/Utils';
+import {
+  unique,
+  increaseBadgeCount,
+  setStorage,
+  getStorage,
+  createNotification,
+} from '@/common/Utils';
 
 const { PROJECT_PREFIX, API_URL, API_SCHEME } = config;
 
 const moduleName = 'phishing';
-let isEnabled = true;
+let isEnabled = false;
 
 /** Well known domains */
 const whiteDomains = [
@@ -50,7 +56,7 @@ const whiteDomains = [
   /\.linkedin\.com$/,
   /\.adobe\.com$/,
   /\.wikipedia\.org$/,
-  /\.bing\.org$/,
+  /\.bing\.com$/,
 ];
 const apiReponsekeys = ['classification', 'probability'];
 /**
@@ -149,16 +155,18 @@ export function onConnect(port) {
   });
 }
 
-function createPhishingNotify(probability) {
+function createPhishingNotify({ tabId, probability }) {
   if (!isEnabled) return;
   switch (probability) {
     case DEFINITE:
+      increaseBadgeCount(tabId);
       createNotification({
         title: chrome.i18n.getMessage('phishing_notification_title'),
         message: chrome.i18n.getMessage('phishing_notification_content'),
       });
       break;
     case SUSPECT:
+      increaseBadgeCount(tabId);
       createNotification({
         title: chrome.i18n.getMessage('phishing_notification_suspect_title'),
         message: chrome.i18n.getMessage('phishing_notification_suspect_content'),
@@ -215,7 +223,7 @@ export function onUpdated(tabId, changeInfo, tab) {
               probability: data.probability,
             });
             if (phishingFlag !== SAFE) {
-              createPhishingNotify(phishingFlag);
+              createPhishingNotify({ tabId: tabId, probability: phishingFlag });
             }
             // Cache api result
             for (let key of apiReponsekeys) {
@@ -259,7 +267,7 @@ export function onBeforeSendHeaders(details) {
     probability: hostnames[hostname].probability,
   });
   if (phishingFlag !== SAFE) {
-    createPhishingNotify(phishingFlag);
+    createPhishingNotify({ tabId: details.tabId, probability: phishingFlag });
     return;
   }
 }

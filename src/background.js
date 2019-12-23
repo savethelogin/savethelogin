@@ -5,7 +5,13 @@
  */
 import config from '@/common/Config';
 import Context from '@/common/Context';
-import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from '@/common/Utils';
+import {
+  clearBadgeCount,
+  getStorage,
+  setStorage,
+  dataURItoBlob,
+  fromPascalToSnakeCase,
+} from '@/common/Utils';
 
 const { PROJECT_PREFIX } = config;
 
@@ -58,6 +64,17 @@ function setIcon(isEnabled) {
     chrome.browserAction.setIcon({
       path: '/icons/icon-off16.png',
     });
+  }
+}
+
+chrome.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, {
+  urls: ['http://*/*', 'https://*/*'],
+});
+
+export function onBeforeSendHeaders(details) {
+  if (details.type === 'main_frame') {
+    // Reset previous count
+    clearBadgeCount(details.tabId);
   }
 }
 
