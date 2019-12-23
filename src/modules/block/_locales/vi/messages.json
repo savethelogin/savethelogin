@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "Khối"
+  },
+  "whitelist": {
+    "message": "Danh sách trắng"
+  },
   "request_blocked_title": {
     "message": "Yêu cầu đăng nhập đã bị chặn"
   },
@@ -18,7 +24,7 @@
     "message": "Danh sách trắng đăng nhập Plaintext"
   },
   "close": {
-    "message": "Gần"
+    "message": "Đóng"
   },
   "reset": {
     "message": "Cài lại"

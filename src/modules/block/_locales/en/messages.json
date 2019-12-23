@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "Block"
+  },
+  "whitelist": {
+    "message": "Whitelist"
+  },
   "request_blocked_title": {
     "message": "Login request has been blocked"
   },

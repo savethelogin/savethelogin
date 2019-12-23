@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "บล็อก"
+  },
+  "whitelist": {
+    "message": "Whitelist"
+  },
   "request_blocked_title": {
     "message": "คำขอเข้าสู่ระบบถูกปิดกั้น"
   },

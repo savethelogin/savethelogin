@@ -8,6 +8,7 @@ const { PROJECT_PREFIX, ID_PREFIX, PROJECT_DOMAIN } = config;
 
 import {
   getBrowser,
+  increaseBadgeCount,
   createNotification,
   clearNotification,
   createTab,
@@ -451,6 +452,7 @@ export function onErrorOccurred(details) {
     switch (details.error) {
       case 'net::ERR_BLOCKED_BY_CLIENT':
       case 'NS_ERROR_ABORT':
+        increaseBadgeCount(details.tabId);
         createNotification({
           notificationId: `notification_request_blocked@${details.requestId}`,
           title: chrome.i18n.getMessage('request_blocked_title'),

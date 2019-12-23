@@ -5,7 +5,13 @@
  */
 import config from '@/common/Config';
 import Context from '@/common/Context';
-import { getStorage, setStorage, dataURItoBlob, fromPascalToSnakeCase } from '@/common/Utils';
+import {
+  clearBadgeCount,
+  getStorage,
+  setStorage,
+  dataURItoBlob,
+  fromPascalToSnakeCase,
+} from '@/common/Utils';
 
 const { PROJECT_PREFIX } = config;
 

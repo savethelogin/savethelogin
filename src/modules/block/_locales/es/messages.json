@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "Bloquear"
+  },
+  "whitelist": {
+    "message": "Lista blanca"
+  },
   "request_blocked_title": {
     "message": "La solicitud de inicio de sesión ha sido bloqueada"
   },
@@ -12,7 +18,7 @@
     "message": "La información personal no cifrada puede quedar expuesta durante la transmisión."
   },
   "options_block_desc": {
-    "message": "Notificar sobre el inicio de sesión de texto sin formato"
+    "message": "Notificar sobre inicio de sesión de texto sin formato"
   },
   "whitelist_heading": {
     "message": "Lista blanca de inicio de sesión de texto sin formato"

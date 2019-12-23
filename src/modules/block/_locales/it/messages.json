@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "Bloccare"
+  },
+  "whitelist": {
+    "message": "Lista bianca"
+  },
   "request_blocked_title": {
     "message": "La richiesta di accesso è stata bloccata"
   },
@@ -21,9 +27,9 @@
     "message": "Vicino"
   },
   "reset": {
-    "message": "Reset"
+    "message": "Ripristina"
   },
   "save": {
-    "message": "Salvare"
+    "message": "Salva"
   }
 }
