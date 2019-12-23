@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "Bloquer"
+  },
+  "whitelist": {
+    "message": "Liste blanche"
+  },
   "request_blocked_title": {
     "message": "La demande de connexion a été bloquée"
   },
@@ -18,12 +24,12 @@
     "message": "Liste blanche de connexion au texte en clair"
   },
   "close": {
-    "message": "proche"
+    "message": "Fermer"
   },
   "reset": {
     "message": "Réinitialiser"
   },
   "save": {
-    "message": "sauver"
+    "message": "sauvegarder"
   }
 }

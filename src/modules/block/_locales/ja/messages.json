@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "ブロック"
+  },
+  "whitelist": {
+    "message": "ホワイトリスト"
+  },
   "request_blocked_title": {
     "message": "ログイン要求がブロックされました"
   },

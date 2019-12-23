@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "차단"
+  },
+  "whitelist": {
+    "message": "예외목록"
+  },
   "request_blocked_title": {
     "message": "로그인 요청이 차단되었습니다"
   },

@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "块"
+  },
+  "whitelist": {
+    "message": "白名单"
+  },
   "request_blocked_title": {
     "message": "登录请求已被阻止"
   },

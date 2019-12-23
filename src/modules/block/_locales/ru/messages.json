@@ -1,4 +1,10 @@
 {
+  "block": {
+    "message": "блок"
+  },
+  "whitelist": {
+    "message": "Whitelist"
+  },
   "request_blocked_title": {
     "message": "Запрос на вход был заблокирован"
   },
@@ -21,7 +27,7 @@
     "message": "близко"
   },
   "reset": {
-    "message": "Сброс"
+    "message": "Сброс настроек"
   },
   "save": {
     "message": "Сохранить"
